@@ -9,20 +9,19 @@ import { CompanyTable } from './components/CompanyTable'
 import { RealIntelligence } from './components/RealIntelligence'
 import { MOCK_COMPANIES } from './data/companies'
 import { MOCK_SIGNALS, MOCK_IMPACT_EVENTS } from './data/signals'
-import { META_CAPEX_OBSERVATIONS } from './data/metaCapexMetrics'
 import { TSM_METRIC_OBSERVATIONS } from './data/tsmMetrics'
 import { getSourceById } from './data/sources'
 import { deriveTsmSignalsWithTrendConfirmation } from './signals/tsmSignalInterpreter'
-import { deriveCrossCompanySignals } from './signals/crossCompanySignalInterpreter'
+import { deriveHyperscalerTsmConfirmation } from './signals/hyperscalerTsmConfirmationEngine'
 import { deriveCurrentHyperscalerCapexTrend } from './signals/hyperscalerCapexBreadthEngine'
 import { createRealIntelligenceViewModel } from './presentation/realIntelligenceViewModel'
 
 const tsmResult = deriveTsmSignalsWithTrendConfirmation(TSM_METRIC_OBSERVATIONS)
-const crossCompanySignal = deriveCrossCompanySignals(
-  META_CAPEX_OBSERVATIONS,
-  TSM_METRIC_OBSERVATIONS
-)[0]
 const hyperscalerCapexTrend = deriveCurrentHyperscalerCapexTrend()
+const crossCompanySignal = deriveHyperscalerTsmConfirmation(
+  hyperscalerCapexTrend,
+  TSM_METRIC_OBSERVATIONS
+)
 const realIntelligence = createRealIntelligenceViewModel({
   crossCompanySignal,
   hyperscalerCapexTrend,

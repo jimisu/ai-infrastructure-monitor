@@ -14,7 +14,7 @@ export function RealIntelligence({ intelligence }: Props) {
     </div>
   )
 
-  const { crossCompanySignal, hyperscaler, tsmTrend, tsmOutlook, sources } = intelligence
+  const { crossValidation, hyperscaler, tsmTrend, tsmOutlook, sources } = intelligence
   return (
     <div className="real-intelligence-card">
       <div className="real-intelligence-header">
@@ -60,7 +60,7 @@ export function RealIntelligence({ intelligence }: Props) {
         </article>
       </div>
 
-      <div className="cross-validation-row"><span>CROSS VALIDATION</span><strong>CONFIRMED</strong><span>{crossCompanySignal.evidenceObservationIds.length} factual observations</span></div>
+      <div className="cross-validation-row"><span>CROSS VALIDATION</span><strong>{crossValidation.alignment}</strong><span>{crossValidation.confidence} confidence · {crossValidation.evidenceCount} factual observations</span></div>
       <div className="real-sources">
         <span>Sources</span>
         {sources.map((source) => <a key={source.id} href={source.url} target="_blank" rel="noreferrer">{source.name}</a>)}

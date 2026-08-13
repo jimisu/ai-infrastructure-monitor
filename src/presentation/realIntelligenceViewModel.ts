@@ -1,4 +1,4 @@
-import type { CrossCompanySignal } from '../types/crossCompanySignal'
+import type { HyperscalerTsmConfirmation } from '../types/hyperscalerTsmConfirmation'
 import type { DerivedSignal } from '../types/derivedSignal'
 import type { CompanyCapexAvailability, HyperscalerCapexTrend, HyperscalerTicker } from '../types/hyperscalerCapexTrend'
 import type { MetricObservation } from '../types/metric'
@@ -6,7 +6,12 @@ import type { Source } from '../types/source'
 import type { Trend3M } from '../signals/tsmSignalInterpreter'
 
 export interface RealIntelligenceViewModel {
-  crossCompanySignal: CrossCompanySignal
+  crossCompanySignal: HyperscalerTsmConfirmation
+  crossValidation: {
+    alignment: HyperscalerTsmConfirmation['alignment']
+    confidence: HyperscalerTsmConfirmation['confidence']
+    evidenceCount: number
+  }
   hyperscaler: {
     direction: HyperscalerCapexTrend['direction']
     confidence: HyperscalerCapexTrend['confidence']
@@ -32,7 +37,7 @@ export interface RealIntelligenceViewModel {
 }
 
 interface Inputs {
-  crossCompanySignal?: CrossCompanySignal
+  crossCompanySignal?: HyperscalerTsmConfirmation | null
   hyperscalerCapexTrend?: HyperscalerCapexTrend | null
   tsmOutlookSignal?: DerivedSignal
   tsmTrend: Trend3M | null
@@ -76,6 +81,11 @@ export function createRealIntelligenceViewModel(inputs: Inputs): RealIntelligenc
 
   return {
     crossCompanySignal,
+    crossValidation: {
+      alignment: crossCompanySignal.alignment,
+      confidence: crossCompanySignal.confidence,
+      evidenceCount: crossCompanySignal.evidenceObservationIds.length,
+    },
     hyperscaler: {
       direction: hyperscalerCapexTrend.direction,
       confidence: hyperscalerCapexTrend.confidence,
