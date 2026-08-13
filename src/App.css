@@ -1,184 +1,695 @@
-.counter {
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 2px solid transparent;
-  transition: border-color 0.3s;
-  margin-bottom: 24px;
+/* AI Infrastructure Monitor - v0.2 Investment Intelligence Dashboard */
 
-  &:hover {
-    border-color: var(--accent-border);
-  }
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
+:root {
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+  --text-primary: #e8eef5;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --border-color: #475569;
+  --accent-green: #22c55e;
+  --accent-red: #ef4444;
+  --accent-amber: #f59e0b;
+  --accent-blue: #3b82f6;
+  --accent-purple: #a855f7;
 }
 
-.hero {
-  position: relative;
-
-  .base,
-  .framework,
-  .vite {
-    inset-inline: 0;
-    margin: 0 auto;
-  }
-
-  .base {
-    width: 170px;
-    position: relative;
-    z-index: 0;
-  }
-
-  .framework,
-  .vite {
-    position: absolute;
-  }
-
-  .framework {
-    z-index: 1;
-    top: 34px;
-    height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
-      scale(1.4);
-  }
-
-  .vite {
-    z-index: 0;
-    top: 107px;
-    height: 26px;
-    width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
-      scale(0.8);
-  }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-#center {
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+}
+
+.app-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--bg-primary) 0%, #1a1f3a 100%);
+  color: var(--text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
   display: flex;
   flex-direction: column;
-  gap: 25px;
-  place-content: center;
-  place-items: center;
-  flex-grow: 1;
-
-  @media (max-width: 1024px) {
-    padding: 32px 20px 24px;
-    gap: 18px;
-  }
 }
 
-#next-steps {
+/* Header */
+.header {
+  background: rgba(15, 23, 42, 0.95);
+  border-bottom: 1px solid var(--border-color);
+  padding: 2rem;
+  backdrop-filter: blur(4px);
+}
+
+.header-content {
   display: flex;
-  border-top: 1px solid var(--border);
-  text-align: left;
-
-  & > div {
-    flex: 1 1 0;
-    padding: 32px;
-    @media (max-width: 1024px) {
-      padding: 24px 20px;
-    }
-  }
-
-  .icon {
-    margin-bottom: 16px;
-    width: 22px;
-    height: 22px;
-  }
-
-  @media (max-width: 1024px) {
-    flex-direction: column;
-    text-align: center;
-  }
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
 }
 
-#docs {
-  border-right: 1px solid var(--border);
-
-  @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
+.title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 1.5px;
+  margin: 0;
 }
 
-#next-steps ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
-  gap: 8px;
-  margin: 32px 0 0;
-
-  .logo {
-    height: 18px;
-  }
-
-  a {
-    color: var(--text-h);
-    font-size: 16px;
-    border-radius: 6px;
-    background: var(--social-bg);
-    display: flex;
-    padding: 6px 12px;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: box-shadow 0.3s;
-
-    &:hover {
-      box-shadow: var(--shadow);
-    }
-    .button-icon {
-      height: 18px;
-      width: 18px;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    margin-top: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    li {
-      flex: 1 1 calc(50% - 8px);
-    }
-
-    a {
-      width: 100%;
-      justify-content: center;
-      box-sizing: border-box;
-    }
-  }
+.demo-badge {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid var(--accent-red);
+  color: var(--accent-red);
+  padding: 0.4rem 0.8rem;
+  font-weight: 600;
+  border-radius: 3px;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
 }
 
-#spacer {
-  height: 88px;
-  border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
-  }
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0;
 }
 
-.ticks {
-  position: relative;
+/* Dashboard Layout */
+.dashboard {
+  flex: 1;
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  max-width: 1600px;
+  margin: 0 auto;
   width: 100%;
+}
 
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: -4.5px;
-    border: 5px solid transparent;
+/* Card Base Styles */
+.market-regime-card,
+.opportunities-card,
+.what-changed-card,
+.infrastructure-momentum-card,
+.causal-graph-card,
+.company-table-card {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  padding: 1.5rem;
+  backdrop-filter: blur(4px);
+}
+
+.card-header {
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.card-header h2 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.card-header .subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+/* Market Regime */
+.regime-display {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.score-large {
+  font-family: 'Courier New', monospace;
+  font-size: 3.5rem;
+  font-weight: bold;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.regime-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.trend-badge {
+  border: 1px solid;
+  padding: 0.4rem 0.8rem;
+  border-radius: 3px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  font-size: 0.9rem;
+  width: fit-content;
+}
+
+.change-indicator {
+  font-family: 'Courier New', monospace;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.change-indicator.positive {
+  color: var(--accent-green);
+}
+
+.change-indicator.negative {
+  color: var(--accent-red);
+}
+
+/* Today's Opportunities */
+.opportunities-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+}
+
+.opportunity-item {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 1.25rem;
+  transition: border-color 0.2s;
+}
+
+.opportunity-item:hover {
+  border-color: var(--text-secondary);
+}
+
+.opportunity-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.ticker-score {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+
+.ticker-large {
+  font-family: 'Courier New', monospace;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.opportunity-score {
+  font-family: 'Courier New', monospace;
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--accent-green);
+}
+
+.layer-label {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.opportunity-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.8rem 0;
+  border-top: 1px solid var(--border-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.metric .label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  margin-bottom: 0.3rem;
+}
+
+.metric .value {
+  font-family: 'Courier New', monospace;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--text-primary);
+}
+
+.reasoning {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.why-label {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  font-weight: 600;
+}
+
+.reasoning p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* What Changed */
+.events-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.event-item {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-color);
+  border-left: 3px solid var(--border-color);
+  border-radius: 4px;
+  padding: 1rem;
+}
+
+.event-item[data-impact='high'] {
+  border-left-color: var(--accent-red);
+}
+
+.event-item[data-impact='medium'] {
+  border-left-color: var(--accent-amber);
+}
+
+.event-item[data-impact='low'] {
+  border-left-color: var(--accent-blue);
+}
+
+.event-title-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.event-title {
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+
+.impact-badge {
+  padding: 0.25rem 0.6rem;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.event-description {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.event-meta {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.8rem 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.source {
+  font-weight: 500;
+}
+
+.affected-companies {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.affected-label {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.tickers {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.affected-ticker {
+  font-family: 'Courier New', monospace;
+  background: rgba(34, 197, 94, 0.1);
+  color: var(--accent-green);
+  padding: 0.2rem 0.4rem;
+  border-radius: 2px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* Infrastructure Momentum */
+.momentum-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+}
+
+.momentum-item {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--border-color);
+  border-top: 2px solid var(--border-color);
+  border-radius: 4px;
+  padding: 1rem;
+}
+
+.category-header {
+  border-top: 2px solid;
+  padding-bottom: 0.8rem;
+  margin-bottom: 0.8rem;
+}
+
+.category-name {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+.momentum-score {
+  font-family: 'Courier New', monospace;
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: 0.8rem;
+}
+
+.momentum-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.change-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.change-value {
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+  font-weight: bold;
+  color: var(--accent-green);
+}
+
+.change-label {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.2px;
+}
+
+.trend-indicator {
+  font-size: 1.4rem;
+}
+
+/* Causal Graph */
+.causal-graph {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.graph-node {
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid var(--accent-green);
+  border-radius: 6px;
+  padding: 1rem 1.5rem;
+  text-align: center;
+  width: fit-content;
+  max-width: 300px;
+}
+
+.graph-node.root-node {
+  background: rgba(34, 197, 94, 0.15);
+  border-color: var(--accent-green);
+  font-weight: 600;
+  color: var(--accent-green);
+}
+
+.graph-node.primary-node {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+  font-weight: 600;
+}
+
+.graph-node.secondary-node,
+.graph-node.tertiary-node {
+  background: rgba(148, 163, 184, 0.05);
+  border-color: var(--text-secondary);
+}
+
+.graph-node.supply-node {
+  background: rgba(168, 85, 247, 0.1);
+  border-color: var(--accent-purple);
+}
+
+.node-label {
+  color: inherit;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.node-label-small {
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.node-sublabel {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+.companies {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin-top: 0.5rem;
+}
+
+.company-badge {
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  font-weight: bold;
+  background: rgba(34, 197, 94, 0.2);
+  color: var(--accent-green);
+  padding: 0.2rem 0.4rem;
+  border-radius: 2px;
+}
+
+.graph-arrow {
+  color: var(--text-secondary);
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+.graph-arrow.wide {
+  color: var(--text-secondary);
+  font-size: 1rem;
+}
+
+.graph-layer {
+  display: grid;
+  gap: 1rem;
+  width: 100%;
+  justify-items: center;
+}
+
+.graph-layer.one-column {
+  grid-template-columns: 1fr;
+}
+
+.graph-layer.three-column {
+  grid-template-columns: repeat(3, minmax(120px, 1fr));
+}
+
+.graph-layer.two-column {
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+}
+
+.graph-explanation {
+  background: rgba(59, 130, 246, 0.1);
+  border: 1px solid var(--accent-blue);
+  border-radius: 4px;
+  padding: 1rem;
+  margin-top: 1rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  text-align: center;
+  width: 100%;
+}
+
+.graph-explanation strong {
+  color: var(--accent-blue);
+}
+
+/* Company Table */
+.company-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.company-table thead {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.company-table th {
+  text-align: left;
+  padding: 0.8rem 0.6rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.company-table td {
+  padding: 0.7rem 0.6rem;
+  border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+  color: var(--text-secondary);
+}
+
+.company-table tbody tr:hover {
+  background: rgba(34, 197, 94, 0.05);
+}
+
+.ticker-cell {
+  color: var(--text-primary);
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.score-cell {
+  font-family: 'Courier New', monospace;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.opportunity-score {
+  color: var(--accent-green);
+}
+
+.change-value {
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  color: var(--accent-green);
+}
+
+.trend-pill {
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+/* Footer */
+.footer {
+  background: rgba(15, 23, 42, 0.95);
+  border-top: 1px solid var(--border-color);
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-top: auto;
+}
+
+.footer p {
+  margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .graph-layer.three-column {
+    grid-template-columns: repeat(2, minmax(100px, 1fr));
   }
 
-  &::before {
-    left: 0;
-    border-left-color: var(--border);
+  .opportunity-metrics {
+    grid-template-columns: repeat(2, 1fr);
   }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
+}
+
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .title {
+    font-size: 1.3rem;
+  }
+
+  .score-large {
+    font-size: 2.5rem;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .regime-display {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .graph-layer.three-column {
+    grid-template-columns: 1fr;
+  }
+
+  .graph-layer.two-column {
+    grid-template-columns: 1fr;
+  }
+
+  .company-table {
+    font-size: 0.8rem;
+  }
+
+  .company-table th,
+  .company-table td {
+    padding: 0.5rem 0.4rem;
+  }
+
+  .opportunity-metrics {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
