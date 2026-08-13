@@ -18,6 +18,8 @@ export type MetricName =
   | 'REVENUE_GUIDANCE_HIGH'
   | 'CAPEX_GUIDANCE_LOW'
   | 'CAPEX_GUIDANCE_HIGH'
+  | 'CAPEX_GUIDANCE_POINT'
+  | 'CAPEX_GUIDANCE_LOWER_BOUND'
   | 'CAPEX_ACTUAL'
 
 export type PeriodType = 'MONTH' | 'QUARTER' | 'YEAR' | 'POINT_IN_TIME'
@@ -31,6 +33,8 @@ export interface MetricObservation {
   period: string // e.g. "2026-Q2", "2026-08", "2026"
   periodType: PeriodType
   guidanceAsOfPeriod?: string // Reporting period when annual guidance was issued, e.g. "2026-Q2"
+  capexDefinitionId?: string
+  approximate?: boolean
   publishedAt: string // ISO 8601 date
   retrievedAt: string // ISO 8601 date when we captured this
   sourceId: string

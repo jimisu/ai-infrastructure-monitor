@@ -27,7 +27,7 @@ export function verifyMetaCompanyCapexParity(): CompanyCapexParityResult {
   const normalized = normalizeCapexObservations(
     META_CAPEX_OBSERVATIONS,
     META_CAPEX_PROFILE,
-    META_CAPEX_DEFINITION
+    [META_CAPEX_DEFINITION]
   )
   const genericSignals = deriveCompanyCapexSignals(normalized, META_CAPEX_PROFILE, generatedAt)
   const compatibilitySignals = deriveMetaCapexSignals(META_CAPEX_OBSERVATIONS, generatedAt)

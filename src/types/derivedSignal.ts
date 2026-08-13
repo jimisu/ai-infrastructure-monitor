@@ -36,4 +36,5 @@ export interface DerivedSignal {
   generatedAt: string // ISO 8601 timestamp
   evidenceObservationIds: string[] // IDs of MetricObservations used
   description: string // Factual description only
+  capexDefinitionId?: string // Present for definition-specific CapEx signals
 }

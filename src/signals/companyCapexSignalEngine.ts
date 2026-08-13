@@ -16,17 +16,22 @@ import {
 export function normalizeCapexObservations(
   observations: MetricObservation[],
   profile: CompanyCapexProfile,
-  definition: CapexDefinition
+  definitions: CapexDefinition[]
 ): NormalizedCapexObservation[] {
   if (
-    definition.id !== profile.capexDefinitionId ||
-    definition.companyTicker !== profile.companyTicker
+    definitions.some((definition) => definition.companyTicker !== profile.companyTicker)
   ) {
     return []
   }
 
+  const definitionsById = new Map(definitions.map((definition) => [definition.id, definition]))
+
   return observations.flatMap((observation): NormalizedCapexObservation[] => {
+    const definitionId = observation.capexDefinitionId ?? profile.defaultCapexDefinitionId
+    const definition = definitionsById.get(definitionId)
     if (
+      !definition ||
+      !profile.capexDefinitionIds.includes(definitionId) ||
       observation.companyTicker !== profile.companyTicker ||
       observation.unit !== profile.currencyUnit ||
       !definition.sourceIds.includes(observation.sourceId)
@@ -44,7 +49,8 @@ export function normalizeCapexObservations(
         kind: 'ANNUAL_GUIDANCE_LOW',
         targetPeriod: observation.period,
         targetPeriodType: 'YEAR',
-        capexDefinitionId: definition.id,
+        capexDefinitionId: definitionId,
+        approximate: observation.approximate ?? false,
         sourceObservation: observation,
       }]
     }
@@ -59,9 +65,18 @@ export function normalizeCapexObservations(
         kind: 'ANNUAL_GUIDANCE_HIGH',
         targetPeriod: observation.period,
         targetPeriodType: 'YEAR',
-        capexDefinitionId: definition.id,
+        capexDefinitionId: definitionId,
+        approximate: observation.approximate ?? false,
         sourceObservation: observation,
       }]
+    }
+
+    if (observation.metric === 'CAPEX_GUIDANCE_POINT' && observation.guidanceAsOfPeriod) {
+      return [{ ...observation, kind: 'GUIDANCE_POINT', targetPeriod: observation.period, targetPeriodType: observation.periodType === 'YEAR' ? 'YEAR' : 'QUARTER', capexDefinitionId: definitionId, approximate: observation.approximate ?? false, sourceObservation: observation }]
+    }
+
+    if (observation.metric === 'CAPEX_GUIDANCE_LOWER_BOUND' && observation.guidanceAsOfPeriod) {
+      return [{ ...observation, kind: 'GUIDANCE_LOWER_BOUND', targetPeriod: observation.period, targetPeriodType: observation.periodType === 'YEAR' ? 'YEAR' : 'QUARTER', capexDefinitionId: definitionId, approximate: observation.approximate ?? false, sourceObservation: observation }]
     }
 
     if (observation.metric === 'CAPEX_ACTUAL' && observation.periodType === 'QUARTER') {
@@ -70,7 +85,8 @@ export function normalizeCapexObservations(
         kind: 'QUARTERLY_ACTUAL',
         targetPeriod: observation.period,
         targetPeriodType: 'QUARTER',
-        capexDefinitionId: definition.id,
+        capexDefinitionId: definitionId,
+        approximate: observation.approximate ?? false,
         sourceObservation: observation,
       }]
     }
@@ -79,9 +95,9 @@ export function normalizeCapexObservations(
   })
 }
 
-function latestGuidancePair(observations: NormalizedCapexObservation[]) {
+function latestGuidancePair(observations: NormalizedCapexObservation[], capexDefinitionId: string) {
   const annualGuidance = observations
-    .filter((observation) => observation.targetPeriodType === 'YEAR')
+    .filter((observation) => observation.targetPeriodType === 'YEAR' && observation.capexDefinitionId === capexDefinitionId && (observation.kind === 'ANNUAL_GUIDANCE_LOW' || observation.kind === 'ANNUAL_GUIDANCE_HIGH'))
     .sort((a, b) =>
       a.targetPeriod.localeCompare(b.targetPeriod) ||
       a.guidanceAsOfPeriod!.localeCompare(b.guidanceAsOfPeriod!)
@@ -112,9 +128,10 @@ function latestGuidancePair(observations: NormalizedCapexObservation[]) {
 
 export function deriveCompanyCapexGuidanceRevision(
   observations: NormalizedCapexObservation[],
-  companyTicker: string
+  companyTicker: string,
+  capexDefinitionId: string
 ): CapexGuidanceRevision | null {
-  const pair = latestGuidancePair(observations)
+  const pair = latestGuidancePair(observations, capexDefinitionId)
   if (!pair) return null
 
   const initialMidpoint = (pair.priorLow.value + pair.priorHigh.value) / 2
@@ -134,34 +151,50 @@ export function deriveCompanyCapexGuidanceRevision(
 }
 
 function quarterIndex(period: string): number | null {
-  const match = /^(\d{4})-Q([1-4])$/.exec(period)
+  const match = /^(?:[A-Z]+-FY)?(\d{4})-Q([1-4])$/.exec(period)
   return match ? Number(match[1]) * 4 + Number(match[2]) - 1 : null
 }
 
 export function deriveCompanyCapexQoQGrowthRates(
   observations: NormalizedCapexObservation[]
 ): CapexQoQGrowth[] {
-  const actuals = observations
-    .filter((observation) => observation.kind === 'QUARTERLY_ACTUAL')
-    .map((observation) => ({ observation, index: quarterIndex(observation.targetPeriod) }))
-    .filter((entry): entry is { observation: NormalizedCapexObservation; index: number } =>
-      entry.index !== null
-    )
-    .sort((a, b) => a.index - b.index)
-  const latest = actuals.at(-1)
-  const prior = actuals.at(-2)
+  const actualsByDefinition = new Map<string, NormalizedCapexObservation[]>()
+  for (const observation of observations.filter((item) => item.kind === "QUARTERLY_ACTUAL")) {
+    const series = actualsByDefinition.get(observation.capexDefinitionId) ?? []
+    series.push(observation)
+    actualsByDefinition.set(observation.capexDefinitionId, series)
+  }
 
-  if (!latest || !prior || latest.index !== prior.index + 1) return []
+  const rates: CapexQoQGrowth[] = []
+  for (const [capexDefinitionId, series] of actualsByDefinition) {
+    const indexed = series
+      .map((observation) => ({ observation, index: quarterIndex(observation.targetPeriod) }))
+      .filter((entry): entry is { observation: NormalizedCapexObservation; index: number } =>
+        entry.index !== null
+      )
+      .sort((a, b) => a.index - b.index)
 
-  return [{
-    period: latest.observation.targetPeriod,
-    value: latest.observation.value,
-    qoqPercent:
-      ((latest.observation.value - prior.observation.value) / prior.observation.value) * 100,
-    previousValue: prior.observation.value,
-    previousPeriod: prior.observation.targetPeriod,
-    evidenceIds: [prior.observation.id, latest.observation.id],
-  }]
+    for (let index = 1; index < indexed.length; index++) {
+      const prior = indexed[index - 1]
+      const current = indexed[index]
+      if (current.index !== prior.index + 1) continue
+
+      rates.push({
+        period: current.observation.targetPeriod,
+        capexDefinitionId,
+        value: current.observation.value,
+        qoqPercent:
+          ((current.observation.value - prior.observation.value) / prior.observation.value) * 100,
+        previousValue: prior.observation.value,
+        previousPeriod: prior.observation.targetPeriod,
+        evidenceIds: [prior.observation.id, current.observation.id],
+      })
+    }
+  }
+
+  return rates.sort((a, b) =>
+    a.capexDefinitionId.localeCompare(b.capexDefinitionId) || a.period.localeCompare(b.period)
+  )
 }
 
 export function deriveCompanyCapexSignals(
@@ -170,7 +203,7 @@ export function deriveCompanyCapexSignals(
   generatedAt: GeneratedAtProvider = systemGeneratedAt
 ): DerivedSignal[] {
   const signals: DerivedSignal[] = []
-  const revision = deriveCompanyCapexGuidanceRevision(observations, profile.companyTicker)
+  const revision = deriveCompanyCapexGuidanceRevision(observations, profile.companyTicker, profile.defaultCapexDefinitionId)
 
   if (revision && revision.revisionPercent !== 0) {
     const signalType = revision.revisionPercent > 0
@@ -188,6 +221,7 @@ export function deriveCompanyCapexSignals(
       generatedAt: generatedAt(),
       evidenceObservationIds: revision.evidenceIds,
       description: revision.description.replace(' revised ', ' midpoint revised '),
+      capexDefinitionId: profile.defaultCapexDefinitionId,
     })
   }
 
@@ -207,6 +241,7 @@ export function deriveCompanyCapexSignals(
       generatedAt: generatedAt(),
       evidenceObservationIds: rate.evidenceIds,
       description: `${profile.companyTicker} ${rate.period} CapEx ${rate.value.toFixed(2)}B, ${rate.qoqPercent >= 0 ? '+' : ''}${rate.qoqPercent.toFixed(1)}% vs ${rate.previousPeriod} ${rate.previousValue.toFixed(2)}B.`,
+      capexDefinitionId: rate.capexDefinitionId,
     })
   }
 

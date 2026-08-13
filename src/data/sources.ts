@@ -1,4 +1,5 @@
 import type { Source } from '../types/source'
+import { MSFT_SOURCES } from './msftSources'
 
 /**
  * Source Registry
@@ -123,7 +124,7 @@ export const META_SOURCES: Source[] = [
   },
 ]
 
-const ALL_SOURCES = [...TSMC_SOURCES, ...META_SOURCES]
+const ALL_SOURCES = [...TSMC_SOURCES, ...META_SOURCES, ...MSFT_SOURCES]
 
 /**
  * Get source by ID

@@ -22,14 +22,14 @@ export function deriveMetaCapexSignals(
   const normalized = normalizeCapexObservations(
     observations,
     META_CAPEX_PROFILE,
-    META_CAPEX_DEFINITION
+    [META_CAPEX_DEFINITION]
   )
   return deriveCompanyCapexSignals(normalized, META_CAPEX_PROFILE, generatedAt)
 }
 
 export function deriveCapexQoQGrowthRates(observations: MetricObservation[]): CapexQoQGrowth[] {
   return deriveCompanyCapexQoQGrowthRates(
-    normalizeCapexObservations(observations, META_CAPEX_PROFILE, META_CAPEX_DEFINITION)
+    normalizeCapexObservations(observations, META_CAPEX_PROFILE, [META_CAPEX_DEFINITION])
   )
 }
 
@@ -37,8 +37,9 @@ export function deriveCapexGuidanceRevision(
   observations: MetricObservation[]
 ): CapexGuidanceRevision | null {
   return deriveCompanyCapexGuidanceRevision(
-    normalizeCapexObservations(observations, META_CAPEX_PROFILE, META_CAPEX_DEFINITION),
-    META_CAPEX_PROFILE.companyTicker
+    normalizeCapexObservations(observations, META_CAPEX_PROFILE, [META_CAPEX_DEFINITION]),
+    META_CAPEX_PROFILE.companyTicker,
+    META_CAPEX_PROFILE.defaultCapexDefinitionId
   )
 }
 
