@@ -900,3 +900,44 @@ body,
     grid-template-columns: repeat(2, 1fr);
   }
 }
+
+
+.hyperscaler-demand {
+  background: rgba(15, 23, 42, 0.62);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 5px;
+  margin: 1.25rem 0 1rem;
+  padding: 1.1rem;
+}
+.hyperscaler-demand h3 { font-size: 1rem; margin: 0.45rem 0 1rem; }
+.hyperscaler-demand p { color: var(--text-muted); font-size: 0.75rem; margin-top: 1rem; }
+.aggregate-metrics, .company-capex-statuses {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.7rem;
+}
+.aggregate-metrics > div, .company-capex-statuses > div {
+  background: rgba(15, 44, 50, 0.5);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.75rem;
+}
+.aggregate-metrics span, .company-capex-statuses span {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.aggregate-metrics strong, .company-capex-statuses strong {
+  color: var(--accent-green);
+  font-family: 'Courier New', monospace;
+  font-size: 0.95rem;
+}
+.company-capex-statuses { margin-top: 0.7rem; }
+.company-capex-statuses .company-capex-unavailable { color: var(--accent-amber); }
+.company-capex-statuses .company-capex-negative { color: var(--accent-red); }
+.company-capex-statuses .company-capex-neutral { color: var(--text-secondary); }
+.real-intelligence-grid.supply-grid { grid-template-columns: repeat(2, 1fr); }

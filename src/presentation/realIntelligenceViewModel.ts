@@ -1,15 +1,22 @@
 import type { CrossCompanySignal } from '../types/crossCompanySignal'
 import type { DerivedSignal } from '../types/derivedSignal'
+import type { CompanyCapexAvailability, HyperscalerCapexTrend, HyperscalerTicker } from '../types/hyperscalerCapexTrend'
 import type { MetricObservation } from '../types/metric'
 import type { Source } from '../types/source'
 import type { Trend3M } from '../signals/tsmSignalInterpreter'
 
 export interface RealIntelligenceViewModel {
   crossCompanySignal: CrossCompanySignal
-  meta: {
-    priorMidpoint: number
-    currentMidpoint: number
-    revisionPercent: number
+  hyperscaler: {
+    direction: HyperscalerCapexTrend['direction']
+    confidence: HyperscalerCapexTrend['confidence']
+    coverageLabel: string
+    positiveBreadthLabel: string
+    companies: Array<{
+      ticker: HyperscalerTicker
+      status: 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL' | 'UNAVAILABLE'
+    }>
+    evidenceCount: number
   }
   tsmTrend: {
     previousAverage: number
@@ -26,40 +33,23 @@ export interface RealIntelligenceViewModel {
 
 interface Inputs {
   crossCompanySignal?: CrossCompanySignal
-  metaGuidanceSignal?: DerivedSignal
+  hyperscalerCapexTrend?: HyperscalerCapexTrend | null
   tsmOutlookSignal?: DerivedSignal
   tsmTrend: Trend3M | null
-  metaObservations: MetricObservation[]
   tsmObservations: MetricObservation[]
   sources: Source[]
 }
 
 export function createRealIntelligenceViewModel(inputs: Inputs): RealIntelligenceViewModel | null {
-  const { crossCompanySignal, metaGuidanceSignal, tsmOutlookSignal, tsmTrend } = inputs
-  if (!crossCompanySignal || !metaGuidanceSignal || !tsmOutlookSignal || !tsmTrend) {
+  const {
+    crossCompanySignal,
+    hyperscalerCapexTrend,
+    tsmOutlookSignal,
+    tsmTrend,
+  } = inputs
+  if (!crossCompanySignal || !hyperscalerCapexTrend || !tsmOutlookSignal || !tsmTrend) {
     return null
   }
-
-  const metaEvidence = inputs.metaObservations.filter((observation) =>
-    metaGuidanceSignal.evidenceObservationIds.includes(observation.id)
-  )
-  const metaAsOfPeriods = [...new Set(metaEvidence.map((observation) => observation.guidanceAsOfPeriod))]
-    .filter((period): period is string => Boolean(period))
-    .sort()
-  const priorAsOf = metaAsOfPeriods.at(-2)
-  const currentAsOf = metaAsOfPeriods.at(-1)
-  const metaPriorLow = metaEvidence.find(
-    (observation) => observation.metric === 'CAPEX_GUIDANCE_LOW' && observation.guidanceAsOfPeriod === priorAsOf
-  )
-  const metaPriorHigh = metaEvidence.find(
-    (observation) => observation.metric === 'CAPEX_GUIDANCE_HIGH' && observation.guidanceAsOfPeriod === priorAsOf
-  )
-  const metaCurrentLow = metaEvidence.find(
-    (observation) => observation.metric === 'CAPEX_GUIDANCE_LOW' && observation.guidanceAsOfPeriod === currentAsOf
-  )
-  const metaCurrentHigh = metaEvidence.find(
-    (observation) => observation.metric === 'CAPEX_GUIDANCE_HIGH' && observation.guidanceAsOfPeriod === currentAsOf
-  )
 
   const tsmEvidence = inputs.tsmObservations.filter((observation) =>
     tsmOutlookSignal.evidenceObservationIds.includes(observation.id)
@@ -68,24 +58,31 @@ export function createRealIntelligenceViewModel(inputs: Inputs): RealIntelligenc
   const guidanceLow = tsmEvidence.find((observation) => observation.metric === 'REVENUE_GUIDANCE_LOW')
   const guidanceHigh = tsmEvidence.find((observation) => observation.metric === 'REVENUE_GUIDANCE_HIGH')
 
-  if (
-    !metaPriorLow ||
-    !metaPriorHigh ||
-    !metaCurrentLow ||
-    !metaCurrentHigh ||
-    !actualRevenue ||
-    !guidanceLow ||
-    !guidanceHigh
-  ) {
-    return null
+  if (!actualRevenue || !guidanceLow || !guidanceHigh) return null
+
+  const companyStatuses = new Map<HyperscalerTicker, CompanyCapexAvailability>(
+    hyperscalerCapexTrend.participatingCompanies.map(
+      (company) => [company.companyTicker, company.direction] as const
+    )
+  )
+  for (const ticker of hyperscalerCapexTrend.unavailableCompanies) {
+    companyStatuses.set(ticker, 'UNAVAILABLE')
   }
+  const universe: HyperscalerTicker[] = ['META', 'MSFT', 'GOOG', 'AMZN']
+  const companies = universe.map((ticker) => ({
+    ticker,
+    status: companyStatuses.get(ticker) ?? 'UNAVAILABLE',
+  }))
 
   return {
     crossCompanySignal,
-    meta: {
-      priorMidpoint: (metaPriorLow.value + metaPriorHigh.value) / 2,
-      currentMidpoint: (metaCurrentLow.value + metaCurrentHigh.value) / 2,
-      revisionPercent: metaGuidanceSignal.magnitude,
+    hyperscaler: {
+      direction: hyperscalerCapexTrend.direction,
+      confidence: hyperscalerCapexTrend.confidence,
+      coverageLabel: `${hyperscalerCapexTrend.eligibleCount} / ${hyperscalerCapexTrend.totalUniverseCount}`,
+      positiveBreadthLabel: `${hyperscalerCapexTrend.positiveCount} / ${hyperscalerCapexTrend.eligibleCount}`,
+      companies,
+      evidenceCount: hyperscalerCapexTrend.evidenceObservationIds.length,
     },
     tsmTrend: {
       previousAverage: tsmTrend.previousPeriod.avgYoY,

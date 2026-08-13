@@ -12,29 +12,26 @@ import { MOCK_SIGNALS, MOCK_IMPACT_EVENTS } from './data/signals'
 import { META_CAPEX_OBSERVATIONS } from './data/metaCapexMetrics'
 import { TSM_METRIC_OBSERVATIONS } from './data/tsmMetrics'
 import { getSourceById } from './data/sources'
-import { deriveMetaCapexSignals } from './signals/metaCapexSignalInterpreter'
 import { deriveTsmSignalsWithTrendConfirmation } from './signals/tsmSignalInterpreter'
 import { deriveCrossCompanySignals } from './signals/crossCompanySignalInterpreter'
+import { deriveCurrentHyperscalerCapexTrend } from './signals/hyperscalerCapexBreadthEngine'
 import { createRealIntelligenceViewModel } from './presentation/realIntelligenceViewModel'
 
-const metaSignals = deriveMetaCapexSignals(META_CAPEX_OBSERVATIONS)
 const tsmResult = deriveTsmSignalsWithTrendConfirmation(TSM_METRIC_OBSERVATIONS)
 const crossCompanySignal = deriveCrossCompanySignals(
   META_CAPEX_OBSERVATIONS,
   TSM_METRIC_OBSERVATIONS
 )[0]
+const hyperscalerCapexTrend = deriveCurrentHyperscalerCapexTrend()
 const realIntelligence = createRealIntelligenceViewModel({
   crossCompanySignal,
-  metaGuidanceSignal: metaSignals.find(
-    (signal) => signal.signalType === 'CAPEX_GUIDANCE_REVISION_UP'
-  ),
+  hyperscalerCapexTrend,
   tsmOutlookSignal: tsmResult.signals.find(
     (signal) => signal.signalType === 'REVENUE_OUTLOOK_ACCELERATION'
   ),
   tsmTrend: tsmResult.trend3M,
-  metaObservations: META_CAPEX_OBSERVATIONS,
   tsmObservations: TSM_METRIC_OBSERVATIONS,
-  sources: ['meta-ir-main', 'tsmc-ir-main']
+  sources: ['meta-capex-2026q2-guidance', 'msft-fy2026-q3-earnings-call', 'goog-2025-q4-earnings-call', 'tsmc-ir-main']
     .map(getSourceById)
     .filter((source) => source !== undefined),
 })
