@@ -1,0 +1,16 @@
+{
+  "name": "AI Infrastructure Monitor",
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:22-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "openai.chatgpt"
+      ]
+    }
+  },
+  "forwardPorts": [5173],
+  "remoteUser": "node"
+}
