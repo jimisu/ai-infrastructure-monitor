@@ -94,7 +94,7 @@ export const TSM_METRIC_OBSERVATIONS: MetricObservation[] = [
     periodType: 'MONTH',
     publishedAt: '2026-02-10T09:00:00Z',
     retrievedAt: '2026-08-13T14:00:00Z',
-    sourceId: 'tsmc-monthly-revenue-2026-01',
+    sourceId: 'tsmc-monthly-revenue',
     sourceUrl: 'https://investor.tsmc.com/english/monthly-revenue/2026',
   },
   {
@@ -107,7 +107,7 @@ export const TSM_METRIC_OBSERVATIONS: MetricObservation[] = [
     periodType: 'MONTH',
     publishedAt: '2026-02-10T09:00:00Z',
     retrievedAt: '2026-08-13T14:00:00Z',
-    sourceId: 'tsmc-monthly-revenue-2026-01',
+    sourceId: 'tsmc-monthly-revenue',
     sourceUrl: 'https://investor.tsmc.com/english/monthly-revenue/2026',
   },
   {
@@ -120,7 +120,7 @@ export const TSM_METRIC_OBSERVATIONS: MetricObservation[] = [
     periodType: 'MONTH',
     publishedAt: '2026-03-10T09:00:00Z',
     retrievedAt: '2026-08-13T14:00:00Z',
-    sourceId: 'tsmc-monthly-revenue-2026-02',
+    sourceId: 'tsmc-monthly-revenue',
     sourceUrl: 'https://investor.tsmc.com/english/monthly-revenue/2026',
   },
   {
@@ -133,7 +133,7 @@ export const TSM_METRIC_OBSERVATIONS: MetricObservation[] = [
     periodType: 'MONTH',
     publishedAt: '2026-03-10T09:00:00Z',
     retrievedAt: '2026-08-13T14:00:00Z',
-    sourceId: 'tsmc-monthly-revenue-2026-02',
+    sourceId: 'tsmc-monthly-revenue',
     sourceUrl: 'https://investor.tsmc.com/english/monthly-revenue/2026',
   },
   {
@@ -146,7 +146,7 @@ export const TSM_METRIC_OBSERVATIONS: MetricObservation[] = [
     periodType: 'MONTH',
     publishedAt: '2026-04-10T09:00:00Z',
     retrievedAt: '2026-08-13T14:00:00Z',
-    sourceId: 'tsmc-monthly-revenue-2026-03',
+    sourceId: 'tsmc-monthly-revenue',
     sourceUrl: 'https://investor.tsmc.com/english/monthly-revenue/2026',
   },
   {
@@ -159,7 +159,7 @@ export const TSM_METRIC_OBSERVATIONS: MetricObservation[] = [
     periodType: 'MONTH',
     publishedAt: '2026-04-10T09:00:00Z',
     retrievedAt: '2026-08-13T14:00:00Z',
-    sourceId: 'tsmc-monthly-revenue-2026-03',
+    sourceId: 'tsmc-monthly-revenue',
     sourceUrl: 'https://investor.tsmc.com/english/monthly-revenue/2026',
   },
   {
@@ -172,7 +172,7 @@ export const TSM_METRIC_OBSERVATIONS: MetricObservation[] = [
     periodType: 'MONTH',
     publishedAt: '2026-05-10T09:00:00Z',
     retrievedAt: '2026-08-13T14:00:00Z',
-    sourceId: 'tsmc-monthly-revenue-2026-04',
+    sourceId: 'tsmc-monthly-revenue',
     sourceUrl: 'https://investor.tsmc.com/english/monthly-revenue/2026',
   },
   {
@@ -185,7 +185,7 @@ export const TSM_METRIC_OBSERVATIONS: MetricObservation[] = [
     periodType: 'MONTH',
     publishedAt: '2026-05-10T09:00:00Z',
     retrievedAt: '2026-08-13T14:00:00Z',
-    sourceId: 'tsmc-monthly-revenue-2026-04',
+    sourceId: 'tsmc-monthly-revenue',
     sourceUrl: 'https://investor.tsmc.com/english/monthly-revenue/2026',
   },
   {
@@ -198,7 +198,7 @@ export const TSM_METRIC_OBSERVATIONS: MetricObservation[] = [
     periodType: 'MONTH',
     publishedAt: '2026-06-10T09:00:00Z',
     retrievedAt: '2026-08-13T14:00:00Z',
-    sourceId: 'tsmc-monthly-revenue-2026-05',
+    sourceId: 'tsmc-monthly-revenue',
     sourceUrl: 'https://investor.tsmc.com/english/monthly-revenue/2026',
   },
   {
@@ -211,7 +211,7 @@ export const TSM_METRIC_OBSERVATIONS: MetricObservation[] = [
     periodType: 'MONTH',
     publishedAt: '2026-06-10T09:00:00Z',
     retrievedAt: '2026-08-13T14:00:00Z',
-    sourceId: 'tsmc-monthly-revenue-2026-05',
+    sourceId: 'tsmc-monthly-revenue',
     sourceUrl: 'https://investor.tsmc.com/english/monthly-revenue/2026',
   },
   {
@@ -224,7 +224,7 @@ export const TSM_METRIC_OBSERVATIONS: MetricObservation[] = [
     periodType: 'MONTH',
     publishedAt: '2026-07-10T09:00:00Z',
     retrievedAt: '2026-08-13T14:00:00Z',
-    sourceId: 'tsmc-monthly-revenue-2026-06',
+    sourceId: 'tsmc-monthly-revenue',
     sourceUrl: 'https://investor.tsmc.com/english/monthly-revenue/2026',
   },
   {
@@ -237,7 +237,7 @@ export const TSM_METRIC_OBSERVATIONS: MetricObservation[] = [
     periodType: 'MONTH',
     publishedAt: '2026-07-10T09:00:00Z',
     retrievedAt: '2026-08-13T14:00:00Z',
-    sourceId: 'tsmc-monthly-revenue-2026-06',
+    sourceId: 'tsmc-monthly-revenue',
     sourceUrl: 'https://investor.tsmc.com/english/monthly-revenue/2026',
   },
 ]

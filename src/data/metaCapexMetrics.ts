@@ -29,6 +29,7 @@ export const META_CAPEX_OBSERVATIONS: MetricObservation[] = [
     unit: 'USD billions',
     period: '2026',
     periodType: 'YEAR',
+    guidanceAsOfPeriod: '2025-Q4',
     publishedAt: '2025-12-31T09:00:00Z',
     retrievedAt: '2026-08-13T14:00:00Z',
     sourceId: 'meta-capex-2025q4-guidance',
@@ -42,6 +43,7 @@ export const META_CAPEX_OBSERVATIONS: MetricObservation[] = [
     unit: 'USD billions',
     period: '2026',
     periodType: 'YEAR',
+    guidanceAsOfPeriod: '2025-Q4',
     publishedAt: '2025-12-31T09:00:00Z',
     retrievedAt: '2026-08-13T14:00:00Z',
     sourceId: 'meta-capex-2025q4-guidance',
@@ -49,15 +51,16 @@ export const META_CAPEX_OBSERVATIONS: MetricObservation[] = [
   },
 
   // 2026 Q1 Guidance (issued Apr 2026 with earnings)
-  // Q1 CapEx: $125B–$145B
+  // Full-year 2026 CapEx guidance: $125B–$145B
   {
     id: 'meta-2026-q1-capex-guidance-low',
     companyTicker: 'META',
     metric: 'CAPEX_GUIDANCE_LOW',
     value: 125.0,
     unit: 'USD billions',
-    period: '2026-Q1',
-    periodType: 'QUARTER',
+    period: '2026',
+    periodType: 'YEAR',
+    guidanceAsOfPeriod: '2026-Q1',
     publishedAt: '2026-04-22T09:00:00Z',
     retrievedAt: '2026-08-13T14:00:00Z',
     sourceId: 'meta-capex-2026q1-guidance',
@@ -69,8 +72,9 @@ export const META_CAPEX_OBSERVATIONS: MetricObservation[] = [
     metric: 'CAPEX_GUIDANCE_HIGH',
     value: 145.0,
     unit: 'USD billions',
-    period: '2026-Q1',
-    periodType: 'QUARTER',
+    period: '2026',
+    periodType: 'YEAR',
+    guidanceAsOfPeriod: '2026-Q1',
     publishedAt: '2026-04-22T09:00:00Z',
     retrievedAt: '2026-08-13T14:00:00Z',
     sourceId: 'meta-capex-2026q1-guidance',
@@ -93,15 +97,16 @@ export const META_CAPEX_OBSERVATIONS: MetricObservation[] = [
   },
 
   // 2026 Q2 Guidance (issued Jul 2026 with earnings)
-  // Q2 CapEx: $130B–$145B
+  // Full-year 2026 CapEx guidance: $130B–$145B
   {
     id: 'meta-2026-q2-capex-guidance-low',
     companyTicker: 'META',
     metric: 'CAPEX_GUIDANCE_LOW',
     value: 130.0,
     unit: 'USD billions',
-    period: '2026-Q2',
-    periodType: 'QUARTER',
+    period: '2026',
+    periodType: 'YEAR',
+    guidanceAsOfPeriod: '2026-Q2',
     publishedAt: '2026-07-23T09:00:00Z',
     retrievedAt: '2026-08-13T14:00:00Z',
     sourceId: 'meta-capex-2026q2-guidance',
@@ -113,8 +118,9 @@ export const META_CAPEX_OBSERVATIONS: MetricObservation[] = [
     metric: 'CAPEX_GUIDANCE_HIGH',
     value: 145.0,
     unit: 'USD billions',
-    period: '2026-Q2',
-    periodType: 'QUARTER',
+    period: '2026',
+    periodType: 'YEAR',
+    guidanceAsOfPeriod: '2026-Q2',
     publishedAt: '2026-07-23T09:00:00Z',
     retrievedAt: '2026-08-13T14:00:00Z',
     sourceId: 'meta-capex-2026q2-guidance',

@@ -1,8 +1,5 @@
 import type { MetricObservation } from '../types/metric'
 import type { DerivedSignal } from '../types/derivedSignal'
-import {
-  REVENUE_OUTLOOK_NEUTRAL_THRESHOLD,
-} from '../config/signalRules'
 
 /**
  * META CapEx Signal Interpreter
@@ -34,115 +31,68 @@ export function deriveMetaCapexSignals(observations: MetricObservation[]): Deriv
 }
 
 /**
- * Derive CapEx guidance direction for most recent quarter
+ * Derive the latest full-year CapEx guidance revision.
  *
- * Logic:
- * 1. Find most recent CAPEX_GUIDANCE_LOW and HIGH
- * 2. Calculate guidance midpoint: (low + high) / 2
- * 3. Find most recent CAPEX_ACTUAL (if available)
- * 4. If actual available, calculate actual vs midpoint %
- * 5. If no actual, compare to previous guidance midpoint
- * 6. Determine direction based on threshold
- * 7. Return signal with evidence IDs
+ * Annual guidance revisions are ordered by guidanceAsOfPeriod and compared
+ * only with the immediately preceding revision for the same target year.
  */
 function deriveLatestCapexGuidanceSignal(observations: MetricObservation[]): DerivedSignal | null {
-  // Find all quarterly guidance observations sorted by period
-  const guidanceLowObs = observations
-    .filter((o) => o.metric === 'CAPEX_GUIDANCE_LOW' && o.periodType === 'QUARTER')
-    .sort((a, b) => b.period.localeCompare(a.period)) // Most recent first
+  const annualGuidance = observations
+    .filter(
+      (o) =>
+        (o.metric === 'CAPEX_GUIDANCE_LOW' || o.metric === 'CAPEX_GUIDANCE_HIGH') &&
+        o.periodType === 'YEAR' &&
+        Boolean(o.guidanceAsOfPeriod)
+    )
+    .sort((a, b) => a.guidanceAsOfPeriod!.localeCompare(b.guidanceAsOfPeriod!))
 
-  const guidanceHighObs = observations
-    .filter((o) => o.metric === 'CAPEX_GUIDANCE_HIGH' && o.periodType === 'QUARTER')
-    .sort((a, b) => b.period.localeCompare(a.period))
-
-  // If no recent guidance available, return null
-  if (guidanceLowObs.length === 0 || guidanceHighObs.length === 0) {
+  const asOfPeriods = [...new Set(annualGuidance.map((o) => o.guidanceAsOfPeriod!))]
+  if (asOfPeriods.length < 2) {
     return null
   }
 
-  // Get most recent guidance
-  const latestPeriod = guidanceLowObs[0].period
-  const latestGuidanceLow = guidanceLowObs.find((o) => o.period === latestPeriod)
-  const latestGuidanceHigh = guidanceHighObs.find((o) => o.period === latestPeriod)
+  const latestAsOfPeriod = asOfPeriods[asOfPeriods.length - 1]
+  const priorAsOfPeriod = asOfPeriods[asOfPeriods.length - 2]
+  const latestLow = annualGuidance.find(
+    (o) => o.metric === 'CAPEX_GUIDANCE_LOW' && o.guidanceAsOfPeriod === latestAsOfPeriod
+  )
+  const latestHigh = annualGuidance.find(
+    (o) => o.metric === 'CAPEX_GUIDANCE_HIGH' && o.guidanceAsOfPeriod === latestAsOfPeriod
+  )
+  const priorLow = annualGuidance.find(
+    (o) => o.metric === 'CAPEX_GUIDANCE_LOW' && o.guidanceAsOfPeriod === priorAsOfPeriod
+  )
+  const priorHigh = annualGuidance.find(
+    (o) => o.metric === 'CAPEX_GUIDANCE_HIGH' && o.guidanceAsOfPeriod === priorAsOfPeriod
+  )
 
-  if (!latestGuidanceLow || !latestGuidanceHigh) {
+  if (!latestLow || !latestHigh || !priorLow || !priorHigh || latestLow.period !== priorLow.period) {
     return null
   }
 
-  // Calculate midpoint
-  const latestMidpoint = (latestGuidanceLow.value + latestGuidanceHigh.value) / 2
+  const latestMidpoint = (latestLow.value + latestHigh.value) / 2
+  const priorMidpoint = (priorLow.value + priorHigh.value) / 2
+  const percentageChange = ((latestMidpoint - priorMidpoint) / priorMidpoint) * 100
 
-  // Try to find most recent actual to compare against guidance
-  const actualObs = observations
-    .filter((o) => o.metric === 'CAPEX_ACTUAL' && o.period === latestPeriod)
-    .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))[0]
-
-  let percentageChange: number
-  let direction: 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL'
-  let description: string
-  let evidenceIds: string[]
-
-  if (actualObs) {
-    // Compare actual to guidance midpoint
-    percentageChange = ((actualObs.value - latestMidpoint) / latestMidpoint) * 100
-    if (percentageChange > REVENUE_OUTLOOK_NEUTRAL_THRESHOLD) {
-      direction = 'POSITIVE'
-    } else if (percentageChange < -REVENUE_OUTLOOK_NEUTRAL_THRESHOLD) {
-      direction = 'NEGATIVE'
-    } else {
-      direction = 'NEUTRAL'
-    }
-    description = `META ${latestPeriod} CapEx actual ${actualObs.value.toFixed(2)}B ${percentageChange >= 0 ? '+' : ''}${percentageChange.toFixed(1)}% vs guidance midpoint ${latestMidpoint.toFixed(2)}B.`
-    evidenceIds = [latestGuidanceLow.id, latestGuidanceHigh.id, actualObs.id]
-  } else {
-    // No actual yet, check if guidance is being raised (compare to prior quarter guidance)
-    const priorPeriodGuidanceLows = guidanceLowObs.filter(
-      (o) => o.period !== latestPeriod && o.periodType === 'QUARTER'
-    )
-    const priorPeriodGuidanceHighs = guidanceHighObs.filter(
-      (o) => o.period !== latestPeriod && o.periodType === 'QUARTER'
-    )
-
-    if (priorPeriodGuidanceLows.length > 0 && priorPeriodGuidanceHighs.length > 0) {
-      const priorMidpoint =
-        (priorPeriodGuidanceLows[0].value + priorPeriodGuidanceHighs[0].value) / 2
-      percentageChange = ((latestMidpoint - priorMidpoint) / priorMidpoint) * 100
-
-      if (percentageChange > REVENUE_OUTLOOK_NEUTRAL_THRESHOLD) {
-        direction = 'POSITIVE'
-      } else if (percentageChange < -REVENUE_OUTLOOK_NEUTRAL_THRESHOLD) {
-        direction = 'NEGATIVE'
-      } else {
-        direction = 'NEUTRAL'
-      }
-      description = `META ${latestPeriod} CapEx guidance midpoint ${latestMidpoint.toFixed(2)}B, ${percentageChange >= 0 ? '+' : ''}${percentageChange.toFixed(1)}% vs prior quarter ${priorPeriodGuidanceLows[0].period} midpoint ${priorMidpoint.toFixed(2)}B.`
-      evidenceIds = [
-        latestGuidanceLow.id,
-        latestGuidanceHigh.id,
-        priorPeriodGuidanceLows[0].id,
-        priorPeriodGuidanceHighs[0].id,
-      ]
-    } else {
-      // Only current guidance available
-      description = `META ${latestPeriod} CapEx guidance range ${latestGuidanceLow.value.toFixed(2)}B–${latestGuidanceHigh.value.toFixed(2)}B (midpoint ${latestMidpoint.toFixed(2)}B).`
-      evidenceIds = [latestGuidanceLow.id, latestGuidanceHigh.id]
-      direction = 'NEUTRAL'
-      percentageChange = 0
-    }
+  if (percentageChange === 0) {
+    return null
   }
+
+  const direction = percentageChange > 0 ? 'POSITIVE' : 'NEGATIVE'
 
   return {
-    id: `meta-capex-guidance-${latestPeriod}-${Date.now()}`,
+    id: `meta-capex-guidance-${latestLow.period}-as-of-${latestAsOfPeriod}-${Date.now()}`,
     companyTicker: 'META',
-    signalType: 'REVENUE_OUTLOOK_ACCELERATION', // Using same type for guidance direction
+    signalType:
+      direction === 'POSITIVE' ? 'CAPEX_GUIDANCE_REVISION_UP' : 'CAPEX_GUIDANCE_REVISION_DOWN',
     direction,
     magnitude: percentageChange,
     unit: 'percent',
     confidence: 'HIGH',
-    period: latestPeriod,
+    period: latestLow.period,
     generatedAt: new Date().toISOString(),
-    evidenceObservationIds: evidenceIds,
-    description,
+    evidenceObservationIds: [priorLow.id, priorHigh.id, latestLow.id, latestHigh.id],
+    description: `META ${latestLow.period} CapEx guidance midpoint revised ${percentageChange >= 0 ? '+' : ''}${percentageChange.toFixed(1)}% from ${priorMidpoint.toFixed(2)}B as of ${priorAsOfPeriod} to ${latestMidpoint.toFixed(2)}B as of ${latestAsOfPeriod}.`,
   }
 }
 
@@ -164,36 +114,35 @@ export interface CapexQoQGrowth {
 }
 
 export function deriveCapexQoQGrowthRates(observations: MetricObservation[]): CapexQoQGrowth[] {
-  const rates: CapexQoQGrowth[] = []
+  const q1Actual = observations.find(
+    (o) =>
+      o.companyTicker === "META" &&
+      o.metric === "CAPEX_ACTUAL" &&
+      o.periodType === "QUARTER" &&
+      o.period === "2026-Q1"
+  )
+  const q2Actual = observations.find(
+    (o) =>
+      o.companyTicker === "META" &&
+      o.metric === "CAPEX_ACTUAL" &&
+      o.periodType === "QUARTER" &&
+      o.period === "2026-Q2"
+  )
 
-  // Find all quarterly actual CapEx observations sorted by period
-  const actualObs = observations
-    .filter((o) => o.metric === 'CAPEX_ACTUAL' && o.periodType === 'QUARTER')
-    .sort((a, b) => a.period.localeCompare(b.period))
-
-  // Need at least 2 quarters to calculate QoQ
-  if (actualObs.length < 2) {
-    return rates
+  if (!q1Actual || !q2Actual) {
+    return []
   }
 
-  // For each quarter starting from index 1, calculate QoQ
-  for (let i = 1; i < actualObs.length; i++) {
-    const prevObs = actualObs[i - 1]
-    const currObs = actualObs[i]
-
-    const qoqPercent = ((currObs.value - prevObs.value) / prevObs.value) * 100
-
-    rates.push({
-      period: currObs.period,
-      value: currObs.value,
-      qoqPercent,
-      previousValue: prevObs.value,
-      previousPeriod: prevObs.period,
-      evidenceIds: [prevObs.id, currObs.id],
-    })
-  }
-
-  return rates
+  return [
+    {
+      period: q2Actual.period,
+      value: q2Actual.value,
+      qoqPercent: ((q2Actual.value - q1Actual.value) / q1Actual.value) * 100,
+      previousValue: q1Actual.value,
+      previousPeriod: q1Actual.period,
+      evidenceIds: [q1Actual.id, q2Actual.id],
+    },
+  ]
 }
 
 function deriveCapexQoQGrowthSignals(observations: MetricObservation[]): DerivedSignal[] {
@@ -205,7 +154,8 @@ function deriveCapexQoQGrowthSignals(observations: MetricObservation[]): Derived
     signals.push({
       id: `meta-capex-qoq-${rate.period}-${Date.now()}`,
       companyTicker: 'META',
-      signalType: 'REVENUE_OUTLOOK_ACCELERATION', // Reusing type for CapEx growth
+      signalType:
+        rate.qoqPercent >= 0 ? 'CAPEX_QOQ_ACCELERATION' : 'CAPEX_QOQ_DECELERATION',
       direction: rate.qoqPercent > 0 ? 'POSITIVE' : rate.qoqPercent < 0 ? 'NEGATIVE' : 'NEUTRAL',
       magnitude: rate.qoqPercent,
       unit: 'percent',
@@ -224,8 +174,8 @@ function deriveCapexQoQGrowthSignals(observations: MetricObservation[]): Derived
  * Derive CapEx guidance midpoint revision
  *
  * Logic:
- * 1. Find initial 2026 full-year guidance (from 2025 Q4)
- * 2. Find most recent quarterly guidance
+ * 1. Find the prior annual guidance revision
+ * 2. Find the latest annual guidance revision
  * 3. Calculate midpoint for each
  * 4. Calculate revision %: (current - initial) / initial * 100
  * 5. Determine trend direction
@@ -244,60 +194,52 @@ export interface CapexGuidanceRevision {
 export function deriveCapexGuidanceRevision(
   observations: MetricObservation[]
 ): CapexGuidanceRevision | null {
-  // Find initial 2026 full-year guidance (from 2025 Q4)
-  const initialLow = observations.find(
-    (o) => o.metric === 'CAPEX_GUIDANCE_LOW' && o.period === '2026'
+  const annualGuidance = observations
+    .filter(
+      (o) =>
+        (o.metric === "CAPEX_GUIDANCE_LOW" || o.metric === "CAPEX_GUIDANCE_HIGH") &&
+        o.periodType === "YEAR" &&
+        Boolean(o.guidanceAsOfPeriod)
+    )
+    .sort((a, b) => a.guidanceAsOfPeriod!.localeCompare(b.guidanceAsOfPeriod!))
+
+  const asOfPeriods = [...new Set(annualGuidance.map((o) => o.guidanceAsOfPeriod!))]
+  if (asOfPeriods.length < 2) {
+    return null
+  }
+
+  const initialAsOfPeriod = asOfPeriods[asOfPeriods.length - 2]
+  const latestAsOfPeriod = asOfPeriods[asOfPeriods.length - 1]
+  const initialLow = annualGuidance.find(
+    (o) => o.metric === "CAPEX_GUIDANCE_LOW" && o.guidanceAsOfPeriod === initialAsOfPeriod
   )
-  const initialHigh = observations.find(
-    (o) => o.metric === 'CAPEX_GUIDANCE_HIGH' && o.period === '2026'
+  const initialHigh = annualGuidance.find(
+    (o) => o.metric === "CAPEX_GUIDANCE_HIGH" && o.guidanceAsOfPeriod === initialAsOfPeriod
+  )
+  const latestLow = annualGuidance.find(
+    (o) => o.metric === "CAPEX_GUIDANCE_LOW" && o.guidanceAsOfPeriod === latestAsOfPeriod
+  )
+  const latestHigh = annualGuidance.find(
+    (o) => o.metric === "CAPEX_GUIDANCE_HIGH" && o.guidanceAsOfPeriod === latestAsOfPeriod
   )
 
-  if (!initialLow || !initialHigh) {
+  if (!initialLow || !initialHigh || !latestLow || !latestHigh || initialLow.period !== latestLow.period) {
     return null
   }
 
   const initialMidpoint = (initialLow.value + initialHigh.value) / 2
-
-  // Find most recent quarterly guidance
-  const latestQuarterlyLows = observations
-    .filter((o) => o.metric === 'CAPEX_GUIDANCE_LOW' && o.periodType === 'QUARTER')
-    .sort((a, b) => b.period.localeCompare(a.period))
-
-  const latestQuarterlyHighs = observations
-    .filter((o) => o.metric === 'CAPEX_GUIDANCE_HIGH' && o.periodType === 'QUARTER')
-    .sort((a, b) => b.period.localeCompare(a.period))
-
-  if (latestQuarterlyLows.length === 0 || latestQuarterlyHighs.length === 0) {
-    return null
-  }
-
-  const latestPeriod = latestQuarterlyLows[0].period
-  const latestLow = latestQuarterlyLows.find((o) => o.period === latestPeriod)
-  const latestHigh = latestQuarterlyHighs.find((o) => o.period === latestPeriod)
-
-  if (!latestLow || !latestHigh) {
-    return null
-  }
-
   const currentMidpoint = (latestLow.value + latestHigh.value) / 2
   const revisionPercent = ((currentMidpoint - initialMidpoint) / initialMidpoint) * 100
-
-  let trend: 'UPWARD' | 'DOWNWARD' | 'NEUTRAL'
-  if (revisionPercent > REVENUE_OUTLOOK_NEUTRAL_THRESHOLD) {
-    trend = 'UPWARD'
-  } else if (revisionPercent < -REVENUE_OUTLOOK_NEUTRAL_THRESHOLD) {
-    trend = 'DOWNWARD'
-  } else {
-    trend = 'NEUTRAL'
-  }
+  const trend =
+    revisionPercent > 0 ? "UPWARD" : revisionPercent < 0 ? "DOWNWARD" : "NEUTRAL"
 
   return {
-    period: latestPeriod,
+    period: latestLow.period,
     initialMidpoint,
     currentMidpoint,
     revisionPercent,
     trend,
     evidenceIds: [initialLow.id, initialHigh.id, latestLow.id, latestHigh.id],
-    description: `META CapEx guidance revised ${revisionPercent >= 0 ? '+' : ''}${revisionPercent.toFixed(1)}% from initial 2026 midpoint ${initialMidpoint.toFixed(2)}B to current ${latestPeriod} midpoint ${currentMidpoint.toFixed(2)}B.`,
+    description: `META ${latestLow.period} CapEx guidance revised ${revisionPercent >= 0 ? "+" : ""}${revisionPercent.toFixed(1)}% from ${initialMidpoint.toFixed(2)}B as of ${initialAsOfPeriod} to ${currentMidpoint.toFixed(2)}B as of ${latestAsOfPeriod}.`,
   }
 }
