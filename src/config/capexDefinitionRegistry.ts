@@ -37,10 +37,21 @@ export const MSFT_CASH_PAID_PP_AND_E_DEFINITION: CapexDefinition = {
   sourceIds: ['msft-fy2026-q1-earnings-call', 'msft-fy2026-q2-earnings-call', 'msft-fy2026-q3-earnings-call'],
 }
 
+export const GOOG_REPORTED_CAPEX_DEFINITION: CapexDefinition = {
+  id: 'goog-purchases-of-property-and-equipment',
+  companyTicker: 'GOOG',
+  officialDefinition: 'Capital expenditures / purchases of property and equipment, as reported by Alphabet',
+  basis: 'PURCHASES_OF_PROPERTY_AND_EQUIPMENT',
+  financeLeaseTreatment: 'AS_REPORTED',
+  scope: 'CONSOLIDATED_TOTAL',
+  sourceIds: ['goog-2024-q4-earnings-call', 'goog-2025-q1-earnings-call', 'goog-2025-q2-earnings-call', 'goog-2025-q3-earnings-call', 'goog-2025-q4-earnings-call'],
+}
+
 export const CAPEX_DEFINITIONS = [
   META_CAPEX_DEFINITION,
   MSFT_MANAGEMENT_REPORTED_CAPEX_DEFINITION,
   MSFT_CASH_PAID_PP_AND_E_DEFINITION,
+  GOOG_REPORTED_CAPEX_DEFINITION,
 ]
 
 export function getCapexDefinition(id: string): CapexDefinition | undefined {

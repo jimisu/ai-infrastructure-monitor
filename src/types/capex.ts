@@ -5,14 +5,15 @@ export type CapexObservationKind =
   | 'ANNUAL_GUIDANCE_HIGH'
   | 'GUIDANCE_POINT'
   | 'GUIDANCE_LOWER_BOUND'
+  | 'ANNUAL_ACTUAL'
   | 'QUARTERLY_ACTUAL'
 
 export interface CapexDefinition {
   id: string
   companyTicker: string
   officialDefinition: string
-  basis: 'MANAGEMENT_REPORTED_TOTAL_CAPEX' | 'CASH_PAID_FOR_PROPERTY_AND_EQUIPMENT'
-  financeLeaseTreatment: 'INCLUDED' | 'EXCLUDED_FROM_CASH_MEASURE'
+  basis: 'MANAGEMENT_REPORTED_TOTAL_CAPEX' | 'CASH_PAID_FOR_PROPERTY_AND_EQUIPMENT' | 'PURCHASES_OF_PROPERTY_AND_EQUIPMENT'
+  financeLeaseTreatment: 'INCLUDED' | 'EXCLUDED_FROM_CASH_MEASURE' | 'AS_REPORTED'
   scope: 'CONSOLIDATED_TOTAL'
   sourceIds: string[]
 }
@@ -87,6 +88,47 @@ export interface CompanyCapexYoYActualTrendSignal {
   spendingDirection: 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL'
   growthRateTrend: 'ACCELERATING' | 'DECELERATING' | 'STABLE'
   priorYoYPercent: number | null
+  generatedAt: string
+  evidenceObservationIds: string[]
+  description: string
+}
+
+
+export type CapexGuidanceShape = 'APPROXIMATE_POINT' | 'POINT' | 'RANGE'
+
+export interface CompanyCapexGuidanceRevisionSignal {
+  id: string
+  signalType: 'CAPEX_GUIDANCE_REVISION_UP' | 'CAPEX_GUIDANCE_REVISION_DOWN'
+  companyTicker: string
+  capexDefinitionId: string
+  period: string
+  priorGuidanceAsOfPeriod: string
+  guidanceAsOfPeriod: string
+  priorValue: number
+  currentValue: number
+  priorGuidanceShape: CapexGuidanceShape
+  currentGuidanceShape: CapexGuidanceShape
+  revisionPercent: number
+  approximate: boolean
+  generatedAt: string
+  evidenceObservationIds: string[]
+  description: string
+}
+
+export interface CompanyCapexForwardImpliedYoYSignal {
+  id: string
+  signalType: 'CAPEX_FORWARD_IMPLIED_YOY_GROWTH'
+  companyTicker: string
+  capexDefinitionId: string
+  period: string
+  guidanceAsOfPeriod: string
+  priorActualPeriod: string
+  guidanceMidpoint: number
+  priorActualValue: number
+  impliedYoYPercent: number
+  direction: 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL'
+  guidanceShape: CapexGuidanceShape
+  approximate: boolean
   generatedAt: string
   evidenceObservationIds: string[]
   description: string

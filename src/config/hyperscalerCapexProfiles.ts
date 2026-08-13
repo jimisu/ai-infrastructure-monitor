@@ -1,5 +1,5 @@
 import type { CompanyCapexProfile } from '../types/capex'
-import { META_CAPEX_DEFINITION, MSFT_CASH_PAID_PP_AND_E_DEFINITION, MSFT_MANAGEMENT_REPORTED_CAPEX_DEFINITION } from './capexDefinitionRegistry'
+import { GOOG_REPORTED_CAPEX_DEFINITION, META_CAPEX_DEFINITION, MSFT_CASH_PAID_PP_AND_E_DEFINITION, MSFT_MANAGEMENT_REPORTED_CAPEX_DEFINITION } from './capexDefinitionRegistry'
 
 export const META_CAPEX_PROFILE: CompanyCapexProfile = {
   companyTicker: 'META',
@@ -8,6 +8,14 @@ export const META_CAPEX_PROFILE: CompanyCapexProfile = {
   currencyUnit: 'USD billions',
   fiscalYearEndMonth: 12,
 }
+export const GOOG_CAPEX_PROFILE: CompanyCapexProfile = {
+  companyTicker: 'GOOG',
+  defaultCapexDefinitionId: GOOG_REPORTED_CAPEX_DEFINITION.id,
+  capexDefinitionIds: [GOOG_REPORTED_CAPEX_DEFINITION.id],
+  currencyUnit: 'USD billions',
+  fiscalYearEndMonth: 12,
+}
+
 export const MSFT_CAPEX_PROFILE: CompanyCapexProfile = {
   companyTicker: 'MSFT',
   defaultCapexDefinitionId: MSFT_MANAGEMENT_REPORTED_CAPEX_DEFINITION.id,

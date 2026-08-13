@@ -1,5 +1,8 @@
 import type {
   CapexDefinition,
+  CapexGuidanceShape,
+  CompanyCapexForwardImpliedYoYSignal,
+  CompanyCapexGuidanceRevisionSignal,
   CapexGuidanceRevision,
   CapexQoQGrowth,
   CompanyCapexProfile,
@@ -78,6 +81,18 @@ export function normalizeCapexObservations(
 
     if (observation.metric === 'CAPEX_GUIDANCE_LOWER_BOUND' && observation.guidanceAsOfPeriod) {
       return [{ ...observation, kind: 'GUIDANCE_LOWER_BOUND', targetPeriod: observation.period, targetPeriodType: observation.periodType === 'YEAR' ? 'YEAR' : 'QUARTER', capexDefinitionId: definitionId, approximate: observation.approximate ?? false, sourceObservation: observation }]
+    }
+
+    if (observation.metric === 'CAPEX_ACTUAL' && observation.periodType === 'YEAR') {
+      return [{
+        ...observation,
+        kind: 'ANNUAL_ACTUAL',
+        targetPeriod: observation.period,
+        targetPeriodType: 'YEAR',
+        capexDefinitionId: definitionId,
+        approximate: observation.approximate ?? false,
+        sourceObservation: observation,
+      }]
     }
 
     if (observation.metric === 'CAPEX_ACTUAL' && observation.periodType === 'QUARTER') {
@@ -341,4 +356,174 @@ export function deriveCompanyCapexSignals(
   }
 
   return signals
+}
+
+
+interface AnnualGuidanceSnapshot {
+  targetPeriod: string
+  asOfPeriod: string
+  value: number
+  shape: CapexGuidanceShape
+  approximate: boolean
+  evidenceIds: string[]
+}
+
+function annualGuidanceSnapshots(
+  observations: NormalizedCapexObservation[],
+  capexDefinitionId: string
+): AnnualGuidanceSnapshot[] {
+  const groups = new Map<string, NormalizedCapexObservation[]>()
+  for (const observation of observations) {
+    if (
+      observation.targetPeriodType !== 'YEAR' ||
+      observation.capexDefinitionId !== capexDefinitionId ||
+      !observation.guidanceAsOfPeriod ||
+      !['GUIDANCE_POINT', 'ANNUAL_GUIDANCE_LOW', 'ANNUAL_GUIDANCE_HIGH'].includes(observation.kind)
+    ) continue
+    const key = `${observation.targetPeriod}|${observation.guidanceAsOfPeriod}`
+    const group = groups.get(key) ?? []
+    group.push(observation)
+    groups.set(key, group)
+  }
+
+  return [...groups.values()].flatMap((group): AnnualGuidanceSnapshot[] => {
+    const point = group.filter((item) => item.kind === 'GUIDANCE_POINT')
+    const lows = group.filter((item) => item.kind === 'ANNUAL_GUIDANCE_LOW')
+    const highs = group.filter((item) => item.kind === 'ANNUAL_GUIDANCE_HIGH')
+    const first = group[0]
+
+    if (point.length === 1 && lows.length === 0 && highs.length === 0) {
+      return [{
+        targetPeriod: first.targetPeriod,
+        asOfPeriod: first.guidanceAsOfPeriod!,
+        value: point[0].value,
+        shape: point[0].approximate ? 'APPROXIMATE_POINT' : 'POINT',
+        approximate: point[0].approximate,
+        evidenceIds: [point[0].id],
+      }]
+    }
+    if (point.length === 0 && lows.length === 1 && highs.length === 1 && lows[0].value <= highs[0].value) {
+      return [{
+        targetPeriod: first.targetPeriod,
+        asOfPeriod: first.guidanceAsOfPeriod!,
+        value: (lows[0].value + highs[0].value) / 2,
+        shape: 'RANGE',
+        approximate: lows[0].approximate || highs[0].approximate,
+        evidenceIds: [lows[0].id, highs[0].id],
+      }]
+    }
+    return []
+  }).sort((a, b) =>
+    a.targetPeriod.localeCompare(b.targetPeriod) || a.asOfPeriod.localeCompare(b.asOfPeriod)
+  )
+}
+
+export function deriveCompanyCapexGuidanceRevisionChain(
+  observations: NormalizedCapexObservation[],
+  profile: CompanyCapexProfile,
+  capexDefinitionId: string,
+  generatedAt: GeneratedAtProvider = systemGeneratedAt
+): CompanyCapexGuidanceRevisionSignal[] {
+  if (!profile.capexDefinitionIds.includes(capexDefinitionId)) return []
+
+  const byTarget = new Map<string, AnnualGuidanceSnapshot[]>()
+  for (const snapshot of annualGuidanceSnapshots(observations, capexDefinitionId)) {
+    const target = byTarget.get(snapshot.targetPeriod) ?? []
+    target.push(snapshot)
+    byTarget.set(snapshot.targetPeriod, target)
+  }
+
+  const signals: CompanyCapexGuidanceRevisionSignal[] = []
+  for (const snapshots of byTarget.values()) {
+    for (let index = 1; index < snapshots.length; index++) {
+      const prior = snapshots[index - 1]
+      const current = snapshots[index]
+      const revisionPercent = ((current.value - prior.value) / prior.value) * 100
+      if (revisionPercent === 0) continue
+      const signalType = revisionPercent > 0
+        ? 'CAPEX_GUIDANCE_REVISION_UP' as const
+        : 'CAPEX_GUIDANCE_REVISION_DOWN' as const
+      const evidenceObservationIds = [...prior.evidenceIds, ...current.evidenceIds]
+
+      signals.push({
+        id: buildDerivedSignalId(
+          profile.companyTicker,
+          signalType,
+          current.targetPeriod,
+          evidenceObservationIds
+        ),
+        signalType,
+        companyTicker: profile.companyTicker,
+        capexDefinitionId,
+        period: current.targetPeriod,
+        priorGuidanceAsOfPeriod: prior.asOfPeriod,
+        guidanceAsOfPeriod: current.asOfPeriod,
+        priorValue: prior.value,
+        currentValue: current.value,
+        priorGuidanceShape: prior.shape,
+        currentGuidanceShape: current.shape,
+        revisionPercent,
+        approximate: prior.approximate || current.approximate,
+        generatedAt: generatedAt(),
+        evidenceObservationIds,
+        description: `${profile.companyTicker} ${current.targetPeriod} CapEx guidance changed ${revisionPercent >= 0 ? '+' : ''}${revisionPercent.toFixed(2)}% from ${prior.value.toFixed(2)}B as of ${prior.asOfPeriod} to ${current.value.toFixed(2)}B as of ${current.asOfPeriod}${prior.approximate || current.approximate ? '; comparison includes approximate guidance' : ''}.`,
+      })
+    }
+  }
+  return signals
+}
+
+export function deriveCompanyCapexForwardImpliedYoYGrowth(
+  observations: NormalizedCapexObservation[],
+  profile: CompanyCapexProfile,
+  capexDefinitionId: string,
+  generatedAt: GeneratedAtProvider = systemGeneratedAt
+): CompanyCapexForwardImpliedYoYSignal | null {
+  if (!profile.capexDefinitionIds.includes(capexDefinitionId)) return null
+
+  const snapshots = annualGuidanceSnapshots(observations, capexDefinitionId)
+    .filter((snapshot) => /^\d{4}$/.test(snapshot.targetPeriod))
+    .sort((a, b) =>
+      Number(a.targetPeriod) - Number(b.targetPeriod) ||
+      a.asOfPeriod.localeCompare(b.asOfPeriod)
+    )
+  const guidance = snapshots.at(-1)
+  if (!guidance) return null
+
+  const priorActualPeriod = String(Number(guidance.targetPeriod) - 1)
+  const priorActuals = observations.filter(
+    (observation) =>
+      observation.kind === 'ANNUAL_ACTUAL' &&
+      observation.targetPeriod === priorActualPeriod &&
+      observation.capexDefinitionId === capexDefinitionId
+  )
+  if (priorActuals.length !== 1 || priorActuals[0].value === 0) return null
+
+  const priorActual = priorActuals[0]
+  const impliedYoYPercent = ((guidance.value - priorActual.value) / priorActual.value) * 100
+  const evidenceObservationIds = [priorActual.id, ...guidance.evidenceIds]
+
+  return {
+    id: buildDerivedSignalId(
+      profile.companyTicker,
+      'CAPEX_FORWARD_IMPLIED_YOY_GROWTH',
+      guidance.targetPeriod,
+      evidenceObservationIds
+    ),
+    signalType: 'CAPEX_FORWARD_IMPLIED_YOY_GROWTH',
+    companyTicker: profile.companyTicker,
+    capexDefinitionId,
+    period: guidance.targetPeriod,
+    guidanceAsOfPeriod: guidance.asOfPeriod,
+    priorActualPeriod,
+    guidanceMidpoint: guidance.value,
+    priorActualValue: priorActual.value,
+    impliedYoYPercent,
+    direction: impliedYoYPercent > 0 ? 'POSITIVE' : impliedYoYPercent < 0 ? 'NEGATIVE' : 'NEUTRAL',
+    guidanceShape: guidance.shape,
+    approximate: guidance.approximate || priorActual.approximate,
+    generatedAt: generatedAt(),
+    evidenceObservationIds,
+    description: `${profile.companyTicker} ${guidance.targetPeriod} CapEx guidance ${guidance.shape === 'RANGE' ? 'midpoint ' : ''}${guidance.value.toFixed(2)}B implies ${impliedYoYPercent >= 0 ? '+' : ''}${impliedYoYPercent.toFixed(2)}% versus ${priorActualPeriod} actual CapEx ${priorActual.value.toFixed(2)}B.`,
+  }
 }
