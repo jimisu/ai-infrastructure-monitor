@@ -1,5 +1,6 @@
 import type { MetricObservation } from '../types/metric'
 import type { DerivedSignal } from '../types/derivedSignal'
+import { buildDerivedSignalId, systemGeneratedAt, type GeneratedAtProvider } from './derivedSignalIdentity'
 
 /**
  * META CapEx Signal Interpreter
@@ -14,17 +15,20 @@ import type { DerivedSignal } from '../types/derivedSignal'
 /**
  * Derive all META CapEx signals from observations
  */
-export function deriveMetaCapexSignals(observations: MetricObservation[]): DerivedSignal[] {
+export function deriveMetaCapexSignals(
+  observations: MetricObservation[],
+  generatedAt: GeneratedAtProvider = systemGeneratedAt
+): DerivedSignal[] {
   const signals: DerivedSignal[] = []
 
   // Attempt to derive CapEx guidance direction signal (most recent quarter)
-  const guidanceSignal = deriveLatestCapexGuidanceSignal(observations)
+  const guidanceSignal = deriveLatestCapexGuidanceSignal(observations, generatedAt)
   if (guidanceSignal) {
     signals.push(guidanceSignal)
   }
 
   // Attempt to derive quarterly CapEx QoQ growth signal
-  const growthSignals = deriveCapexQoQGrowthSignals(observations)
+  const growthSignals = deriveCapexQoQGrowthSignals(observations, generatedAt)
   signals.push(...growthSignals)
 
   return signals
@@ -36,7 +40,10 @@ export function deriveMetaCapexSignals(observations: MetricObservation[]): Deriv
  * Annual guidance revisions are ordered by guidanceAsOfPeriod and compared
  * only with the immediately preceding revision for the same target year.
  */
-function deriveLatestCapexGuidanceSignal(observations: MetricObservation[]): DerivedSignal | null {
+function deriveLatestCapexGuidanceSignal(
+  observations: MetricObservation[],
+  generatedAt: GeneratedAtProvider
+): DerivedSignal | null {
   const annualGuidance = observations
     .filter(
       (o) =>
@@ -81,7 +88,7 @@ function deriveLatestCapexGuidanceSignal(observations: MetricObservation[]): Der
   const direction = percentageChange > 0 ? 'POSITIVE' : 'NEGATIVE'
 
   return {
-    id: `meta-capex-guidance-${latestLow.period}-as-of-${latestAsOfPeriod}-${Date.now()}`,
+    id: buildDerivedSignalId('META', direction === 'POSITIVE' ? 'CAPEX_GUIDANCE_REVISION_UP' : 'CAPEX_GUIDANCE_REVISION_DOWN', latestLow.period, [priorLow.id, priorHigh.id, latestLow.id, latestHigh.id]),
     companyTicker: 'META',
     signalType:
       direction === 'POSITIVE' ? 'CAPEX_GUIDANCE_REVISION_UP' : 'CAPEX_GUIDANCE_REVISION_DOWN',
@@ -90,7 +97,7 @@ function deriveLatestCapexGuidanceSignal(observations: MetricObservation[]): Der
     unit: 'percent',
     confidence: 'HIGH',
     period: latestLow.period,
-    generatedAt: new Date().toISOString(),
+    generatedAt: generatedAt(),
     evidenceObservationIds: [priorLow.id, priorHigh.id, latestLow.id, latestHigh.id],
     description: `META ${latestLow.period} CapEx guidance midpoint revised ${percentageChange >= 0 ? '+' : ''}${percentageChange.toFixed(1)}% from ${priorMidpoint.toFixed(2)}B as of ${priorAsOfPeriod} to ${latestMidpoint.toFixed(2)}B as of ${latestAsOfPeriod}.`,
   }
@@ -145,14 +152,17 @@ export function deriveCapexQoQGrowthRates(observations: MetricObservation[]): Ca
   ]
 }
 
-function deriveCapexQoQGrowthSignals(observations: MetricObservation[]): DerivedSignal[] {
+function deriveCapexQoQGrowthSignals(
+  observations: MetricObservation[],
+  generatedAt: GeneratedAtProvider
+): DerivedSignal[] {
   const signals: DerivedSignal[] = []
   const growthRates = deriveCapexQoQGrowthRates(observations)
 
   // For now, just return signals for all QoQ growth (could add threshold later)
   growthRates.forEach((rate) => {
     signals.push({
-      id: `meta-capex-qoq-${rate.period}-${Date.now()}`,
+      id: buildDerivedSignalId('META', rate.qoqPercent >= 0 ? 'CAPEX_QOQ_ACCELERATION' : 'CAPEX_QOQ_DECELERATION', rate.period, rate.evidenceIds),
       companyTicker: 'META',
       signalType:
         rate.qoqPercent >= 0 ? 'CAPEX_QOQ_ACCELERATION' : 'CAPEX_QOQ_DECELERATION',
@@ -161,7 +171,7 @@ function deriveCapexQoQGrowthSignals(observations: MetricObservation[]): Derived
       unit: 'percent',
       confidence: 'HIGH',
       period: rate.period,
-      generatedAt: new Date().toISOString(),
+      generatedAt: generatedAt(),
       evidenceObservationIds: rate.evidenceIds,
       description: `META ${rate.period} CapEx ${rate.value.toFixed(2)}B, ${rate.qoqPercent >= 0 ? '+' : ''}${rate.qoqPercent.toFixed(1)}% vs ${rate.previousPeriod} ${rate.previousValue.toFixed(2)}B.`,
     })

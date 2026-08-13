@@ -1,5 +1,6 @@
 import type { MetricObservation } from '../types/metric'
 import type { DerivedSignal } from '../types/derivedSignal'
+import { buildDerivedSignalId, systemGeneratedAt, type GeneratedAtProvider } from './derivedSignalIdentity'
 import {
   REVENUE_OUTLOOK_NEUTRAL_THRESHOLD,
   MONTHLY_YOY_ACCELERATION_THRESHOLD,
@@ -22,17 +23,20 @@ import {
 /**
  * Derive all TSMC signals from observations
  */
-export function deriveTsmSignals(observations: MetricObservation[]): DerivedSignal[] {
+export function deriveTsmSignals(
+  observations: MetricObservation[],
+  generatedAt: GeneratedAtProvider = systemGeneratedAt
+): DerivedSignal[] {
   const signals: DerivedSignal[] = []
 
   // Attempt to derive Q3 revenue outlook signal
-  const outlookSignal = deriveQ3RevenueOutlookSignal(observations)
+  const outlookSignal = deriveQ3RevenueOutlookSignal(observations, generatedAt)
   if (outlookSignal) {
     signals.push(outlookSignal)
   }
 
   // Attempt to derive monthly revenue growth acceleration/deceleration signals
-  const growthSignals = deriveRevenueGrowthAccelerationSignals(observations)
+  const growthSignals = deriveRevenueGrowthAccelerationSignals(observations, generatedAt)
   signals.push(...growthSignals)
 
   return signals
@@ -56,10 +60,11 @@ export interface TrendEngineResult {
 }
 
 export function deriveTsmSignalsWithTrendConfirmation(
-  observations: MetricObservation[]
+  observations: MetricObservation[],
+  generatedAt: GeneratedAtProvider = systemGeneratedAt
 ): TrendEngineResult {
   // Get all base signals
-  const signals = deriveTsmSignals(observations)
+  const signals = deriveTsmSignals(observations, generatedAt)
 
   // Derive 3M trend
   const trend3M = derive3MYoYTrend(observations)
@@ -88,7 +93,10 @@ export function deriveTsmSignalsWithTrendConfirmation(
  * 5. Determine direction based on % change
  * 6. Return signal with evidence IDs
  */
-function deriveQ3RevenueOutlookSignal(observations: MetricObservation[]): DerivedSignal | null {
+function deriveQ3RevenueOutlookSignal(
+  observations: MetricObservation[],
+  generatedAt: GeneratedAtProvider
+): DerivedSignal | null {
   // Find required observations
   const q2ActualObs = observations.find(
     (o) => o.metric === 'QUARTERLY_REVENUE' && o.period === '2026-Q2'
@@ -128,7 +136,7 @@ function deriveQ3RevenueOutlookSignal(observations: MetricObservation[]): Derive
   }
 
   return {
-    id: `tsm-q3-2026-revenue-outlook-${Date.now()}`,
+    id: buildDerivedSignalId('TSM', 'REVENUE_OUTLOOK_ACCELERATION', '2026-Q3', [q2ActualObs.id, q3GuidanceLowObs.id, q3GuidanceHighObs.id]),
     companyTicker: 'TSM',
     signalType: 'REVENUE_OUTLOOK_ACCELERATION',
     direction,
@@ -136,7 +144,7 @@ function deriveQ3RevenueOutlookSignal(observations: MetricObservation[]): Derive
     unit: 'percent',
     confidence: 'HIGH', // Official guidance vs actual results
     period: '2026-Q3',
-    generatedAt: new Date().toISOString(),
+    generatedAt: generatedAt(),
     evidenceObservationIds: [q2ActualObs.id, q3GuidanceLowObs.id, q3GuidanceHighObs.id],
     description: `TSMC Q3 2026 revenue guidance midpoint is ${q3Midpoint.toFixed(2)} USD billion, ${percentageChange >= 0 ? '+' : ''}${percentageChange.toFixed(1)}% versus Q2 2026 actual revenue of ${q2Actual.toFixed(2)} USD billion.`,
   }
@@ -155,7 +163,8 @@ function deriveQ3RevenueOutlookSignal(observations: MetricObservation[]): Derive
  * Note: No AI attribution. This is pure factual revenue growth comparison.
  */
 export function deriveRevenueGrowthAccelerationSignals(
-  observations: MetricObservation[]
+  observations: MetricObservation[],
+  generatedAt: GeneratedAtProvider = systemGeneratedAt
 ): DerivedSignal[] {
   const signals: DerivedSignal[] = []
 
@@ -192,7 +201,7 @@ export function deriveRevenueGrowthAccelerationSignals(
     // Only emit signals for significant changes
     if (direction !== 'NEUTRAL') {
       signals.push({
-        id: `tsm-revenue-growth-${currObs.period}-${Date.now()}`,
+        id: buildDerivedSignalId('TSM', direction === 'POSITIVE' ? 'REVENUE_GROWTH_ACCELERATION' : 'REVENUE_GROWTH_DECELERATION', currObs.period, [prevObs.id, currObs.id]),
         companyTicker: 'TSM',
         signalType:
           direction === 'POSITIVE'
@@ -203,7 +212,7 @@ export function deriveRevenueGrowthAccelerationSignals(
         unit: 'percent',
         confidence: 'HIGH', // Official monthly data vs prior month
         period: currObs.period,
-        generatedAt: new Date().toISOString(),
+        generatedAt: generatedAt(),
         evidenceObservationIds: [prevObs.id, currObs.id],
         description: `TSMC ${currObs.period} YoY growth ${currYoY.toFixed(1)}% vs ${prevObs.period} ${prevYoY.toFixed(1)}%, ${direction === 'POSITIVE' ? 'accelerating' : 'decelerating'} by ${Math.abs(yoyChange).toFixed(1)}%.`,
       })
@@ -306,43 +315,62 @@ export interface Trend3M {
 }
 
 export function derive3MYoYTrend(observations: MetricObservation[]): Trend3M | null {
-  // Find all monthly YoY observations sorted by period
   const yoyObservations = observations
-    .filter((o) => o.metric === 'MONTHLY_REVENUE_YOY_PERCENT' && o.periodType === 'MONTH')
+    .filter((o) => o.metric === "MONTHLY_REVENUE_YOY_PERCENT" && o.periodType === "MONTH")
     .sort((a, b) => a.period.localeCompare(b.period))
 
-  // Need at least 6 months to calculate 3M vs 3M trend
   if (yoyObservations.length < 6) {
     return null
   }
 
-  // Previous 3 months (first 3 observations)
-  const prevPeriodObs = yoyObservations.slice(0, 3)
-  const prevPeriodAvg =
-    prevPeriodObs.reduce((sum, o) => sum + o.value, 0) / prevPeriodObs.length
+  const latestSix = yoyObservations.slice(-6)
+  const companyTickers = new Set(latestSix.map((o) => o.companyTicker))
+  const units = new Set(latestSix.map((o) => o.unit))
 
-  // Current 3 months (observations 3-5, since we have 6 total: 0-5)
-  const currPeriodObs = yoyObservations.slice(3, 6)
-  const currPeriodAvg =
-    currPeriodObs.reduce((sum, o) => sum + o.value, 0) / currPeriodObs.length
-
-  // Calculate delta
-  const delta = currPeriodAvg - prevPeriodAvg
-
-  // Determine trend direction using centralized threshold
-  let direction: TrendDirection
-  if (delta > TREND_ACCELERATION_THRESHOLD) {
-    direction = 'ACCELERATING'
-  } else if (delta < -TREND_ACCELERATION_THRESHOLD) {
-    direction = 'DECELERATING'
-  } else {
-    direction = 'STABLE'
+  if (companyTickers.size !== 1 || units.size !== 1) {
+    return null
   }
 
-  // Build evidence IDs list
-  const evidenceIds = [...prevPeriodObs, ...currPeriodObs].map((o) => o.id)
+  const monthIndexes = latestSix.map((observation) => {
+    const match = /^(\d{4})-(\d{2})$/.exec(observation.period)
+    if (!match) {
+      return Number.NaN
+    }
 
-  // Get period labels
+    const year = Number(match[1])
+    const month = Number(match[2])
+    if (month < 1 || month > 12) {
+      return Number.NaN
+    }
+
+    return year * 12 + month - 1
+  })
+
+  for (let index = 0; index < monthIndexes.length; index++) {
+    const monthIndex = monthIndexes[index]
+    if (!Number.isInteger(monthIndex) || (index > 0 && monthIndex !== monthIndexes[index - 1] + 1)) {
+      return null
+    }
+  }
+
+  const prevPeriodObs = latestSix.slice(0, 3)
+  const currPeriodObs = latestSix.slice(3, 6)
+  const prevPeriodAvg =
+    prevPeriodObs.reduce((sum, observation) => sum + observation.value, 0) / prevPeriodObs.length
+  const currPeriodAvg =
+    currPeriodObs.reduce((sum, observation) => sum + observation.value, 0) / currPeriodObs.length
+  const delta = currPeriodAvg - prevPeriodAvg
+
+  let direction: TrendDirection
+  if (delta > TREND_ACCELERATION_THRESHOLD) {
+    direction = "ACCELERATING"
+  } else if (delta < -TREND_ACCELERATION_THRESHOLD) {
+    direction = "DECELERATING"
+  } else {
+    direction = "STABLE"
+  }
+
+  const evidenceIds = latestSix.map((observation) => observation.id)
   const prevPeriod = `${prevPeriodObs[0].period}-to-${prevPeriodObs[2].period}`
   const currPeriod = `${currPeriodObs[0].period}-to-${currPeriodObs[2].period}`
 
