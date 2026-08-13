@@ -74,3 +74,20 @@ export interface CapexCommentaryObservation {
   publishedAt: string
   retrievedAt: string
 }
+
+export interface CompanyCapexYoYActualTrendSignal {
+  id: string
+  signalType: 'CAPEX_YOY_ACTUAL_TREND'
+  companyTicker: string
+  capexDefinitionId: string
+  period: string
+  currentValue: number
+  priorYearValue: number
+  yoyPercent: number
+  spendingDirection: 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL'
+  growthRateTrend: 'ACCELERATING' | 'DECELERATING' | 'STABLE'
+  priorYoYPercent: number | null
+  generatedAt: string
+  evidenceObservationIds: string[]
+  description: string
+}

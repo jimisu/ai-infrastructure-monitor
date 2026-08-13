@@ -3,6 +3,7 @@ import type {
   CapexGuidanceRevision,
   CapexQoQGrowth,
   CompanyCapexProfile,
+  CompanyCapexYoYActualTrendSignal,
   NormalizedCapexObservation,
 } from '../types/capex'
 import type { DerivedSignal } from '../types/derivedSignal'
@@ -195,6 +196,100 @@ export function deriveCompanyCapexQoQGrowthRates(
   return rates.sort((a, b) =>
     a.capexDefinitionId.localeCompare(b.capexDefinitionId) || a.period.localeCompare(b.period)
   )
+}
+
+interface FiscalQuarter {
+  fiscalYear: number
+  fiscalQuarter: number
+}
+
+function fiscalQuarter(period: string): FiscalQuarter | null {
+  const match = /^(?:[A-Z]+-FY)?(\d{4})-Q([1-4])$/.exec(period)
+  return match ? { fiscalYear: Number(match[1]), fiscalQuarter: Number(match[2]) } : null
+}
+
+export function deriveCompanyCapexYoYActualTrends(
+  observations: NormalizedCapexObservation[],
+  profile: CompanyCapexProfile,
+  capexDefinitionId: string,
+  generatedAt: GeneratedAtProvider = systemGeneratedAt
+): CompanyCapexYoYActualTrendSignal[] {
+  if (!profile.capexDefinitionIds.includes(capexDefinitionId)) return []
+
+  const actuals = observations.filter(
+    (observation) =>
+      observation.kind === 'QUARTERLY_ACTUAL' &&
+      observation.capexDefinitionId === capexDefinitionId
+  )
+  const byFiscalPeriod = new Map<string, NormalizedCapexObservation>()
+  for (const observation of actuals) {
+    const fiscal = fiscalQuarter(observation.targetPeriod)
+    if (fiscal) byFiscalPeriod.set(`${fiscal.fiscalYear}-Q${fiscal.fiscalQuarter}`, observation)
+  }
+
+  const yoyCalculations = actuals.flatMap((current) => {
+    const fiscal = fiscalQuarter(current.targetPeriod)
+    if (!fiscal) return []
+    const priorYear = byFiscalPeriod.get(`${fiscal.fiscalYear - 1}-Q${fiscal.fiscalQuarter}`)
+    if (!priorYear) return []
+    return [{
+      current,
+      priorYear,
+      fiscal,
+      yoyPercent: ((current.value - priorYear.value) / priorYear.value) * 100,
+    }]
+  }).sort((a, b) =>
+    a.fiscal.fiscalYear - b.fiscal.fiscalYear ||
+    a.fiscal.fiscalQuarter - b.fiscal.fiscalQuarter
+  )
+
+  return yoyCalculations.map((calculation, index) => {
+    const priorCalculation = yoyCalculations[index - 1]
+    const priorIsAdjacent =
+      priorCalculation !== undefined &&
+      priorCalculation.fiscal.fiscalYear * 4 + priorCalculation.fiscal.fiscalQuarter ===
+        calculation.fiscal.fiscalYear * 4 + calculation.fiscal.fiscalQuarter - 1
+    const priorYoYPercent = priorIsAdjacent ? priorCalculation.yoyPercent : null
+    const spendingDirection =
+      calculation.yoyPercent > 0 ? 'POSITIVE' : calculation.yoyPercent < 0 ? 'NEGATIVE' : 'NEUTRAL'
+    const growthRateTrend =
+      priorYoYPercent === null
+        ? 'STABLE'
+        : calculation.yoyPercent > priorYoYPercent
+          ? 'ACCELERATING'
+          : calculation.yoyPercent < priorYoYPercent
+            ? 'DECELERATING'
+            : 'STABLE'
+    const evidenceObservationIds = [
+      ...(priorIsAdjacent
+        ? [priorCalculation.priorYear.id, priorCalculation.current.id]
+        : []),
+      calculation.priorYear.id,
+      calculation.current.id,
+    ]
+
+    return {
+      id: buildDerivedSignalId(
+        profile.companyTicker,
+        'CAPEX_YOY_ACTUAL_TREND',
+        calculation.current.targetPeriod,
+        evidenceObservationIds
+      ),
+      signalType: 'CAPEX_YOY_ACTUAL_TREND',
+      companyTicker: profile.companyTicker,
+      capexDefinitionId,
+      period: calculation.current.targetPeriod,
+      currentValue: calculation.current.value,
+      priorYearValue: calculation.priorYear.value,
+      yoyPercent: calculation.yoyPercent,
+      spendingDirection,
+      growthRateTrend,
+      priorYoYPercent,
+      generatedAt: generatedAt(),
+      evidenceObservationIds,
+      description: `${profile.companyTicker} ${calculation.current.targetPeriod} CapEx was ${calculation.yoyPercent >= 0 ? '+' : ''}${calculation.yoyPercent.toFixed(1)}% year over year; spending direction ${spendingDirection.toLowerCase()} and growth-rate trend ${growthRateTrend.toLowerCase()}.`,
+    }
+  })
 }
 
 export function deriveCompanyCapexSignals(

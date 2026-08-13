@@ -49,7 +49,7 @@ export function verifyMsftCapexSignals(): MsftCapexVerificationResult {
 
   const rates = deriveCompanyCapexQoQGrowthRates(normalized)
   const managementRates = rates.filter(
-    (rate) => rate.capexDefinitionId === MSFT_MANAGEMENT_REPORTED_CAPEX_DEFINITION.id
+    (rate) => rate.capexDefinitionId === MSFT_MANAGEMENT_REPORTED_CAPEX_DEFINITION.id && ['MSFT-FY2026-Q2', 'MSFT-FY2026-Q3'].includes(rate.period)
   )
   assert(managementRates.length === 2, 'expected two management-total sequential rates')
   assert(Math.abs(managementRates[0].qoqPercent - 7.449856733524361) < 1e-12, 'Q1-Q2 changed')

@@ -5,11 +5,43 @@ import {
   MSFT_MANAGEMENT_REPORTED_CAPEX_DEFINITION,
 } from '../config/capexDefinitionRegistry'
 
+const FY25_Q1_SOURCE = 'https://www.microsoft.com/en-us/investor/events/fy-2025/earnings-fy-2025-q1'
+const FY25_Q2_SOURCE = 'https://www.microsoft.com/en-us/investor/events/fy-2025/earnings-fy-2025-q2'
+const FY25_Q3_SOURCE = 'https://www.microsoft.com/en-us/investor/events/fy-2025/earnings-fy-2025-q3'
+const FY25_Q4_SOURCE = 'https://www.microsoft.com/en-us/investor/events/fy-2025/earnings-fy-2025-q4'
 const Q1_SOURCE = 'https://www.microsoft.com/en-us/investor/events/fy-2026/earnings-fy-2026-q1'
 const Q2_SOURCE = 'https://www.microsoft.com/en-us/investor/events/fy-2026/earnings-fy-2026-q2'
 const Q3_SOURCE = 'https://www.microsoft.com/en-us/investor/events/fy-2026/earnings-fy-2026-q3'
 
 export const MSFT_CAPEX_OBSERVATIONS: MetricObservation[] = [
+  {
+    id: 'msft-fy2025-q1-management-total-capex', companyTicker: 'MSFT', metric: 'CAPEX_ACTUAL',
+    value: 20.0, unit: 'USD billions', period: 'MSFT-FY2025-Q1', periodType: 'QUARTER',
+    capexDefinitionId: MSFT_MANAGEMENT_REPORTED_CAPEX_DEFINITION.id,
+    publishedAt: '2024-10-30T21:30:00.000Z', retrievedAt: '2026-08-13T14:00:00.000Z',
+    sourceId: 'msft-fy2025-q1-earnings-call', sourceUrl: FY25_Q1_SOURCE,
+  },
+  {
+    id: 'msft-fy2025-q2-management-total-capex', companyTicker: 'MSFT', metric: 'CAPEX_ACTUAL',
+    value: 22.6, unit: 'USD billions', period: 'MSFT-FY2025-Q2', periodType: 'QUARTER',
+    capexDefinitionId: MSFT_MANAGEMENT_REPORTED_CAPEX_DEFINITION.id,
+    publishedAt: '2025-01-29T21:30:00.000Z', retrievedAt: '2026-08-13T14:00:00.000Z',
+    sourceId: 'msft-fy2025-q2-earnings-call', sourceUrl: FY25_Q2_SOURCE,
+  },
+  {
+    id: 'msft-fy2025-q3-management-total-capex', companyTicker: 'MSFT', metric: 'CAPEX_ACTUAL',
+    value: 21.4, unit: 'USD billions', period: 'MSFT-FY2025-Q3', periodType: 'QUARTER',
+    capexDefinitionId: MSFT_MANAGEMENT_REPORTED_CAPEX_DEFINITION.id,
+    publishedAt: '2025-04-30T21:30:00.000Z', retrievedAt: '2026-08-13T14:00:00.000Z',
+    sourceId: 'msft-fy2025-q3-earnings-call', sourceUrl: FY25_Q3_SOURCE,
+  },
+  {
+    id: 'msft-fy2025-q4-management-total-capex', companyTicker: 'MSFT', metric: 'CAPEX_ACTUAL',
+    value: 24.2, unit: 'USD billions', period: 'MSFT-FY2025-Q4', periodType: 'QUARTER',
+    capexDefinitionId: MSFT_MANAGEMENT_REPORTED_CAPEX_DEFINITION.id,
+    publishedAt: '2025-07-30T21:30:00.000Z', retrievedAt: '2026-08-13T14:00:00.000Z',
+    sourceId: 'msft-fy2025-q4-earnings-call', sourceUrl: FY25_Q4_SOURCE,
+  },
   {
     id: 'msft-fy2026-q1-management-total-capex', companyTicker: 'MSFT', metric: 'CAPEX_ACTUAL',
     value: 34.9, unit: 'USD billions', period: 'MSFT-FY2026-Q1', periodType: 'QUARTER',

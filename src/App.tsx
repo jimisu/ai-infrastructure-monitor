@@ -6,8 +6,38 @@ import { WhatChanged } from './components/WhatChanged'
 import { InfrastructureMomentum } from './components/InfrastructureMomentum'
 import { InvestmentCausalGraph } from './components/InvestmentCausalGraph'
 import { CompanyTable } from './components/CompanyTable'
+import { RealIntelligence } from './components/RealIntelligence'
 import { MOCK_COMPANIES } from './data/companies'
 import { MOCK_SIGNALS, MOCK_IMPACT_EVENTS } from './data/signals'
+import { META_CAPEX_OBSERVATIONS } from './data/metaCapexMetrics'
+import { TSM_METRIC_OBSERVATIONS } from './data/tsmMetrics'
+import { getSourceById } from './data/sources'
+import { deriveMetaCapexSignals } from './signals/metaCapexSignalInterpreter'
+import { deriveTsmSignalsWithTrendConfirmation } from './signals/tsmSignalInterpreter'
+import { deriveCrossCompanySignals } from './signals/crossCompanySignalInterpreter'
+import { createRealIntelligenceViewModel } from './presentation/realIntelligenceViewModel'
+
+const metaSignals = deriveMetaCapexSignals(META_CAPEX_OBSERVATIONS)
+const tsmResult = deriveTsmSignalsWithTrendConfirmation(TSM_METRIC_OBSERVATIONS)
+const crossCompanySignal = deriveCrossCompanySignals(
+  META_CAPEX_OBSERVATIONS,
+  TSM_METRIC_OBSERVATIONS
+)[0]
+const realIntelligence = createRealIntelligenceViewModel({
+  crossCompanySignal,
+  metaGuidanceSignal: metaSignals.find(
+    (signal) => signal.signalType === 'CAPEX_GUIDANCE_REVISION_UP'
+  ),
+  tsmOutlookSignal: tsmResult.signals.find(
+    (signal) => signal.signalType === 'REVENUE_OUTLOOK_ACCELERATION'
+  ),
+  tsmTrend: tsmResult.trend3M,
+  metaObservations: META_CAPEX_OBSERVATIONS,
+  tsmObservations: TSM_METRIC_OBSERVATIONS,
+  sources: ['meta-ir-main', 'tsmc-ir-main']
+    .map(getSourceById)
+    .filter((source) => source !== undefined),
+})
 
 function App() {
   // Market signal: average of all infrastructure signals
@@ -19,6 +49,15 @@ function App() {
       <Header />
 
       <main className="dashboard">
+        <section className="real-intelligence-section">
+          <RealIntelligence intelligence={realIntelligence} />
+        </section>
+
+        <div className="demo-model-divider">
+          <span>DEMO MODEL</span>
+          <strong>DEMO DATA — AISS / OPPORTUNITY / 10X / MARKET REGIME</strong>
+        </div>
+
         <section className="market-regime-section">
           <MarketRegime score={marketScore} change30d={marketChange30d} trend="accelerating" />
         </section>
@@ -45,7 +84,10 @@ function App() {
       </main>
 
       <footer className="footer">
-        <p>All data is mock/demo. Not for investment decisions. 2026 AI Infrastructure Monitor.</p>
+        <p>
+          Real Intelligence is evidence-backed from registered sources. Investment model sections
+          remain mock/demo. Not for investment decisions. 2026 AI Infrastructure Monitor.
+        </p>
       </footer>
     </div>
   )

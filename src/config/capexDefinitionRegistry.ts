@@ -24,7 +24,7 @@ export const MSFT_MANAGEMENT_REPORTED_CAPEX_DEFINITION: CapexDefinition = {
   basis: 'MANAGEMENT_REPORTED_TOTAL_CAPEX',
   financeLeaseTreatment: 'INCLUDED',
   scope: 'CONSOLIDATED_TOTAL',
-  sourceIds: ['msft-fy2026-q1-earnings-call', 'msft-fy2026-q2-earnings-call', 'msft-fy2026-q3-earnings-call'],
+  sourceIds: ['msft-fy2025-q1-earnings-call', 'msft-fy2025-q2-earnings-call', 'msft-fy2025-q3-earnings-call', 'msft-fy2025-q4-earnings-call', 'msft-fy2026-q1-earnings-call', 'msft-fy2026-q2-earnings-call', 'msft-fy2026-q3-earnings-call'],
 }
 
 export const MSFT_CASH_PAID_PP_AND_E_DEFINITION: CapexDefinition = {

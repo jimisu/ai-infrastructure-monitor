@@ -60,10 +60,10 @@ body,
   margin: 0;
 }
 
-.demo-badge {
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid var(--accent-red);
-  color: var(--accent-red);
+.layer-badge {
+  background: rgba(59, 130, 246, 0.12);
+  border: 1px solid var(--accent-blue);
+  color: #93c5fd;
   padding: 0.4rem 0.8rem;
   font-weight: 600;
   border-radius: 3px;
@@ -87,6 +87,200 @@ body,
   max-width: 1600px;
   margin: 0 auto;
   width: 100%;
+}
+
+/* Real Intelligence */
+.real-intelligence-card {
+  background: linear-gradient(145deg, rgba(15, 44, 50, 0.96), rgba(20, 35, 56, 0.94));
+  border: 1px solid rgba(34, 197, 94, 0.65);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 0 32px rgba(34, 197, 94, 0.08);
+}
+
+.real-intelligence-card.unavailable {
+  border-color: var(--accent-amber);
+}
+
+.real-intelligence-header,
+.real-status-row,
+.cross-validation-row,
+.real-sources {
+  display: flex;
+  align-items: center;
+}
+
+.real-intelligence-header {
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(34, 197, 94, 0.3);
+  padding-bottom: 1rem;
+}
+
+.real-intelligence-header h2 {
+  font-size: 1.2rem;
+  letter-spacing: 0.7px;
+  margin-top: 0.35rem;
+}
+
+.real-label,
+.panel-eyebrow {
+  color: var(--accent-green);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+}
+
+.evidence-badge {
+  border: 1px solid var(--accent-green);
+  color: var(--accent-green);
+  border-radius: 3px;
+  padding: 0.4rem 0.7rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+}
+
+.unavailable-badge {
+  border-color: var(--accent-amber);
+  color: var(--accent-amber);
+}
+
+.unavailable-message {
+  color: var(--text-secondary);
+  padding-top: 1.25rem;
+}
+
+.real-status-row {
+  gap: 0.9rem;
+  padding: 1.25rem 0;
+}
+
+.real-status-row strong {
+  color: var(--accent-green);
+  font-family: 'Courier New', monospace;
+  font-size: 1.65rem;
+}
+
+.real-status-row span {
+  background: rgba(34, 197, 94, 0.12);
+  color: var(--accent-green);
+  padding: 0.35rem 0.6rem;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.real-intelligence-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+}
+
+.intelligence-panel {
+  background: rgba(15, 23, 42, 0.62);
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 5px;
+  padding: 1.1rem;
+}
+
+.intelligence-panel h3 {
+  font-size: 0.92rem;
+  margin: 0.45rem 0 1rem;
+}
+
+.intelligence-panel p {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  line-height: 1.45;
+  margin-top: 0.8rem;
+}
+
+.value-transition,
+.derived-change,
+.outlook-values {
+  font-family: 'Courier New', monospace;
+}
+
+.value-transition {
+  color: var(--text-primary);
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.value-transition span {
+  color: var(--text-muted);
+  padding: 0 0.25rem;
+}
+
+.derived-change {
+  color: var(--accent-green);
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-top: 0.55rem;
+}
+
+.outlook-values {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  color: var(--text-primary);
+  font-size: 0.9rem;
+}
+
+.cross-validation-row {
+  gap: 0.8rem;
+  margin-top: 1rem;
+  padding: 0.9rem 1rem;
+  background: rgba(34, 197, 94, 0.08);
+  border-left: 3px solid var(--accent-green);
+  font-size: 0.78rem;
+  letter-spacing: 0.5px;
+}
+
+.cross-validation-row strong {
+  color: var(--accent-green);
+}
+
+.cross-validation-row span:last-child {
+  color: var(--text-secondary);
+  margin-left: auto;
+}
+
+.real-sources {
+  gap: 1rem;
+  margin-top: 1rem;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.real-sources a {
+  color: #93c5fd;
+  text-decoration: none;
+}
+
+.real-sources a:hover {
+  text-decoration: underline;
+}
+
+.demo-model-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-top: 1px solid rgba(239, 68, 68, 0.45);
+  padding-top: 1.25rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  letter-spacing: 0.6px;
+}
+
+.demo-model-divider span {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid var(--accent-red);
+  color: var(--accent-red);
+  padding: 0.35rem 0.6rem;
+  border-radius: 3px;
+  font-weight: 700;
 }
 
 /* Card Base Styles */
@@ -644,6 +838,19 @@ body,
 
   .opportunity-metrics {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .real-intelligence-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cross-validation-row,
+  .real-sources,
+  .demo-model-divider {
+    align-items: flex-start;
+    flex-direction: column;
   }
 }
 
