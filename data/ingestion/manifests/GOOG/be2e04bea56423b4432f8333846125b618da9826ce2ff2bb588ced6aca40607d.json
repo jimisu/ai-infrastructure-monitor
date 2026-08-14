@@ -1,0 +1,43 @@
+{
+  "snapshotId": "raw-snapshot:fixture:sha256:be2e04bea56423b4432f8333846125b618da9826ce2ff2bb588ced6aca40607d",
+  "acquisitionMode": "FIXTURE",
+  "sourceId": "goog-annual-capex-guidance-official",
+  "issuer": "GOOG",
+  "requestedUrl": null,
+  "finalUrl": null,
+  "evidenceUrl": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000012/googexhibit991q42025.htm",
+  "acquisitionChannel": "FIXTURE",
+  "fixture": {
+    "fixtureId": "0001652044-26-000012",
+    "fixturePath": "tests/ingestion/googGuidanceIngestion.test.mjs",
+    "contentHash": "6b475abb42e666afa106acfec9b54f4ca07fa8787dccdacd5e80fc233760ff9f"
+  },
+  "retrievedAt": "2026-08-14T00:00:00.000Z",
+  "httpStatus": 200,
+  "contentType": "text/html",
+  "contentLength": 206,
+  "sha256": "6b475abb42e666afa106acfec9b54f4ca07fa8787dccdacd5e80fc233760ff9f",
+  "rawContentPath": "raw/GOOG/6b475abb42e666afa106acfec9b54f4ca07fa8787dccdacd5e80fc233760ff9f.html",
+  "manifestPath": "manifests/GOOG/be2e04bea56423b4432f8333846125b618da9826ce2ff2bb588ced6aca40607d.json",
+  "provenance": {
+    "cik": "0001652044",
+    "accessionNumber": "0001652044-26-000012",
+    "formType": "8-K",
+    "filingDate": "2026-02-04",
+    "reportDate": "2025-12-31",
+    "primaryDocument": "goog-20260204.htm",
+    "evidenceDocument": "googexhibit991q42025.htm",
+    "evidenceUrl": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000012/googexhibit991q42025.htm",
+    "issuer": "Alphabet Inc.",
+    "economicIssuer": "GOOG",
+    "filedWith": "SEC EDGAR",
+    "acquisitionChannel": "SEC_EDGAR",
+    "guidanceAsOfPeriod": "2025-Q4",
+    "targetPeriod": "2026",
+    "expectedShape": "RANGE",
+    "sourceId": "goog-2025-q4-earnings-call",
+    "sourceDocumentVersionId": "0001652044-26-000012",
+    "publishedAt": "2026-02-04T21:30:00.000Z",
+    "definitionId": "goog-purchases-of-property-and-equipment"
+  }
+}

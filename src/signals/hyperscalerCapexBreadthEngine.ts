@@ -1,7 +1,7 @@
 import { AMZN_2026_CAPEX_OUTLOOK_DEFINITION, AMZN_PP_AND_E_PURCHASES_DEFINITION, GOOG_REPORTED_CAPEX_DEFINITION, META_CAPEX_DEFINITION, MSFT_MANAGEMENT_REPORTED_CAPEX_DEFINITION } from '../config/capexDefinitionRegistry'
 import { AMZN_CAPEX_PROFILE, GOOG_CAPEX_PROFILE, META_CAPEX_PROFILE, MSFT_CAPEX_PROFILE } from '../config/hyperscalerCapexProfiles'
 import { AMZN_PRODUCTION_CAPEX_OBSERVATIONS } from '../data/amznPpeObservationProvider'
-import { GOOG_CAPEX_OBSERVATIONS } from '../data/googCapexMetrics'
+import { GOOG_PRODUCTION_CAPEX_OBSERVATIONS } from '../data/googCapexGuidanceObservationProvider'
 import { META_PRODUCTION_CAPEX_OBSERVATIONS } from '../data/metaGuidanceObservationProvider'
 import { MSFT_CAPEX_OBSERVATIONS } from '../data/msftCapexMetrics'
 import { getSourceById } from '../data/sources'
@@ -184,7 +184,7 @@ export function deriveCurrentHyperscalerCapexTrend(
   ).at(-1)
 
   const googNormalized = normalizeCapexObservations(
-    GOOG_CAPEX_OBSERVATIONS,
+    GOOG_PRODUCTION_CAPEX_OBSERVATIONS,
     GOOG_CAPEX_PROFILE,
     [GOOG_REPORTED_CAPEX_DEFINITION]
   )
@@ -263,8 +263,8 @@ export function deriveCurrentHyperscalerCapexTrend(
       supportingSignalIds: googSupporting ? [googSupporting.id] : [],
       evidenceObservationIds: googEvidence,
       asOfPeriod: googForward?.guidanceAsOfPeriod,
-      latestEvidencePublishedAt: latestPublishedAt(googEvidence, GOOG_CAPEX_OBSERVATIONS),
-      tier1Evidence: hasOnlyTier1Evidence(googEvidence, GOOG_CAPEX_OBSERVATIONS),
+      latestEvidencePublishedAt: latestPublishedAt(googEvidence, GOOG_PRODUCTION_CAPEX_OBSERVATIONS),
+      tier1Evidence: hasOnlyTier1Evidence(googEvidence, GOOG_PRODUCTION_CAPEX_OBSERVATIONS),
       comparabilityValid: googForward !== null,
     },
     {

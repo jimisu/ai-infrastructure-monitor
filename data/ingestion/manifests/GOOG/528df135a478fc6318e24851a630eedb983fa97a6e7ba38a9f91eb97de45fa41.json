@@ -1,0 +1,43 @@
+{
+  "snapshotId": "raw-snapshot:fixture:sha256:528df135a478fc6318e24851a630eedb983fa97a6e7ba38a9f91eb97de45fa41",
+  "acquisitionMode": "FIXTURE",
+  "sourceId": "goog-annual-capex-guidance-official",
+  "issuer": "GOOG",
+  "requestedUrl": null,
+  "finalUrl": null,
+  "evidenceUrl": "https://www.sec.gov/Archives/edgar/data/1652044/000165204425000056/googexhibit991q22025.htm",
+  "acquisitionChannel": "FIXTURE",
+  "fixture": {
+    "fixtureId": "0001652044-25-000056",
+    "fixturePath": "tests/ingestion/googGuidanceIngestion.test.mjs",
+    "contentHash": "e377db1d234290c774c5adfc3bfe5f6d82e3579fafbc867f2a57553a7681980a"
+  },
+  "retrievedAt": "2026-08-14T00:00:00.000Z",
+  "httpStatus": 200,
+  "contentType": "text/html",
+  "contentLength": 230,
+  "sha256": "e377db1d234290c774c5adfc3bfe5f6d82e3579fafbc867f2a57553a7681980a",
+  "rawContentPath": "raw/GOOG/e377db1d234290c774c5adfc3bfe5f6d82e3579fafbc867f2a57553a7681980a.html",
+  "manifestPath": "manifests/GOOG/528df135a478fc6318e24851a630eedb983fa97a6e7ba38a9f91eb97de45fa41.json",
+  "provenance": {
+    "cik": "0001652044",
+    "accessionNumber": "0001652044-25-000056",
+    "formType": "8-K",
+    "filingDate": "2025-07-23",
+    "reportDate": "2025-06-30",
+    "primaryDocument": "goog-20250723.htm",
+    "evidenceDocument": "googexhibit991q22025.htm",
+    "evidenceUrl": "https://www.sec.gov/Archives/edgar/data/1652044/000165204425000056/googexhibit991q22025.htm",
+    "issuer": "Alphabet Inc.",
+    "economicIssuer": "GOOG",
+    "filedWith": "SEC EDGAR",
+    "acquisitionChannel": "SEC_EDGAR",
+    "guidanceAsOfPeriod": "2025-Q2",
+    "targetPeriod": "2025",
+    "expectedShape": "APPROXIMATE_POINT",
+    "sourceId": "goog-2025-q2-earnings-call",
+    "sourceDocumentVersionId": "0001652044-25-000056",
+    "publishedAt": "2025-07-23T20:30:00.000Z",
+    "definitionId": "goog-purchases-of-property-and-equipment"
+  }
+}

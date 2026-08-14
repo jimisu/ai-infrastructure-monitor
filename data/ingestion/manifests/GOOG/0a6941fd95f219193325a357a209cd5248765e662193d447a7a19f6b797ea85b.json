@@ -1,0 +1,43 @@
+{
+  "snapshotId": "raw-snapshot:fixture:sha256:0a6941fd95f219193325a357a209cd5248765e662193d447a7a19f6b797ea85b",
+  "acquisitionMode": "FIXTURE",
+  "sourceId": "goog-annual-capex-guidance-official",
+  "issuer": "GOOG",
+  "requestedUrl": null,
+  "finalUrl": null,
+  "evidenceUrl": "https://abc.xyz/2025-q1-earnings-call/",
+  "acquisitionChannel": "FIXTURE",
+  "fixture": {
+    "fixtureId": "alphabet-2025-q1-earnings-call-2025-04-24",
+    "fixturePath": "tests/ingestion/googGuidanceIngestion.test.mjs",
+    "contentHash": "3cdd705034cd809cf911af0db442beef91e275ea9f049acf484f5662cba7bfae"
+  },
+  "retrievedAt": "2026-08-14T00:00:00.000Z",
+  "httpStatus": 200,
+  "contentType": "text/html",
+  "contentLength": 225,
+  "sha256": "3cdd705034cd809cf911af0db442beef91e275ea9f049acf484f5662cba7bfae",
+  "rawContentPath": "raw/GOOG/3cdd705034cd809cf911af0db442beef91e275ea9f049acf484f5662cba7bfae.html",
+  "manifestPath": "manifests/GOOG/0a6941fd95f219193325a357a209cd5248765e662193d447a7a19f6b797ea85b.json",
+  "provenance": {
+    "cik": null,
+    "accessionNumber": null,
+    "formType": "EARNINGS_CALL",
+    "filingDate": "2025-04-24",
+    "reportDate": "2025-03-31",
+    "primaryDocument": null,
+    "evidenceDocument": "Alphabet official earnings-call page",
+    "evidenceUrl": "https://abc.xyz/2025-q1-earnings-call/",
+    "issuer": "Alphabet Inc.",
+    "economicIssuer": "GOOG",
+    "filedWith": "Alphabet Investor Relations",
+    "acquisitionChannel": "ALPHABET_INVESTOR_RELATIONS",
+    "guidanceAsOfPeriod": "2025-Q1",
+    "targetPeriod": "2025",
+    "expectedShape": "APPROXIMATE_POINT",
+    "sourceId": "goog-2025-q1-earnings-call",
+    "sourceDocumentVersionId": "alphabet-2025-q1-earnings-call-2025-04-24",
+    "publishedAt": "2025-04-24T20:30:00.000Z",
+    "definitionId": "goog-purchases-of-property-and-equipment"
+  }
+}

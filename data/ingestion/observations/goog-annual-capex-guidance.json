@@ -1,0 +1,219 @@
+{
+  "schemaVersion": 2,
+  "pipelineId": "goog-annual-capex-guidance",
+  "issuer": "GOOG",
+  "sourceId": "goog-annual-capex-guidance-official",
+  "latestSnapshotIds": [
+    "raw-snapshot:fixture:sha256:14cf1d77fc5a9e9bc3158a8ac95c289f3e25717910baa2af1729bf156d361f0e",
+    "raw-snapshot:fixture:sha256:0a6941fd95f219193325a357a209cd5248765e662193d447a7a19f6b797ea85b",
+    "raw-snapshot:fixture:sha256:528df135a478fc6318e24851a630eedb983fa97a6e7ba38a9f91eb97de45fa41",
+    "raw-snapshot:fixture:sha256:418de78d0f4b48ee02498a89a0fc424a9f98d9504f2c9506b025a618e149e4c8",
+    "raw-snapshot:fixture:sha256:be2e04bea56423b4432f8333846125b618da9826ce2ff2bb588ced6aca40607d"
+  ],
+  "capexDefinitionId": "goog-purchases-of-property-and-equipment",
+  "records": [
+    {
+      "recordId": "canonical-record:sha256:0e8587224c44138ffb6f0c0a6fc55367900aab9f9ad452da803e672f2b2cb24d",
+      "sourceDocumentVersionId": "0001652044-25-000087",
+      "logicalFactKey": "GOOG|CAPEX_GUIDANCE_HIGH|YEAR|2025|2025-Q3|RANGE|USD billions|goog-2025-q3-earnings-call|goog-purchases-of-property-and-equipment",
+      "snapshotId": "raw-snapshot:fixture:sha256:418de78d0f4b48ee02498a89a0fc424a9f98d9504f2c9506b025a618e149e4c8",
+      "sourceLocator": {
+        "document": "googexhibit991q32025.htm",
+        "disclosure": "capital expenditures to be in a range of $91 billion to $93 billion"
+      },
+      "status": "ACTIVE",
+      "supersedesRecordId": null,
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "goog-2025-q3-capex-guidance-high",
+        "companyTicker": "GOOG",
+        "metric": "CAPEX_GUIDANCE_HIGH",
+        "value": 93,
+        "unit": "USD billions",
+        "period": "2025",
+        "periodType": "YEAR",
+        "guidanceAsOfPeriod": "2025-Q3",
+        "capexDefinitionId": "goog-purchases-of-property-and-equipment",
+        "approximate": false,
+        "publishedAt": "2025-10-29T20:30:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
+        "sourceId": "goog-2025-q3-earnings-call",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1652044/000165204425000087/googexhibit991q32025.htm"
+      }
+    },
+    {
+      "recordId": "canonical-record:sha256:7306f2307f1623645e295c25949738bd47872771588a4992f543a21f3244df2a",
+      "sourceDocumentVersionId": "0001652044-25-000087",
+      "logicalFactKey": "GOOG|CAPEX_GUIDANCE_LOW|YEAR|2025|2025-Q3|RANGE|USD billions|goog-2025-q3-earnings-call|goog-purchases-of-property-and-equipment",
+      "snapshotId": "raw-snapshot:fixture:sha256:418de78d0f4b48ee02498a89a0fc424a9f98d9504f2c9506b025a618e149e4c8",
+      "sourceLocator": {
+        "document": "googexhibit991q32025.htm",
+        "disclosure": "capital expenditures to be in a range of $91 billion to $93 billion"
+      },
+      "status": "ACTIVE",
+      "supersedesRecordId": null,
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "goog-2025-q3-capex-guidance-low",
+        "companyTicker": "GOOG",
+        "metric": "CAPEX_GUIDANCE_LOW",
+        "value": 91,
+        "unit": "USD billions",
+        "period": "2025",
+        "periodType": "YEAR",
+        "guidanceAsOfPeriod": "2025-Q3",
+        "capexDefinitionId": "goog-purchases-of-property-and-equipment",
+        "approximate": false,
+        "publishedAt": "2025-10-29T20:30:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
+        "sourceId": "goog-2025-q3-earnings-call",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1652044/000165204425000087/googexhibit991q32025.htm"
+      }
+    },
+    {
+      "recordId": "canonical-record:sha256:58af4a367c234b2d3ca8b647d3261cc1102cb03d5f4be67267f4160955e7e163",
+      "sourceDocumentVersionId": "0001652044-25-000010",
+      "logicalFactKey": "GOOG|CAPEX_GUIDANCE_POINT|YEAR|2025|2024-Q4|APPROXIMATE_POINT|USD billions|goog-2024-q4-earnings-call|goog-purchases-of-property-and-equipment",
+      "snapshotId": "raw-snapshot:fixture:sha256:14cf1d77fc5a9e9bc3158a8ac95c289f3e25717910baa2af1729bf156d361f0e",
+      "sourceLocator": {
+        "document": "googexhibit991q42024.htm",
+        "disclosure": "approximately $75 billion in capital expenditures"
+      },
+      "status": "ACTIVE",
+      "supersedesRecordId": null,
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "goog-2025-initial-capex-guidance-approximate",
+        "companyTicker": "GOOG",
+        "metric": "CAPEX_GUIDANCE_POINT",
+        "value": 75,
+        "unit": "USD billions",
+        "period": "2025",
+        "periodType": "YEAR",
+        "guidanceAsOfPeriod": "2024-Q4",
+        "capexDefinitionId": "goog-purchases-of-property-and-equipment",
+        "approximate": true,
+        "publishedAt": "2025-02-04T21:30:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
+        "sourceId": "goog-2024-q4-earnings-call",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1652044/000165204425000010/googexhibit991q42024.htm"
+      }
+    },
+    {
+      "recordId": "canonical-record:sha256:0bf189d7c545e8897350f50166eae655321d5339afa9a4e5eef86c0aac5af041",
+      "sourceDocumentVersionId": "0001652044-25-000056",
+      "logicalFactKey": "GOOG|CAPEX_GUIDANCE_POINT|YEAR|2025|2025-Q2|APPROXIMATE_POINT|USD billions|goog-2025-q2-earnings-call|goog-purchases-of-property-and-equipment",
+      "snapshotId": "raw-snapshot:fixture:sha256:528df135a478fc6318e24851a630eedb983fa97a6e7ba38a9f91eb97de45fa41",
+      "sourceLocator": {
+        "document": "googexhibit991q22025.htm",
+        "disclosure": "capital expenditures in 2025 to approximately $85 billion"
+      },
+      "status": "ACTIVE",
+      "supersedesRecordId": null,
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "goog-2025-q2-capex-guidance-approximate",
+        "companyTicker": "GOOG",
+        "metric": "CAPEX_GUIDANCE_POINT",
+        "value": 85,
+        "unit": "USD billions",
+        "period": "2025",
+        "periodType": "YEAR",
+        "guidanceAsOfPeriod": "2025-Q2",
+        "capexDefinitionId": "goog-purchases-of-property-and-equipment",
+        "approximate": true,
+        "publishedAt": "2025-07-23T20:30:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
+        "sourceId": "goog-2025-q2-earnings-call",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1652044/000165204425000056/googexhibit991q22025.htm"
+      }
+    },
+    {
+      "recordId": "canonical-record:sha256:68df1eafba1c7e0f10e49362a0bce278b81baae06a46655fbd2263ba4f98a5ac",
+      "sourceDocumentVersionId": "alphabet-2025-q1-earnings-call-2025-04-24",
+      "logicalFactKey": "GOOG|CAPEX_GUIDANCE_POINT|YEAR|2025|2025-Q1|APPROXIMATE_POINT|USD billions|goog-2025-q1-earnings-call|goog-purchases-of-property-and-equipment",
+      "snapshotId": "raw-snapshot:fixture:sha256:0a6941fd95f219193325a357a209cd5248765e662193d447a7a19f6b797ea85b",
+      "sourceLocator": {
+        "document": "Alphabet official earnings-call page",
+        "disclosure": "capital expenditures of approximately $75 billion"
+      },
+      "status": "ACTIVE",
+      "supersedesRecordId": null,
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "goog-2025-q1-capex-guidance-approximate",
+        "companyTicker": "GOOG",
+        "metric": "CAPEX_GUIDANCE_POINT",
+        "value": 75,
+        "unit": "USD billions",
+        "period": "2025",
+        "periodType": "YEAR",
+        "guidanceAsOfPeriod": "2025-Q1",
+        "capexDefinitionId": "goog-purchases-of-property-and-equipment",
+        "approximate": true,
+        "publishedAt": "2025-04-24T20:30:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
+        "sourceId": "goog-2025-q1-earnings-call",
+        "sourceUrl": "https://abc.xyz/2025-q1-earnings-call/"
+      }
+    },
+    {
+      "recordId": "canonical-record:sha256:d0082e47ce126cd0c283b0a642747bed6660cd2c59f18a266dcfdb6017a95e93",
+      "sourceDocumentVersionId": "0001652044-26-000012",
+      "logicalFactKey": "GOOG|CAPEX_GUIDANCE_HIGH|YEAR|2026|2025-Q4|RANGE|USD billions|goog-2025-q4-earnings-call|goog-purchases-of-property-and-equipment",
+      "snapshotId": "raw-snapshot:fixture:sha256:be2e04bea56423b4432f8333846125b618da9826ce2ff2bb588ced6aca40607d",
+      "sourceLocator": {
+        "document": "googexhibit991q42025.htm",
+        "disclosure": "capital expenditures to be in a range of $175 billion to $185 billion"
+      },
+      "status": "ACTIVE",
+      "supersedesRecordId": null,
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "goog-2026-capex-guidance-high",
+        "companyTicker": "GOOG",
+        "metric": "CAPEX_GUIDANCE_HIGH",
+        "value": 185,
+        "unit": "USD billions",
+        "period": "2026",
+        "periodType": "YEAR",
+        "guidanceAsOfPeriod": "2025-Q4",
+        "capexDefinitionId": "goog-purchases-of-property-and-equipment",
+        "approximate": false,
+        "publishedAt": "2026-02-04T21:30:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
+        "sourceId": "goog-2025-q4-earnings-call",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000012/googexhibit991q42025.htm"
+      }
+    },
+    {
+      "recordId": "canonical-record:sha256:b7e7b5e492367af9ef5c2f8669462646d6bc440a69c88a4cdc2ea76ad013e754",
+      "sourceDocumentVersionId": "0001652044-26-000012",
+      "logicalFactKey": "GOOG|CAPEX_GUIDANCE_LOW|YEAR|2026|2025-Q4|RANGE|USD billions|goog-2025-q4-earnings-call|goog-purchases-of-property-and-equipment",
+      "snapshotId": "raw-snapshot:fixture:sha256:be2e04bea56423b4432f8333846125b618da9826ce2ff2bb588ced6aca40607d",
+      "sourceLocator": {
+        "document": "googexhibit991q42025.htm",
+        "disclosure": "capital expenditures to be in a range of $175 billion to $185 billion"
+      },
+      "status": "ACTIVE",
+      "supersedesRecordId": null,
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "goog-2026-capex-guidance-low",
+        "companyTicker": "GOOG",
+        "metric": "CAPEX_GUIDANCE_LOW",
+        "value": 175,
+        "unit": "USD billions",
+        "period": "2026",
+        "periodType": "YEAR",
+        "guidanceAsOfPeriod": "2025-Q4",
+        "capexDefinitionId": "goog-purchases-of-property-and-equipment",
+        "approximate": false,
+        "publishedAt": "2026-02-04T21:30:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
+        "sourceId": "goog-2025-q4-earnings-call",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000012/googexhibit991q42025.htm"
+      }
+    }
+  ]
+}
