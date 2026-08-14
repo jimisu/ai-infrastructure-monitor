@@ -1,0 +1,71 @@
+name: Ingestion Monitor
+
+on:
+  schedule:
+    - cron: '17 7 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ingestion-monitor-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      SEC_USER_AGENT: ${{ secrets.SEC_USER_AGENT || vars.SEC_USER_AGENT }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci
+
+      - name: Validate SEC identification
+        shell: bash
+        run: |
+          if [ -z "${SEC_USER_AGENT:-}" ]; then
+            echo "SEC_USER_AGENT is required. Configure the repository secret or variable named SEC_USER_AGENT." >&2
+            exit 1
+          fi
+
+      - name: Capture canonical baseline
+        run: git diff --exit-code -- data/ingestion/observations
+
+      - name: Run production ingestion monitor in dry-run mode
+        run: npm run ingest:all -- --dry-run
+
+      - name: Verify production canonical observations were not modified
+        if: always()
+        run: git diff --exit-code -- data/ingestion/observations
+
+      - name: Lint
+        if: success()
+        run: npm run lint
+
+      - name: Build
+        if: success()
+        run: npm run build
+
+      - name: Write monitoring summary
+        if: always()
+        run: node scripts/ingestion/monitoring-summary.mjs
+
+      - name: Upload ingestion run report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ingestion-monitor-report-${{ github.run_id }}
+          path: data/ingestion/runs/*.json
+          if-no-files-found: warn
+          retention-days: 30
