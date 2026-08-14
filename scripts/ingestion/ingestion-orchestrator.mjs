@@ -50,9 +50,11 @@ async function seedDryRun(productionRoot) {
   return temporary
 }
 
+export function runReportFilename(report) { const match = /^ingestion-run:sha256:([a-f0-9]{64})$/.exec(report?.runId ?? ''); if (!match) throw new Error('Invalid deterministic ingestion run ID'); return `ingestion-run-${match[1]}.json` }
+
 export async function persistRunReport(report, outputRoot) {
   const directory = path.join(outputRoot, 'runs'); await mkdir(directory, { recursive: true })
-  const target = path.join(directory, `${report.runId}.json`), temporary = `${target}.tmp-${process.pid}`
+  const target = path.join(directory, runReportFilename(report)), temporary = `${target}.tmp-${process.pid}`
   await writeFile(temporary, `${JSON.stringify(report, null, 2)}\n`); await rename(temporary, target); return target
 }
 
