@@ -1,4 +1,5 @@
 import type { Source } from '../types/source'
+import { AMZN_SOURCES } from './amznSources'
 import { GOOG_SOURCES } from './googSources'
 import { MSFT_SOURCES } from './msftSources'
 
@@ -125,7 +126,7 @@ export const META_SOURCES: Source[] = [
   },
 ]
 
-const ALL_SOURCES = [...TSMC_SOURCES, ...META_SOURCES, ...MSFT_SOURCES, ...GOOG_SOURCES]
+const ALL_SOURCES = [...TSMC_SOURCES, ...META_SOURCES, ...MSFT_SOURCES, ...GOOG_SOURCES, ...AMZN_SOURCES]
 
 /**
  * Get source by ID

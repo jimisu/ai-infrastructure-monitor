@@ -21,6 +21,7 @@ export type SignalType =
   | 'CAPEX_QOQ_DECELERATION'
   | 'CAPEX_YOY_ACTUAL_TREND'
   | 'CAPEX_FORWARD_IMPLIED_YOY_GROWTH'
+  | 'CAPEX_TTM_YOY_ACTUAL_TREND'
 
 export type Direction = 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL'
 

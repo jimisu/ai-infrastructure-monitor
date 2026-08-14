@@ -42,18 +42,18 @@ export function verifyHyperscalerTsmConfirmation(): HyperscalerTsmConfirmationVe
 
   assert(demandFirst !== null && first !== null && second !== null, 'confirmation unavailable')
   assert(first.demandInput.direction === 'POSITIVE', 'demand direction changed')
-  assert(first.demandInput.confidence === 'MEDIUM', 'demand confidence changed')
-  assert(first.demandInput.coverage === 75, 'demand coverage changed')
+  assert(first.demandInput.confidence === 'HIGH', 'demand confidence changed')
+  assert(first.demandInput.coverage === 100, 'demand coverage changed')
   assert(first.supplyInput.direction === 'POSITIVE', 'supply direction changed')
   assert(first.supplyInput.confidence === 'HIGH', 'supply confidence changed')
   assert(first.direction === 'POSITIVE', 'confirmation direction changed')
   assert(first.alignment === 'CONFIRMED', 'alignment changed')
-  assert(first.confidence === 'MEDIUM', 'confidence exceeded weaker input')
+  assert(first.confidence === 'HIGH', 'confidence cap did not preserve aligned HIGH inputs')
   assert(first.id === second.id, 'stable ID changed with generatedAt')
   assert(first.demandInput.hyperscalerAggregateId === demandFirst.id, 'aggregate ID not preserved')
   assert(first.tsmUnderlyingSignalIds.length > 0, 'TSMC signal IDs missing')
-  assert(first.unavailableCompanies.includes('AMZN'), 'AMZN unavailable status lost')
-  assert(!first.participatingCompanies.includes('AMZN'), 'AMZN became a participant')
+  assert(first.unavailableCompanies.length === 0, 'validated AMZN remains unavailable')
+  assert(first.participatingCompanies.includes('AMZN'), 'AMZN is not participating')
 
   const aggregateEvidenceIncluded = demandFirst.evidenceObservationIds.every(
     (id) => first.evidenceObservationIds.includes(id)

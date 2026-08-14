@@ -1,5 +1,6 @@
-import { GOOG_REPORTED_CAPEX_DEFINITION, META_CAPEX_DEFINITION, MSFT_MANAGEMENT_REPORTED_CAPEX_DEFINITION } from '../config/capexDefinitionRegistry'
-import { GOOG_CAPEX_PROFILE, META_CAPEX_PROFILE, MSFT_CAPEX_PROFILE } from '../config/hyperscalerCapexProfiles'
+import { AMZN_2026_CAPEX_OUTLOOK_DEFINITION, AMZN_PP_AND_E_PURCHASES_DEFINITION, GOOG_REPORTED_CAPEX_DEFINITION, META_CAPEX_DEFINITION, MSFT_MANAGEMENT_REPORTED_CAPEX_DEFINITION } from '../config/capexDefinitionRegistry'
+import { AMZN_CAPEX_PROFILE, GOOG_CAPEX_PROFILE, META_CAPEX_PROFILE, MSFT_CAPEX_PROFILE } from '../config/hyperscalerCapexProfiles'
+import { AMZN_CAPEX_OBSERVATIONS } from '../data/amznCapexMetrics'
 import { GOOG_CAPEX_OBSERVATIONS } from '../data/googCapexMetrics'
 import { META_CAPEX_OBSERVATIONS } from '../data/metaCapexMetrics'
 import { MSFT_CAPEX_OBSERVATIONS } from '../data/msftCapexMetrics'
@@ -15,6 +16,7 @@ import {
   deriveCompanyCapexGuidanceRevisionChain,
   deriveCompanyCapexYoYActualTrends,
   deriveCompanyCapexSignals,
+  deriveCompanyCapexTtmYoYActualTrends,
   normalizeCapexObservations,
 } from './companyCapexSignalEngine'
 import { systemGeneratedAt, type GeneratedAtProvider } from './derivedSignalIdentity'
@@ -206,6 +208,28 @@ export function deriveCurrentHyperscalerCapexTrend(
     ...(googSupporting?.evidenceObservationIds ?? []),
   ]
 
+  const amznNormalized = normalizeCapexObservations(
+    AMZN_CAPEX_OBSERVATIONS,
+    AMZN_CAPEX_PROFILE,
+    [AMZN_PP_AND_E_PURCHASES_DEFINITION, AMZN_2026_CAPEX_OUTLOOK_DEFINITION]
+  )
+  const amzn = deriveCompanyCapexTtmYoYActualTrends(
+    amznNormalized,
+    AMZN_CAPEX_PROFILE,
+    AMZN_PP_AND_E_PURCHASES_DEFINITION.id,
+    generatedAt
+  ).at(-1)
+  const amznOutlook = amznNormalized.find(
+    (observation) =>
+      observation.kind === 'GUIDANCE_POINT' &&
+      observation.capexDefinitionId === AMZN_2026_CAPEX_OUTLOOK_DEFINITION.id &&
+      observation.approximate
+  )
+  const amznEvidence = [
+    ...(amzn?.evidenceObservationIds ?? []),
+    ...(amznOutlook ? [amznOutlook.id] : []),
+  ]
+
   return deriveHyperscalerCapexTrend([
     {
       companyTicker: 'META',
@@ -245,9 +269,13 @@ export function deriveCurrentHyperscalerCapexTrend(
     },
     {
       companyTicker: 'AMZN',
-      availability: 'UNAVAILABLE',
-      tier1Evidence: false,
-      comparabilityValid: false,
+      availability: amzn?.spendingDirection ?? 'UNAVAILABLE',
+      primarySignalId: amzn?.id,
+      evidenceObservationIds: amznEvidence,
+      asOfPeriod: amzn?.period,
+      latestEvidencePublishedAt: latestPublishedAt(amznEvidence, AMZN_CAPEX_OBSERVATIONS),
+      tier1Evidence: hasOnlyTier1Evidence(amznEvidence, AMZN_CAPEX_OBSERVATIONS),
+      comparabilityValid: amzn !== undefined,
     },
   ], generatedAt)
 }

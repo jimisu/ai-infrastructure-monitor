@@ -30,7 +30,7 @@ const realIntelligence = createRealIntelligenceViewModel({
   ),
   tsmTrend: tsmResult.trend3M,
   tsmObservations: TSM_METRIC_OBSERVATIONS,
-  sources: ['meta-capex-2026q2-guidance', 'msft-fy2026-q3-earnings-call', 'goog-2025-q4-earnings-call', 'tsmc-ir-main']
+  sources: ['meta-capex-2026q2-guidance', 'msft-fy2026-q3-earnings-call', 'goog-2025-q4-earnings-call', 'amzn-2026-q1-results', 'amzn-2025-q4-results', 'tsmc-ir-main']
     .map(getSourceById)
     .filter((source) => source !== undefined),
 })

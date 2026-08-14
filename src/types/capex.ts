@@ -6,14 +6,23 @@ export type CapexObservationKind =
   | 'GUIDANCE_POINT'
   | 'GUIDANCE_LOWER_BOUND'
   | 'ANNUAL_ACTUAL'
+  | 'TTM_ACTUAL'
   | 'QUARTERLY_ACTUAL'
 
 export interface CapexDefinition {
   id: string
   companyTicker: string
   officialDefinition: string
-  basis: 'MANAGEMENT_REPORTED_TOTAL_CAPEX' | 'CASH_PAID_FOR_PROPERTY_AND_EQUIPMENT' | 'PURCHASES_OF_PROPERTY_AND_EQUIPMENT'
-  financeLeaseTreatment: 'INCLUDED' | 'EXCLUDED_FROM_CASH_MEASURE' | 'AS_REPORTED'
+  basis:
+    | 'MANAGEMENT_REPORTED_TOTAL_CAPEX'
+    | 'CASH_PAID_FOR_PROPERTY_AND_EQUIPMENT'
+    | 'PURCHASES_OF_PROPERTY_AND_EQUIPMENT'
+    | 'PROPERTY_EQUIPMENT_SALES_AND_INCENTIVES'
+    | 'FINANCE_LEASE_ACQUIRED_PROPERTY_AND_EQUIPMENT'
+    | 'PROPERTY_AND_EQUIPMENT_ACQUIRED_NOT_YET_PAID'
+    | 'OPERATING_LEASE_ASSETS'
+    | 'COMPANY_WIDE_CAPITAL_EXPENDITURES_OUTLOOK'
+  financeLeaseTreatment: 'INCLUDED' | 'EXCLUDED_FROM_CASH_MEASURE' | 'AS_REPORTED' | 'NOT_APPLICABLE'
   scope: 'CONSOLIDATED_TOTAL'
   sourceIds: string[]
 }
@@ -33,7 +42,7 @@ export interface NormalizedCapexObservation {
   value: number
   unit: string
   targetPeriod: string
-  targetPeriodType: 'YEAR' | 'QUARTER'
+  targetPeriodType: 'YEAR' | 'QUARTER' | 'TTM'
   guidanceAsOfPeriod?: string
   capexDefinitionId: string
   approximate: boolean
@@ -129,6 +138,22 @@ export interface CompanyCapexForwardImpliedYoYSignal {
   direction: 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL'
   guidanceShape: CapexGuidanceShape
   approximate: boolean
+  generatedAt: string
+  evidenceObservationIds: string[]
+  description: string
+}
+
+
+export interface CompanyCapexTtmYoYActualSignal {
+  id: string
+  signalType: 'CAPEX_TTM_YOY_ACTUAL_TREND'
+  companyTicker: string
+  capexDefinitionId: string
+  period: string
+  currentValue: number
+  priorYearValue: number
+  yoyPercent: number
+  spendingDirection: 'POSITIVE' | 'NEGATIVE' | 'NEUTRAL'
   generatedAt: string
   evidenceObservationIds: string[]
   description: string

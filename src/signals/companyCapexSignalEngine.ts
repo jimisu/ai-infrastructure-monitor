@@ -6,6 +6,7 @@ import type {
   CapexGuidanceRevision,
   CapexQoQGrowth,
   CompanyCapexProfile,
+  CompanyCapexTtmYoYActualSignal,
   CompanyCapexYoYActualTrendSignal,
   NormalizedCapexObservation,
 } from '../types/capex'
@@ -81,6 +82,18 @@ export function normalizeCapexObservations(
 
     if (observation.metric === 'CAPEX_GUIDANCE_LOWER_BOUND' && observation.guidanceAsOfPeriod) {
       return [{ ...observation, kind: 'GUIDANCE_LOWER_BOUND', targetPeriod: observation.period, targetPeriodType: observation.periodType === 'YEAR' ? 'YEAR' : 'QUARTER', capexDefinitionId: definitionId, approximate: observation.approximate ?? false, sourceObservation: observation }]
+    }
+
+    if (observation.metric === 'CAPEX_ACTUAL' && observation.periodType === 'POINT_IN_TIME' && /^TTM-\d{4}-Q[1-4]$/.test(observation.period)) {
+      return [{
+        ...observation,
+        kind: 'TTM_ACTUAL',
+        targetPeriod: observation.period,
+        targetPeriodType: 'TTM',
+        capexDefinitionId: definitionId,
+        approximate: observation.approximate ?? false,
+        sourceObservation: observation,
+      }]
     }
 
     if (observation.metric === 'CAPEX_ACTUAL' && observation.periodType === 'YEAR') {
@@ -526,4 +539,64 @@ export function deriveCompanyCapexForwardImpliedYoYGrowth(
     evidenceObservationIds,
     description: `${profile.companyTicker} ${guidance.targetPeriod} CapEx guidance ${guidance.shape === 'RANGE' ? 'midpoint ' : ''}${guidance.value.toFixed(2)}B implies ${impliedYoYPercent >= 0 ? '+' : ''}${impliedYoYPercent.toFixed(2)}% versus ${priorActualPeriod} actual CapEx ${priorActual.value.toFixed(2)}B.`,
   }
+}
+
+
+interface TtmPeriod {
+  year: number
+  quarter: number
+}
+
+function ttmPeriod(period: string): TtmPeriod | null {
+  const match = /^TTM-(\d{4})-Q([1-4])$/.exec(period)
+  return match ? { year: Number(match[1]), quarter: Number(match[2]) } : null
+}
+
+export function deriveCompanyCapexTtmYoYActualTrends(
+  observations: NormalizedCapexObservation[],
+  profile: CompanyCapexProfile,
+  capexDefinitionId: string,
+  generatedAt: GeneratedAtProvider = systemGeneratedAt
+): CompanyCapexTtmYoYActualSignal[] {
+  if (!profile.capexDefinitionIds.includes(capexDefinitionId)) return []
+
+  const actuals = observations.filter(
+    (observation) =>
+      observation.kind === 'TTM_ACTUAL' &&
+      observation.capexDefinitionId === capexDefinitionId
+  )
+  const byPeriod = new Map(actuals.map((observation) => [observation.targetPeriod, observation]))
+
+  return actuals.flatMap((current): CompanyCapexTtmYoYActualSignal[] => {
+    const currentPeriod = ttmPeriod(current.targetPeriod)
+    if (!currentPeriod) return []
+    const priorPeriod = `TTM-${currentPeriod.year - 1}-Q${currentPeriod.quarter}`
+    const prior = byPeriod.get(priorPeriod)
+    if (!prior || prior.value === 0) return []
+
+    const yoyPercent = ((current.value - prior.value) / prior.value) * 100
+    const spendingDirection =
+      yoyPercent > 0 ? 'POSITIVE' : yoyPercent < 0 ? 'NEGATIVE' : 'NEUTRAL'
+    const evidenceObservationIds = [prior.id, current.id]
+
+    return [{
+      id: buildDerivedSignalId(
+        profile.companyTicker,
+        'CAPEX_TTM_YOY_ACTUAL_TREND',
+        current.targetPeriod,
+        evidenceObservationIds
+      ),
+      signalType: 'CAPEX_TTM_YOY_ACTUAL_TREND',
+      companyTicker: profile.companyTicker,
+      capexDefinitionId,
+      period: current.targetPeriod,
+      currentValue: current.value,
+      priorYearValue: prior.value,
+      yoyPercent,
+      spendingDirection,
+      generatedAt: generatedAt(),
+      evidenceObservationIds,
+      description: `${profile.companyTicker} ${current.targetPeriod} CapEx was ${yoyPercent >= 0 ? '+' : ''}${yoyPercent.toFixed(2)}% year over year using the same TTM definition.`,
+    }]
+  }).sort((a, b) => a.period.localeCompare(b.period))
 }
