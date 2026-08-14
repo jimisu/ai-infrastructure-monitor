@@ -12,11 +12,13 @@
     "preview": "vite preview",
     "ingest:amzn-ppe": "node scripts/ingestion/ingest-amzn-ppe.mjs",
     "verify:ingest:amzn-ppe": "npm run verify:ingest:tsm && node --test tests/ingestion/amznPpeIngestion.test.mjs && node scripts/ingestion/verify-amzn-ppe-downstream.mjs",
-    "verify:ingestion": "node --test tests/ingestion/*.test.mjs && node scripts/ingestion/verify-tsm-downstream.mjs && node scripts/ingestion/verify-amzn-ppe-downstream.mjs && node scripts/ingestion/verify-meta-guidance-downstream.mjs && node scripts/ingestion/verify-goog-guidance-downstream.mjs",
+    "verify:ingestion": "node --test tests/ingestion/*.test.mjs && node scripts/ingestion/verify-tsm-downstream.mjs && node scripts/ingestion/verify-amzn-ppe-downstream.mjs && node scripts/ingestion/verify-meta-guidance-downstream.mjs && node scripts/ingestion/verify-goog-guidance-downstream.mjs && node scripts/ingestion/verify-msft-capex-downstream.mjs",
     "ingest:meta-guidance": "node scripts/ingestion/ingest-meta-guidance.mjs",
     "verify:ingest:meta-guidance": "node --test tests/ingestion/metaGuidanceIngestion.test.mjs && node scripts/ingestion/verify-meta-guidance-downstream.mjs",
     "ingest:goog-guidance": "node scripts/ingestion/ingest-goog-guidance.mjs",
-    "verify:ingest:goog-guidance": "node --test tests/ingestion/googGuidanceIngestion.test.mjs && node scripts/ingestion/verify-goog-guidance-downstream.mjs"
+    "verify:ingest:goog-guidance": "node --test tests/ingestion/googGuidanceIngestion.test.mjs && node scripts/ingestion/verify-goog-guidance-downstream.mjs",
+    "ingest:msft-capex": "node scripts/ingestion/ingest-msft-capex.mjs",
+    "verify:ingest:msft-capex": "node --test tests/ingestion/msftCapexIngestion.test.mjs && node scripts/ingestion/verify-msft-capex-downstream.mjs"
   },
   "dependencies": {
     "react": "^19.2.8",

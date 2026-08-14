@@ -3,7 +3,7 @@ import { AMZN_CAPEX_PROFILE, GOOG_CAPEX_PROFILE, META_CAPEX_PROFILE, MSFT_CAPEX_
 import { AMZN_PRODUCTION_CAPEX_OBSERVATIONS } from '../data/amznPpeObservationProvider'
 import { GOOG_PRODUCTION_CAPEX_OBSERVATIONS } from '../data/googCapexGuidanceObservationProvider'
 import { META_PRODUCTION_CAPEX_OBSERVATIONS } from '../data/metaGuidanceObservationProvider'
-import { MSFT_CAPEX_OBSERVATIONS } from '../data/msftCapexMetrics'
+import { MSFT_PRODUCTION_CAPEX_OBSERVATIONS } from '../data/msftCapexObservationProvider'
 import { getSourceById } from '../data/sources'
 import type { Direction } from '../types/derivedSignal'
 import type {
@@ -172,7 +172,7 @@ export function deriveCurrentHyperscalerCapexTrend(
     .at(-1)
 
   const msftNormalized = normalizeCapexObservations(
-    MSFT_CAPEX_OBSERVATIONS,
+    MSFT_PRODUCTION_CAPEX_OBSERVATIONS,
     MSFT_CAPEX_PROFILE,
     [MSFT_MANAGEMENT_REPORTED_CAPEX_DEFINITION]
   )
@@ -252,8 +252,8 @@ export function deriveCurrentHyperscalerCapexTrend(
       primarySignalId: msft?.id,
       evidenceObservationIds: msftEvidence,
       asOfPeriod: msft?.period,
-      latestEvidencePublishedAt: latestPublishedAt(msftEvidence, MSFT_CAPEX_OBSERVATIONS),
-      tier1Evidence: hasOnlyTier1Evidence(msftEvidence, MSFT_CAPEX_OBSERVATIONS),
+      latestEvidencePublishedAt: latestPublishedAt(msftEvidence, MSFT_PRODUCTION_CAPEX_OBSERVATIONS),
+      tier1Evidence: hasOnlyTier1Evidence(msftEvidence, MSFT_PRODUCTION_CAPEX_OBSERVATIONS),
       comparabilityValid: msft !== undefined,
     },
     {

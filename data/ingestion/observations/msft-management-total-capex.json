@@ -1,0 +1,216 @@
+{
+  "schemaVersion": 2,
+  "pipelineId": "msft-management-total-capex",
+  "issuer": "MSFT",
+  "sourceId": "msft-management-total-capex-official",
+  "latestSnapshotIds": [
+    "raw-snapshot:fixture:sha256:0989878d45cbdb83e42ac2819706d5e20a39d6eb6f1cccea69f40b2cf093a3b0",
+    "raw-snapshot:fixture:sha256:334b277c11fa56d563abf14d3d6b884c02d567fa66dcb979ed99fabf46845573",
+    "raw-snapshot:fixture:sha256:16cc006673a3bd1dfcf394bd4b93c9e4dc6623e9556899384b78fefe6d585430",
+    "raw-snapshot:fixture:sha256:467647ec23e6e6a8c2e693313ef9f7b2c2989194ac21cffa24e890297df56456",
+    "raw-snapshot:fixture:sha256:fdb5a87699219d2a153df8dd58c96b5285be2ba9aacaa566ba462735f54c0b2b",
+    "raw-snapshot:fixture:sha256:b7f4bddc528f8adcd042a91a256246aff7bdcb7df8a0fab2c5dcbbfdde016bd3",
+    "raw-snapshot:fixture:sha256:bfe19ab808b307b47bf94f681bbfd2a325b3fd0622041221692c80143db94662"
+  ],
+  "capexDefinitionId": "msft-management-reported-total-capex",
+  "fiscalCalendar": "MICROSOFT_FISCAL_YEAR_END_JUNE_30",
+  "financeLeaseTreatment": "INCLUDED",
+  "records": [
+    {
+      "recordId": "canonical-record:sha256:27f8230760dee4b2d35e15803845b71f42aa3496e75d66af2170cc1717e43936",
+      "sourceDocumentVersionId": "microsoft-msft-fy2025-q1-earnings-call",
+      "logicalFactKey": "MSFT|CAPEX_ACTUAL|QUARTER|MSFT-FY2025-Q1|USD billions|msft-fy2025-q1-earnings-call|msft-management-reported-total-capex",
+      "snapshotId": "raw-snapshot:fixture:sha256:0989878d45cbdb83e42ac2819706d5e20a39d6eb6f1cccea69f40b2cf093a3b0",
+      "sourceLocator": {
+        "document": "Microsoft official earnings-call transcript",
+        "issuerFiscalPeriod": "MSFT-FY2025-Q1",
+        "disclosure": "Capital expenditures including finance leases were $20 billion"
+      },
+      "status": "ACTIVE",
+      "supersedesRecordId": null,
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "msft-fy2025-q1-management-total-capex",
+        "companyTicker": "MSFT",
+        "metric": "CAPEX_ACTUAL",
+        "value": 20,
+        "unit": "USD billions",
+        "period": "MSFT-FY2025-Q1",
+        "periodType": "QUARTER",
+        "capexDefinitionId": "msft-management-reported-total-capex",
+        "publishedAt": "2024-10-30T21:30:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
+        "sourceId": "msft-fy2025-q1-earnings-call",
+        "sourceUrl": "https://www.microsoft.com/en-us/investor/events/fy-2025/earnings-fy-2025-q1"
+      }
+    },
+    {
+      "recordId": "canonical-record:sha256:d2bc2b92ff8ddd56b8e41577967698ad8fc627ea05ed2e42b8181a44bcb32d94",
+      "sourceDocumentVersionId": "microsoft-msft-fy2025-q2-earnings-call",
+      "logicalFactKey": "MSFT|CAPEX_ACTUAL|QUARTER|MSFT-FY2025-Q2|USD billions|msft-fy2025-q2-earnings-call|msft-management-reported-total-capex",
+      "snapshotId": "raw-snapshot:fixture:sha256:334b277c11fa56d563abf14d3d6b884c02d567fa66dcb979ed99fabf46845573",
+      "sourceLocator": {
+        "document": "Microsoft official earnings-call transcript",
+        "issuerFiscalPeriod": "MSFT-FY2025-Q2",
+        "disclosure": "Capital expenditures including finance leases were $22.6 billion"
+      },
+      "status": "ACTIVE",
+      "supersedesRecordId": null,
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "msft-fy2025-q2-management-total-capex",
+        "companyTicker": "MSFT",
+        "metric": "CAPEX_ACTUAL",
+        "value": 22.6,
+        "unit": "USD billions",
+        "period": "MSFT-FY2025-Q2",
+        "periodType": "QUARTER",
+        "capexDefinitionId": "msft-management-reported-total-capex",
+        "publishedAt": "2025-01-29T21:30:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
+        "sourceId": "msft-fy2025-q2-earnings-call",
+        "sourceUrl": "https://www.microsoft.com/en-us/investor/events/fy-2025/earnings-fy-2025-q2"
+      }
+    },
+    {
+      "recordId": "canonical-record:sha256:91237267841a8862cfa1e8a4d26b60c1037699376f8beb44a137d559d096cf8c",
+      "sourceDocumentVersionId": "microsoft-msft-fy2025-q3-earnings-call",
+      "logicalFactKey": "MSFT|CAPEX_ACTUAL|QUARTER|MSFT-FY2025-Q3|USD billions|msft-fy2025-q3-earnings-call|msft-management-reported-total-capex",
+      "snapshotId": "raw-snapshot:fixture:sha256:16cc006673a3bd1dfcf394bd4b93c9e4dc6623e9556899384b78fefe6d585430",
+      "sourceLocator": {
+        "document": "Microsoft official earnings-call transcript",
+        "issuerFiscalPeriod": "MSFT-FY2025-Q3",
+        "disclosure": "Capital expenditures including finance leases were $21.4 billion"
+      },
+      "status": "ACTIVE",
+      "supersedesRecordId": null,
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "msft-fy2025-q3-management-total-capex",
+        "companyTicker": "MSFT",
+        "metric": "CAPEX_ACTUAL",
+        "value": 21.4,
+        "unit": "USD billions",
+        "period": "MSFT-FY2025-Q3",
+        "periodType": "QUARTER",
+        "capexDefinitionId": "msft-management-reported-total-capex",
+        "publishedAt": "2025-04-30T21:30:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
+        "sourceId": "msft-fy2025-q3-earnings-call",
+        "sourceUrl": "https://www.microsoft.com/en-us/investor/events/fy-2025/earnings-fy-2025-q3"
+      }
+    },
+    {
+      "recordId": "canonical-record:sha256:6cb65599c21324a87e0b607e85616e2f760b66418927f1d6a58bbd56f09ec757",
+      "sourceDocumentVersionId": "microsoft-msft-fy2025-q4-earnings-call",
+      "logicalFactKey": "MSFT|CAPEX_ACTUAL|QUARTER|MSFT-FY2025-Q4|USD billions|msft-fy2025-q4-earnings-call|msft-management-reported-total-capex",
+      "snapshotId": "raw-snapshot:fixture:sha256:467647ec23e6e6a8c2e693313ef9f7b2c2989194ac21cffa24e890297df56456",
+      "sourceLocator": {
+        "document": "Microsoft official earnings-call transcript",
+        "issuerFiscalPeriod": "MSFT-FY2025-Q4",
+        "disclosure": "Capital expenditures including finance leases were $24.2 billion"
+      },
+      "status": "ACTIVE",
+      "supersedesRecordId": null,
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "msft-fy2025-q4-management-total-capex",
+        "companyTicker": "MSFT",
+        "metric": "CAPEX_ACTUAL",
+        "value": 24.2,
+        "unit": "USD billions",
+        "period": "MSFT-FY2025-Q4",
+        "periodType": "QUARTER",
+        "capexDefinitionId": "msft-management-reported-total-capex",
+        "publishedAt": "2025-07-30T21:30:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
+        "sourceId": "msft-fy2025-q4-earnings-call",
+        "sourceUrl": "https://www.microsoft.com/en-us/investor/events/fy-2025/earnings-fy-2025-q4"
+      }
+    },
+    {
+      "recordId": "canonical-record:sha256:7c043761a819d6aa959a41e8889f61d73b845ed487a7baa6482ea6fb454eab1b",
+      "sourceDocumentVersionId": "microsoft-msft-fy2026-q1-earnings-call",
+      "logicalFactKey": "MSFT|CAPEX_ACTUAL|QUARTER|MSFT-FY2026-Q1|USD billions|msft-fy2026-q1-earnings-call|msft-management-reported-total-capex",
+      "snapshotId": "raw-snapshot:fixture:sha256:fdb5a87699219d2a153df8dd58c96b5285be2ba9aacaa566ba462735f54c0b2b",
+      "sourceLocator": {
+        "document": "Microsoft official earnings-call transcript",
+        "issuerFiscalPeriod": "MSFT-FY2026-Q1",
+        "disclosure": "Capital expenditures including finance leases were $34.9 billion"
+      },
+      "status": "ACTIVE",
+      "supersedesRecordId": null,
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "msft-fy2026-q1-management-total-capex",
+        "companyTicker": "MSFT",
+        "metric": "CAPEX_ACTUAL",
+        "value": 34.9,
+        "unit": "USD billions",
+        "period": "MSFT-FY2026-Q1",
+        "periodType": "QUARTER",
+        "capexDefinitionId": "msft-management-reported-total-capex",
+        "publishedAt": "2025-10-29T21:30:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
+        "sourceId": "msft-fy2026-q1-earnings-call",
+        "sourceUrl": "https://www.microsoft.com/en-us/investor/events/fy-2026/earnings-fy-2026-q1"
+      }
+    },
+    {
+      "recordId": "canonical-record:sha256:f53dd70b4d24f62be3b720771c832a9f549493aec03c93153cdaf5ab857f638b",
+      "sourceDocumentVersionId": "microsoft-msft-fy2026-q2-earnings-call",
+      "logicalFactKey": "MSFT|CAPEX_ACTUAL|QUARTER|MSFT-FY2026-Q2|USD billions|msft-fy2026-q2-earnings-call|msft-management-reported-total-capex",
+      "snapshotId": "raw-snapshot:fixture:sha256:b7f4bddc528f8adcd042a91a256246aff7bdcb7df8a0fab2c5dcbbfdde016bd3",
+      "sourceLocator": {
+        "document": "Microsoft official earnings-call transcript",
+        "issuerFiscalPeriod": "MSFT-FY2026-Q2",
+        "disclosure": "Capital expenditures including finance leases were $37.5 billion"
+      },
+      "status": "ACTIVE",
+      "supersedesRecordId": null,
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "msft-fy2026-q2-management-total-capex",
+        "companyTicker": "MSFT",
+        "metric": "CAPEX_ACTUAL",
+        "value": 37.5,
+        "unit": "USD billions",
+        "period": "MSFT-FY2026-Q2",
+        "periodType": "QUARTER",
+        "capexDefinitionId": "msft-management-reported-total-capex",
+        "publishedAt": "2026-01-28T21:30:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
+        "sourceId": "msft-fy2026-q2-earnings-call",
+        "sourceUrl": "https://www.microsoft.com/en-us/investor/events/fy-2026/earnings-fy-2026-q2"
+      }
+    },
+    {
+      "recordId": "canonical-record:sha256:d0fcf446f6166d1cb8fa9442d75aad1b5116abd1901401872462bd19ef7434fd",
+      "sourceDocumentVersionId": "microsoft-msft-fy2026-q3-earnings-call",
+      "logicalFactKey": "MSFT|CAPEX_ACTUAL|QUARTER|MSFT-FY2026-Q3|USD billions|msft-fy2026-q3-earnings-call|msft-management-reported-total-capex",
+      "snapshotId": "raw-snapshot:fixture:sha256:bfe19ab808b307b47bf94f681bbfd2a325b3fd0622041221692c80143db94662",
+      "sourceLocator": {
+        "document": "Microsoft official earnings-call transcript",
+        "issuerFiscalPeriod": "MSFT-FY2026-Q3",
+        "disclosure": "Capital expenditures including finance leases were $31.9 billion"
+      },
+      "status": "ACTIVE",
+      "supersedesRecordId": null,
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "msft-fy2026-q3-management-total-capex",
+        "companyTicker": "MSFT",
+        "metric": "CAPEX_ACTUAL",
+        "value": 31.9,
+        "unit": "USD billions",
+        "period": "MSFT-FY2026-Q3",
+        "periodType": "QUARTER",
+        "capexDefinitionId": "msft-management-reported-total-capex",
+        "publishedAt": "2026-04-29T21:30:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
+        "sourceId": "msft-fy2026-q3-earnings-call",
+        "sourceUrl": "https://www.microsoft.com/en-us/investor/events/fy-2026/earnings-fy-2026-q3"
+      }
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "snapshotId": "raw-snapshot:fixture:sha256:fdb5a87699219d2a153df8dd58c96b5285be2ba9aacaa566ba462735f54c0b2b",
+  "acquisitionMode": "FIXTURE",
+  "sourceId": "msft-management-total-capex-official",
+  "issuer": "MSFT",
+  "requestedUrl": null,
+  "finalUrl": null,
+  "evidenceUrl": "https://www.microsoft.com/en-us/investor/events/fy-2026/earnings-fy-2026-q1",
+  "acquisitionChannel": "FIXTURE",
+  "fixture": {
+    "fixtureId": "microsoft-msft-fy2026-q1-earnings-call",
+    "fixturePath": "tests/ingestion/msftCapexIngestion.test.mjs",
+    "contentHash": "fc67010daeab3a783512c50e27476bddb1e7184ee4e8098f6dc81929b2f1137c"
+  },
+  "retrievedAt": "2026-08-14T00:00:00.000Z",
+  "httpStatus": 200,
+  "contentType": "text/html",
+  "contentLength": 206,
+  "sha256": "fc67010daeab3a783512c50e27476bddb1e7184ee4e8098f6dc81929b2f1137c",
+  "rawContentPath": "raw/MSFT/fc67010daeab3a783512c50e27476bddb1e7184ee4e8098f6dc81929b2f1137c.html",
+  "manifestPath": "manifests/MSFT/fdb5a87699219d2a153df8dd58c96b5285be2ba9aacaa566ba462735f54c0b2b.json",
+  "provenance": {
+    "issuer": "Microsoft Corporation",
+    "economicIssuer": "MSFT",
+    "evidenceDocument": "Microsoft official earnings-call transcript",
+    "publicationVenue": "Microsoft Investor Relations",
+    "acquisitionChannel": "MICROSOFT_INVESTOR_RELATIONS",
+    "documentType": "EARNINGS_CALL_TRANSCRIPT",
+    "evidenceUrl": "https://www.microsoft.com/en-us/investor/events/fy-2026/earnings-fy-2026-q1",
+    "sourceDocumentVersionId": "microsoft-msft-fy2026-q1-earnings-call",
+    "issuerFiscalPeriod": "MSFT-FY2026-Q1",
+    "fiscalYearEnd": "June 30",
+    "sourceId": "msft-fy2026-q1-earnings-call",
+    "publishedAt": "2025-10-29T21:30:00.000Z",
+    "definitionId": "msft-management-reported-total-capex"
+  }
+}
