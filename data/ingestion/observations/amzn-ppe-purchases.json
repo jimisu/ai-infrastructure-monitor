@@ -1,13 +1,18 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
+  "pipelineId": "amzn-ppe-purchases",
   "issuer": "AMZN",
   "sourceId": "amzn-2026-q1-results",
+  "latestSnapshotIds": [
+    "raw-snapshot:fixture:sha256:f470edd6d6afc43c37a9465c4827d7d9289015b277350ba72684cd75c9e01abe"
+  ],
   "capexDefinitionId": "amzn-purchases-of-property-and-equipment",
-  "latestSnapshotId": "raw-snapshot:sha256:5ffb4f5beaaec305edda5ad8e9f78d895a08754975e73b712d7a5a317d9a41d4",
   "records": [
     {
+      "recordId": "canonical-record:sha256:1bac8befa0d2e1087c180e8bd0a6c3c1a720aa7ecb4fbe5b0e4c81b22e0cc5bd",
+      "sourceDocumentVersionId": "0001018724-26-000014",
       "logicalFactKey": "AMZN|CAPEX_ACTUAL|POINT_IN_TIME|TTM-2025-Q1|USD billions|amzn-2026-q1-results|amzn-purchases-of-property-and-equipment",
-      "snapshotId": "raw-snapshot:sha256:5ffb4f5beaaec305edda5ad8e9f78d895a08754975e73b712d7a5a317d9a41d4",
+      "snapshotId": "raw-snapshot:fixture:sha256:f470edd6d6afc43c37a9465c4827d7d9289015b277350ba72684cd75c9e01abe",
       "sourceLocator": {
         "accessionNumber": "0001018724-26-000014",
         "primaryDocument": "amzn-20260331.htm",
@@ -20,6 +25,7 @@
         ]
       },
       "status": "ACTIVE",
+      "supersedesRecordId": null,
       "supersedesObservationId": null,
       "observation": {
         "id": "metric-observation:sha256:97faa2eba62d16b828d75ff019bfc33e11bcb890a714ef696bcdda026f96869c",
@@ -37,8 +43,10 @@
       }
     },
     {
+      "recordId": "canonical-record:sha256:b6ca7e761a574c069a304a000305e92a09e5d1f8ae8f99bc827d24c21d80142b",
+      "sourceDocumentVersionId": "0001018724-26-000014",
       "logicalFactKey": "AMZN|CAPEX_ACTUAL|POINT_IN_TIME|TTM-2026-Q1|USD billions|amzn-2026-q1-results|amzn-purchases-of-property-and-equipment",
-      "snapshotId": "raw-snapshot:sha256:5ffb4f5beaaec305edda5ad8e9f78d895a08754975e73b712d7a5a317d9a41d4",
+      "snapshotId": "raw-snapshot:fixture:sha256:f470edd6d6afc43c37a9465c4827d7d9289015b277350ba72684cd75c9e01abe",
       "sourceLocator": {
         "accessionNumber": "0001018724-26-000014",
         "primaryDocument": "amzn-20260331.htm",
@@ -51,6 +59,7 @@
         ]
       },
       "status": "ACTIVE",
+      "supersedesRecordId": null,
       "supersedesObservationId": null,
       "observation": {
         "id": "metric-observation:sha256:8ea956b20d0a7c4fc560397b36d83ec1f7795781a4679ff3c25e65b3bb917f1a",

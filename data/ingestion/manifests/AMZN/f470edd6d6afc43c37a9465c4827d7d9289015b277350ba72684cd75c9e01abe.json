@@ -1,15 +1,24 @@
 {
-  "snapshotId": "raw-snapshot:sha256:5ffb4f5beaaec305edda5ad8e9f78d895a08754975e73b712d7a5a317d9a41d4",
+  "snapshotId": "raw-snapshot:fixture:sha256:f470edd6d6afc43c37a9465c4827d7d9289015b277350ba72684cd75c9e01abe",
+  "acquisitionMode": "FIXTURE",
   "sourceId": "amzn-2026-q1-results",
   "issuer": "AMZN",
-  "requestedUrl": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000014/amzn-20260331.htm",
-  "finalUrl": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000014/amzn-20260331.htm",
+  "requestedUrl": null,
+  "finalUrl": null,
+  "evidenceUrl": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000014/amzn-20260331.htm",
+  "acquisitionChannel": "FIXTURE",
+  "fixture": {
+    "fixtureId": "0001018724-26-000014",
+    "fixturePath": "tests/fixtures/ingestion/amzn/2026-q1-10q-ppe.html",
+    "contentHash": "5ffb4f5beaaec305edda5ad8e9f78d895a08754975e73b712d7a5a317d9a41d4"
+  },
   "retrievedAt": "2026-08-14T00:00:00.000Z",
   "httpStatus": 200,
-  "contentType": "text/html; charset=utf-8",
+  "contentType": "text/html",
   "contentLength": 965,
   "sha256": "5ffb4f5beaaec305edda5ad8e9f78d895a08754975e73b712d7a5a317d9a41d4",
   "rawContentPath": "raw/AMZN/5ffb4f5beaaec305edda5ad8e9f78d895a08754975e73b712d7a5a317d9a41d4.html",
+  "manifestPath": "manifests/AMZN/f470edd6d6afc43c37a9465c4827d7d9289015b277350ba72684cd75c9e01abe.json",
   "provenance": {
     "cik": "0001018724",
     "accessionNumber": "0001018724-26-000014",

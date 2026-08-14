@@ -2,7 +2,7 @@ import { AMZN_2026_CAPEX_OUTLOOK_DEFINITION, AMZN_PP_AND_E_PURCHASES_DEFINITION,
 import { AMZN_CAPEX_PROFILE, GOOG_CAPEX_PROFILE, META_CAPEX_PROFILE, MSFT_CAPEX_PROFILE } from '../config/hyperscalerCapexProfiles'
 import { AMZN_PRODUCTION_CAPEX_OBSERVATIONS } from '../data/amznPpeObservationProvider'
 import { GOOG_CAPEX_OBSERVATIONS } from '../data/googCapexMetrics'
-import { META_CAPEX_OBSERVATIONS } from '../data/metaCapexMetrics'
+import { META_PRODUCTION_CAPEX_OBSERVATIONS } from '../data/metaGuidanceObservationProvider'
 import { MSFT_CAPEX_OBSERVATIONS } from '../data/msftCapexMetrics'
 import { getSourceById } from '../data/sources'
 import type { Direction } from '../types/derivedSignal'
@@ -139,7 +139,7 @@ export function deriveHyperscalerCapexTrend(
   }
 }
 
-function latestPublishedAt(evidenceIds: string[], observations: typeof META_CAPEX_OBSERVATIONS): string {
+function latestPublishedAt(evidenceIds: string[], observations: typeof META_PRODUCTION_CAPEX_OBSERVATIONS): string {
   const evidence = new Set(evidenceIds)
   return observations
     .filter((observation) => evidence.has(observation.id))
@@ -148,7 +148,7 @@ function latestPublishedAt(evidenceIds: string[], observations: typeof META_CAPE
     .at(-1) ?? ''
 }
 
-function hasOnlyTier1Evidence(evidenceIds: string[], observations: typeof META_CAPEX_OBSERVATIONS): boolean {
+function hasOnlyTier1Evidence(evidenceIds: string[], observations: typeof META_PRODUCTION_CAPEX_OBSERVATIONS): boolean {
   const evidence = new Set(evidenceIds)
   const selected = observations.filter((observation) => evidence.has(observation.id))
   return selected.length === evidence.size && selected.every(
@@ -160,7 +160,7 @@ export function deriveCurrentHyperscalerCapexTrend(
   generatedAt: GeneratedAtProvider = systemGeneratedAt
 ): HyperscalerCapexTrend | null {
   const metaNormalized = normalizeCapexObservations(
-    META_CAPEX_OBSERVATIONS,
+    META_PRODUCTION_CAPEX_OBSERVATIONS,
     META_CAPEX_PROFILE,
     [META_CAPEX_DEFINITION]
   )
@@ -236,14 +236,14 @@ export function deriveCurrentHyperscalerCapexTrend(
       availability: meta?.direction ?? 'UNAVAILABLE',
       primarySignalId: meta?.id,
       evidenceObservationIds: metaEvidence,
-      asOfPeriod: META_CAPEX_OBSERVATIONS
+      asOfPeriod: META_PRODUCTION_CAPEX_OBSERVATIONS
         .filter((observation) => metaEvidence.includes(observation.id))
         .map((observation) => observation.guidanceAsOfPeriod)
         .filter((period): period is string => period !== undefined)
         .sort()
         .at(-1),
-      latestEvidencePublishedAt: latestPublishedAt(metaEvidence, META_CAPEX_OBSERVATIONS),
-      tier1Evidence: hasOnlyTier1Evidence(metaEvidence, META_CAPEX_OBSERVATIONS),
+      latestEvidencePublishedAt: latestPublishedAt(metaEvidence, META_PRODUCTION_CAPEX_OBSERVATIONS),
+      tier1Evidence: hasOnlyTier1Evidence(metaEvidence, META_PRODUCTION_CAPEX_OBSERVATIONS),
       comparabilityValid: meta !== undefined,
     },
     {

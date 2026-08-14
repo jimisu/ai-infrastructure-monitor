@@ -1,0 +1,35 @@
+{
+  "snapshotId": "raw-snapshot:fixture:sha256:f1e7ce45fe495d6cbd3844d4ea8b68aa4f62358233b1a35dabe7bb5625622d15",
+  "acquisitionMode": "FIXTURE",
+  "sourceId": "tsmc-monthly-revenue",
+  "issuer": "TSM",
+  "requestedUrl": null,
+  "finalUrl": null,
+  "evidenceUrl": "https://www.sec.gov/Archives/edgar/data/1046179/000104617926000136/tsm-revenue20260410.htm",
+  "acquisitionChannel": "FIXTURE",
+  "fixture": {
+    "fixtureId": "0001046179-26-000136",
+    "fixturePath": "tests/ingestion/tsmSecIngestion.test.mjs",
+    "contentHash": "9d88e5a99c27b7ee2dc6f7cef9b87bfe34529a467e80f81cfba3adbdff4d2cc0"
+  },
+  "retrievedAt": "2026-08-14T00:00:00.000Z",
+  "httpStatus": 200,
+  "contentType": "text/html; charset=utf-8",
+  "contentLength": 484,
+  "sha256": "9d88e5a99c27b7ee2dc6f7cef9b87bfe34529a467e80f81cfba3adbdff4d2cc0",
+  "rawContentPath": "raw/TSM/9d88e5a99c27b7ee2dc6f7cef9b87bfe34529a467e80f81cfba3adbdff4d2cc0.html",
+  "manifestPath": "manifests/TSM/f1e7ce45fe495d6cbd3844d4ea8b68aa4f62358233b1a35dabe7bb5625622d15.json",
+  "provenance": {
+    "cik": "0001046179",
+    "accessionNumber": "0001046179-26-000136",
+    "formType": "6-K",
+    "filingDate": "2026-04-10",
+    "primaryDocument": "tsm-revenue20260410.htm",
+    "secFilingUrl": "https://www.sec.gov/Archives/edgar/data/1046179/000104617926000136/tsm-revenue20260410.htm",
+    "issuer": "TSMC",
+    "evidenceSourceId": "tsmc-monthly-revenue",
+    "evidenceDocument": "ISSUER_FILED_FORM_6_K",
+    "filedWith": "SEC EDGAR",
+    "acquisitionChannel": "SEC_EDGAR"
+  }
+}

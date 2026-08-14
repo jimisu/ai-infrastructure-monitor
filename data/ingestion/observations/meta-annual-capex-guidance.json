@@ -1,0 +1,194 @@
+{
+  "schemaVersion": 2,
+  "pipelineId": "meta-annual-capex-guidance",
+  "issuer": "META",
+  "sourceId": "meta-annual-capex-guidance-sec",
+  "latestSnapshotIds": [
+    "raw-snapshot:fixture:sha256:bb60dc2817c8a84636c79ccdc1bda616a35327cb77af4f05a9de1cf607023b37",
+    "raw-snapshot:fixture:sha256:42f4ee8b57e3c7d5d6807b6d481456717d6dd9ec13bc5b4a7c619d7ed7f92ea9",
+    "raw-snapshot:fixture:sha256:acd6ef46cbec43e6ea220c92c09b0314ef119881772f334600b049b32cf22421"
+  ],
+  "capexDefinitionId": "meta-capex-including-finance-lease-principal",
+  "records": [
+    {
+      "recordId": "canonical-record:sha256:8aa33189bf1a437043d23ee4c2de22e3b588b8311dff0fa940ca2ff354a558c0",
+      "sourceDocumentVersionId": "0001628280-26-003942",
+      "logicalFactKey": "META|CAPEX_GUIDANCE_HIGH|YEAR|2026|2025-Q4|RANGE|USD billions|meta-capex-2025q4-guidance|meta-capex-including-finance-lease-principal",
+      "snapshotId": "raw-snapshot:fixture:sha256:bb60dc2817c8a84636c79ccdc1bda616a35327cb77af4f05a9de1cf607023b37",
+      "sourceLocator": {
+        "accessionNumber": "0001628280-26-003942",
+        "primaryDocument": "meta-20251231.htm",
+        "section": "Liquidity and Capital Resources",
+        "disclosure": "anticipate making capital expenditures of approximately $115 billion to $135 billion in 2026"
+      },
+      "status": "ACTIVE",
+      "supersedesRecordId": null,
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "meta-2026-full-year-capex-guidance-high-2025q4",
+        "companyTicker": "META",
+        "metric": "CAPEX_GUIDANCE_HIGH",
+        "value": 135,
+        "unit": "USD billions",
+        "period": "2026",
+        "periodType": "YEAR",
+        "guidanceAsOfPeriod": "2025-Q4",
+        "capexDefinitionId": "meta-capex-including-finance-lease-principal",
+        "publishedAt": "2026-01-29T00:00:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
+        "sourceId": "meta-capex-2025q4-guidance",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026003942/meta-20251231.htm"
+      }
+    },
+    {
+      "recordId": "canonical-record:sha256:4f8723a738e1aacf2b3bd85c0a4debab4705b718747d9211e5630e253520ce25",
+      "sourceDocumentVersionId": "0001628280-26-028526",
+      "logicalFactKey": "META|CAPEX_GUIDANCE_HIGH|YEAR|2026|2026-Q1|RANGE|USD billions|meta-capex-2026q1-guidance|meta-capex-including-finance-lease-principal",
+      "snapshotId": "raw-snapshot:fixture:sha256:42f4ee8b57e3c7d5d6807b6d481456717d6dd9ec13bc5b4a7c619d7ed7f92ea9",
+      "sourceLocator": {
+        "accessionNumber": "0001628280-26-028526",
+        "primaryDocument": "meta-20260331.htm",
+        "section": "Liquidity and Capital Resources",
+        "disclosure": "anticipate making capital expenditures of approximately $125 billion to $145 billion in 2026"
+      },
+      "status": "ACTIVE",
+      "supersedesRecordId": null,
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "meta-2026-q1-capex-guidance-high",
+        "companyTicker": "META",
+        "metric": "CAPEX_GUIDANCE_HIGH",
+        "value": 145,
+        "unit": "USD billions",
+        "period": "2026",
+        "periodType": "YEAR",
+        "guidanceAsOfPeriod": "2026-Q1",
+        "capexDefinitionId": "meta-capex-including-finance-lease-principal",
+        "publishedAt": "2026-04-30T00:00:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
+        "sourceId": "meta-capex-2026q1-guidance",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026028526/meta-20260331.htm"
+      }
+    },
+    {
+      "recordId": "canonical-record:sha256:b2e24764ec7f6b97acb66279f86820ac802188c7df2890d09f20fb3efe5a9af7",
+      "sourceDocumentVersionId": "0001628280-26-050705",
+      "logicalFactKey": "META|CAPEX_GUIDANCE_HIGH|YEAR|2026|2026-Q2|RANGE|USD billions|meta-capex-2026q2-guidance|meta-capex-including-finance-lease-principal",
+      "snapshotId": "raw-snapshot:fixture:sha256:acd6ef46cbec43e6ea220c92c09b0314ef119881772f334600b049b32cf22421",
+      "sourceLocator": {
+        "accessionNumber": "0001628280-26-050705",
+        "primaryDocument": "meta-20260630.htm",
+        "section": "Liquidity and Capital Resources",
+        "disclosure": "anticipate making capital expenditures of approximately $130 billion to $145 billion in 2026"
+      },
+      "status": "ACTIVE",
+      "supersedesRecordId": null,
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "meta-2026-q2-capex-guidance-high",
+        "companyTicker": "META",
+        "metric": "CAPEX_GUIDANCE_HIGH",
+        "value": 145,
+        "unit": "USD billions",
+        "period": "2026",
+        "periodType": "YEAR",
+        "guidanceAsOfPeriod": "2026-Q2",
+        "capexDefinitionId": "meta-capex-including-finance-lease-principal",
+        "publishedAt": "2026-07-30T00:00:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
+        "sourceId": "meta-capex-2026q2-guidance",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026050705/meta-20260630.htm"
+      }
+    },
+    {
+      "recordId": "canonical-record:sha256:1517f95c310a0d09516327bc6f9cf6d66e8707a4d1f1005e30108e9a8e2ba009",
+      "sourceDocumentVersionId": "0001628280-26-003942",
+      "logicalFactKey": "META|CAPEX_GUIDANCE_LOW|YEAR|2026|2025-Q4|RANGE|USD billions|meta-capex-2025q4-guidance|meta-capex-including-finance-lease-principal",
+      "snapshotId": "raw-snapshot:fixture:sha256:bb60dc2817c8a84636c79ccdc1bda616a35327cb77af4f05a9de1cf607023b37",
+      "sourceLocator": {
+        "accessionNumber": "0001628280-26-003942",
+        "primaryDocument": "meta-20251231.htm",
+        "section": "Liquidity and Capital Resources",
+        "disclosure": "anticipate making capital expenditures of approximately $115 billion to $135 billion in 2026"
+      },
+      "status": "ACTIVE",
+      "supersedesRecordId": null,
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "meta-2026-full-year-capex-guidance-low-2025q4",
+        "companyTicker": "META",
+        "metric": "CAPEX_GUIDANCE_LOW",
+        "value": 115,
+        "unit": "USD billions",
+        "period": "2026",
+        "periodType": "YEAR",
+        "guidanceAsOfPeriod": "2025-Q4",
+        "capexDefinitionId": "meta-capex-including-finance-lease-principal",
+        "publishedAt": "2026-01-29T00:00:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
+        "sourceId": "meta-capex-2025q4-guidance",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026003942/meta-20251231.htm"
+      }
+    },
+    {
+      "recordId": "canonical-record:sha256:b003bbac78536c4883a713232770e311ede3aed3988e9ab58a5f5f75300b30c3",
+      "sourceDocumentVersionId": "0001628280-26-028526",
+      "logicalFactKey": "META|CAPEX_GUIDANCE_LOW|YEAR|2026|2026-Q1|RANGE|USD billions|meta-capex-2026q1-guidance|meta-capex-including-finance-lease-principal",
+      "snapshotId": "raw-snapshot:fixture:sha256:42f4ee8b57e3c7d5d6807b6d481456717d6dd9ec13bc5b4a7c619d7ed7f92ea9",
+      "sourceLocator": {
+        "accessionNumber": "0001628280-26-028526",
+        "primaryDocument": "meta-20260331.htm",
+        "section": "Liquidity and Capital Resources",
+        "disclosure": "anticipate making capital expenditures of approximately $125 billion to $145 billion in 2026"
+      },
+      "status": "ACTIVE",
+      "supersedesRecordId": null,
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "meta-2026-q1-capex-guidance-low",
+        "companyTicker": "META",
+        "metric": "CAPEX_GUIDANCE_LOW",
+        "value": 125,
+        "unit": "USD billions",
+        "period": "2026",
+        "periodType": "YEAR",
+        "guidanceAsOfPeriod": "2026-Q1",
+        "capexDefinitionId": "meta-capex-including-finance-lease-principal",
+        "publishedAt": "2026-04-30T00:00:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
+        "sourceId": "meta-capex-2026q1-guidance",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026028526/meta-20260331.htm"
+      }
+    },
+    {
+      "recordId": "canonical-record:sha256:5e9f23c19d67d3568a9ee5aa9efc12fecf312d580e6e505a01dc2c6283866112",
+      "sourceDocumentVersionId": "0001628280-26-050705",
+      "logicalFactKey": "META|CAPEX_GUIDANCE_LOW|YEAR|2026|2026-Q2|RANGE|USD billions|meta-capex-2026q2-guidance|meta-capex-including-finance-lease-principal",
+      "snapshotId": "raw-snapshot:fixture:sha256:acd6ef46cbec43e6ea220c92c09b0314ef119881772f334600b049b32cf22421",
+      "sourceLocator": {
+        "accessionNumber": "0001628280-26-050705",
+        "primaryDocument": "meta-20260630.htm",
+        "section": "Liquidity and Capital Resources",
+        "disclosure": "anticipate making capital expenditures of approximately $130 billion to $145 billion in 2026"
+      },
+      "status": "ACTIVE",
+      "supersedesRecordId": null,
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "meta-2026-q2-capex-guidance-low",
+        "companyTicker": "META",
+        "metric": "CAPEX_GUIDANCE_LOW",
+        "value": 130,
+        "unit": "USD billions",
+        "period": "2026",
+        "periodType": "YEAR",
+        "guidanceAsOfPeriod": "2026-Q2",
+        "capexDefinitionId": "meta-capex-including-finance-lease-principal",
+        "publishedAt": "2026-07-30T00:00:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
+        "sourceId": "meta-capex-2026q2-guidance",
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026050705/meta-20260630.htm"
+      }
+    }
+  ]
+}

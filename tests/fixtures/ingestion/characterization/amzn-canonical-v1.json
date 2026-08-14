@@ -1,0 +1,18 @@
+[
+  {
+    "logicalFactKey": "AMZN|CAPEX_ACTUAL|POINT_IN_TIME|TTM-2025-Q1|USD billions|amzn-2026-q1-results|amzn-purchases-of-property-and-equipment",
+    "id": "metric-observation:sha256:97faa2eba62d16b828d75ff019bfc33e11bcb890a714ef696bcdda026f96869c",
+    "period": "TTM-2025-Q1",
+    "metric": "CAPEX_ACTUAL",
+    "value": 93.093,
+    "unit": "USD billions"
+  },
+  {
+    "logicalFactKey": "AMZN|CAPEX_ACTUAL|POINT_IN_TIME|TTM-2026-Q1|USD billions|amzn-2026-q1-results|amzn-purchases-of-property-and-equipment",
+    "id": "metric-observation:sha256:8ea956b20d0a7c4fc560397b36d83ec1f7795781a4679ff3c25e65b3bb917f1a",
+    "period": "TTM-2026-Q1",
+    "metric": "CAPEX_ACTUAL",
+    "value": 151.003,
+    "unit": "USD billions"
+  }
+]

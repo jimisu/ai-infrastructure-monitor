@@ -1,0 +1,43 @@
+import assert from 'node:assert/strict'
+import { mkdtemp, readFile } from 'node:fs/promises'
+import os from 'node:os'
+import path from 'node:path'
+import test from 'node:test'
+import { META_SEC_ACQUISITION, discoverMetaGuidanceFilings, ingestMetaAnnualGuidance, parseMetaAnnualCapexGuidance, validateMetaGuidanceRange, IngestionError } from '../../scripts/ingestion/meta-guidance-lib.mjs'
+
+const agent = 'AI Infrastructure Monitor tests maintainer@example.com'
+const filings = [
+  { accessionNumber: '0001628280-26-003942', filingDate: '2026-01-29', reportDate: '2025-12-31', form: '10-K', primaryDocument: 'meta-20251231.htm', fixture: 'tests/fixtures/ingestion/meta/2025-10k-guidance.html' },
+  { accessionNumber: '0001628280-26-028526', filingDate: '2026-04-30', reportDate: '2026-03-31', form: '10-Q', primaryDocument: 'meta-20260331.htm', fixture: 'tests/fixtures/ingestion/meta/2026-q1-10q-guidance.html' },
+  { accessionNumber: '0001628280-26-050705', filingDate: '2026-07-30', reportDate: '2026-06-30', form: '10-Q', primaryDocument: 'meta-20260630.htm', fixture: 'tests/fixtures/ingestion/meta/2026-q2-10q-guidance.html' },
+]
+function submissions(overrides = filings) { return { cik: 1326801, name: 'Meta Platforms, Inc.', filings: { recent: Object.fromEntries(['accessionNumber', 'filingDate', 'reportDate', 'form', 'primaryDocument'].map((field) => [field, overrides.map((item) => item[field])])) } } }
+function response(body, type, url, status = 200) { return { status, url, headers: new Headers({ 'content-type': type }), json: async () => JSON.parse(body), arrayBuffer: async () => Buffer.from(body) } }
+async function fetcher(transform = (html) => html, status = 200) { const documents = new Map(); for (const filing of filings) documents.set(filing.primaryDocument, await readFile(filing.fixture, 'utf8')); return async (url) => { if (url === META_SEC_ACQUISITION.submissionsUrl) return response(JSON.stringify(submissions()), 'application/json', url); const filing = filings.find((item) => url.endsWith(item.primaryDocument)); if (!filing) throw new Error(`unexpected URL ${url}`); return response(transform(documents.get(filing.primaryDocument), filing), 'text/html', url, status) } }
+const root = () => mkdtemp(path.join(os.tmpdir(), 'meta-guidance-test-'))
+async function ingest(outputRoot, transform, status) { return ingestMetaAnnualGuidance({ outputRoot, retrievedAt: '2026-08-14T00:00:00.000Z', fetchImpl: await fetcher(transform, status), secUserAgent: agent, acquisitionMode: 'FIXTURE', fixturePath: 'tests/ingestion/metaGuidanceIngestion.test.mjs' }) }
+
+test('SEC discovery selects the exact 10-K/Q guidance history', () => { const found = discoverMetaGuidanceFilings(submissions()); assert.deepEqual(found.map((item) => [item.form, item.guidanceAsOfPeriod, item.accessionNumber]), [['10-K', '2025-Q4', filings[0].accessionNumber], ['10-Q', '2026-Q1', filings[1].accessionNumber], ['10-Q', '2026-Q2', filings[2].accessionNumber]]) })
+test('atomic ranges promote exact golden facts with SEC provenance', async () => { const result = await ingest(await root()); assert.equal(result.created, 6); assert.equal(result.revisions, 0); assert.deepEqual(result.document.records.map((record) => [record.observation.guidanceAsOfPeriod, record.observation.metric, record.observation.value]), [['2025-Q4', 'CAPEX_GUIDANCE_HIGH', 135], ['2026-Q1', 'CAPEX_GUIDANCE_HIGH', 145], ['2026-Q2', 'CAPEX_GUIDANCE_HIGH', 145], ['2025-Q4', 'CAPEX_GUIDANCE_LOW', 115], ['2026-Q1', 'CAPEX_GUIDANCE_LOW', 125], ['2026-Q2', 'CAPEX_GUIDANCE_LOW', 130]]); for (const snapshot of result.snapshots) { assert.equal(snapshot.acquisitionMode, 'FIXTURE'); assert.equal(snapshot.finalUrl, null); assert.equal(snapshot.provenance.economicIssuer, 'META'); assert.equal(snapshot.provenance.filedWith, 'SEC EDGAR'); assert.equal(snapshot.provenance.acquisitionChannel, 'SEC_EDGAR'); assert.match(snapshot.evidenceUrl, /^https:\/\/www\.sec\.gov\/Archives\//) } })
+test('same disclosures are idempotent and retain stable observation IDs', async () => { const outputRoot = await root(), first = await ingest(outputRoot), second = await ingest(outputRoot); assert.equal(second.created, 0); assert.equal(second.revisions, 0); assert.deepEqual(second.document.records.map((record) => record.observation.id), first.document.records.map((record) => record.observation.id)) })
+test('different guidanceAsOfPeriod values remain separate active history facts', async () => { const result = await ingest(await root()); assert.equal(result.document.records.filter((record) => record.status === 'ACTIVE').length, 6); assert.ok(result.document.records.every((record) => record.supersedesObservationId === null)) })
+
+const failures = [
+  ['wrong issuer', (html, filing) => filing.reportDate === '2026-06-30' ? html.replace('Meta Platforms, Inc.', 'Example Corp.') : html, 'WRONG_DOCUMENT'],
+  ['wrong filing document', (html, filing) => filing.reportDate === '2026-06-30' ? html.replace('FORM 10-Q', 'FORM 8-K') : html, 'WRONG_DOCUMENT'],
+  ['annual target period missing', (html, filing) => filing.reportDate === '2026-06-30' ? html.replace('in 2026', 'in the coming year') : html, 'GUIDANCE_RANGE'],
+  ['wrong CapEx definition', (html, filing) => filing.reportDate === '2026-06-30' ? html.replace('principal payments on finance leases', 'operating expenses') : html, 'CAPEX_DEFINITION'],
+  ['quarterly actual mistaken for guidance', (html, filing) => filing.reportDate === '2026-06-30' ? html.replace(/We anticipate[^<]+/, 'Capital expenditures were $31.08 billion for the quarter.') : html, 'GUIDANCE_RANGE'],
+  ['only LOW found', (html, filing) => filing.reportDate === '2026-06-30' ? html.replace('to $145 billion', '') : html, 'GUIDANCE_RANGE'],
+  ['only HIGH found', (html, filing) => filing.reportDate === '2026-06-30' ? html.replace('$130 billion to ', '') : html, 'GUIDANCE_RANGE'],
+  ['inconsistent units', (html, filing) => filing.reportDate === '2026-06-30' ? html.replace('$145 billion', '$145 million') : html, 'GUIDANCE_RANGE'],
+  ['ambiguous duplicate range', (html, filing) => filing.reportDate === '2026-06-30' ? html.replace('</section>', '<p>We anticipate making capital expenditures of approximately $130 billion to $145 billion in 2026.</p></section>') : html, 'DUPLICATE_RANGE'],
+  ['malformed numeric value', (html, filing) => filing.reportDate === '2026-06-30' ? html.replace('$130 billion', '$abc billion') : html, 'GUIDANCE_RANGE'],
+]
+for (const [name, transform, code] of failures) test(`${name} fails closed without changing canonical production`, async () => { const outputRoot = await root(); await ingest(outputRoot); const canonicalPath = path.join(outputRoot, 'observations', 'meta-annual-capex-guidance.json'), before = await readFile(canonicalPath, 'utf8'); await assert.rejects(() => ingest(outputRoot, transform), (error) => error instanceof IngestionError && error.code === code); assert.equal(await readFile(canonicalPath, 'utf8'), before) })
+
+test('invalid guidanceAsOfPeriod fails closed', async () => { const result = await ingest(await root()); const snapshot = structuredClone(result.snapshots[0]); snapshot.provenance.guidanceAsOfPeriod = 'invalid'; await assert.rejects(async () => parseMetaAnnualCapexGuidance(snapshot, await readFile(filings[0].fixture, 'utf8')), (error) => error.code === 'GUIDANCE_AS_OF') })
+test('LOW greater than HIGH is rejected', async () => { const result = await ingest(await root()); const snapshot = result.snapshots[0], html = (await readFile(filings[0].fixture, 'utf8')).replace('$115 billion to $135 billion', '$150 billion to $135 billion'); assert.throws(() => parseMetaAnnualCapexGuidance(snapshot, html), (error) => error.code === 'RANGE_ORDER') })
+test('range validator rejects mismatched paired metadata', async () => { const result = await ingest(await root()); const pair = result.candidates.slice(0, 2).map((item) => ({ ...item })); pair[1].unit = 'USD millions'; assert.throws(() => validateMetaGuidanceRange(pair, result.snapshots[0]), (error) => error.code === 'RANGE_ATOMICITY') })
+test('inconsistent provenance is rejected', async () => { const result = await ingest(await root()); const snapshot = structuredClone(result.snapshots[0]); snapshot.evidenceUrl = 'https://example.com/not-sec'; assert.throws(() => parseMetaAnnualCapexGuidance(snapshot, '<html></html>'), (error) => error.code === 'FILING_PROVENANCE') })
+test('source outage fails closed', async () => { const outputRoot = await root(); await assert.rejects(() => ingestMetaAnnualGuidance({ outputRoot, fetchImpl: async () => { throw new Error('offline') }, secUserAgent: agent }), (error) => error.code === 'DISCOVERY_UNAVAILABLE') })

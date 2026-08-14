@@ -1,0 +1,98 @@
+[
+  {
+    "logicalFactKey": "TSM|MONTHLY_REVENUE|MONTH|2026-01|NT$ millions|tsmc-monthly-revenue",
+    "id": "metric-observation:sha256:4c8a723b20e21a71096830099088d0e67d27e290940f1c19528d6b1ebb064501",
+    "period": "2026-01",
+    "metric": "MONTHLY_REVENUE",
+    "value": 401255,
+    "unit": "NT$ millions"
+  },
+  {
+    "logicalFactKey": "TSM|MONTHLY_REVENUE_YOY_PERCENT|MONTH|2026-01|percent|tsmc-monthly-revenue",
+    "id": "metric-observation:sha256:da5fc76879c4aac6fadd1c050c759d318c36c6ee7fab34c5b0d8407dae924ea3",
+    "period": "2026-01",
+    "metric": "MONTHLY_REVENUE_YOY_PERCENT",
+    "value": 36.8,
+    "unit": "percent"
+  },
+  {
+    "logicalFactKey": "TSM|MONTHLY_REVENUE|MONTH|2026-02|NT$ millions|tsmc-monthly-revenue",
+    "id": "metric-observation:sha256:6cca860302cb219302ce720c1019b770fa3c5f755357ac0d388b4c7f676fea3b",
+    "period": "2026-02",
+    "metric": "MONTHLY_REVENUE",
+    "value": 317657,
+    "unit": "NT$ millions"
+  },
+  {
+    "logicalFactKey": "TSM|MONTHLY_REVENUE_YOY_PERCENT|MONTH|2026-02|percent|tsmc-monthly-revenue",
+    "id": "metric-observation:sha256:8e51f257c95405e5f6064d5569e483568a8b9819204cf690fad0124c00bbfe6b",
+    "period": "2026-02",
+    "metric": "MONTHLY_REVENUE_YOY_PERCENT",
+    "value": 22.2,
+    "unit": "percent"
+  },
+  {
+    "logicalFactKey": "TSM|MONTHLY_REVENUE|MONTH|2026-03|NT$ millions|tsmc-monthly-revenue",
+    "id": "metric-observation:sha256:798df43542f67e8a3bffb94b23a3da9b3df4fdf343d5213d17ebe3a1689c0324",
+    "period": "2026-03",
+    "metric": "MONTHLY_REVENUE",
+    "value": 415191,
+    "unit": "NT$ millions"
+  },
+  {
+    "logicalFactKey": "TSM|MONTHLY_REVENUE_YOY_PERCENT|MONTH|2026-03|percent|tsmc-monthly-revenue",
+    "id": "metric-observation:sha256:33f5b7cd8516aef31bea2583e2c8a055ff33e1251f7c6b47c210626a608b52de",
+    "period": "2026-03",
+    "metric": "MONTHLY_REVENUE_YOY_PERCENT",
+    "value": 45.2,
+    "unit": "percent"
+  },
+  {
+    "logicalFactKey": "TSM|MONTHLY_REVENUE|MONTH|2026-04|NT$ millions|tsmc-monthly-revenue",
+    "id": "metric-observation:sha256:442555f376ffe9cd83843a2d751166069a19d68849ac74dfbeb5f6d24d948d4e",
+    "period": "2026-04",
+    "metric": "MONTHLY_REVENUE",
+    "value": 410726,
+    "unit": "NT$ millions"
+  },
+  {
+    "logicalFactKey": "TSM|MONTHLY_REVENUE_YOY_PERCENT|MONTH|2026-04|percent|tsmc-monthly-revenue",
+    "id": "metric-observation:sha256:3b76ff4648f1b3c3f107b5309ea28b11cd7327f91707dc618324217937494c06",
+    "period": "2026-04",
+    "metric": "MONTHLY_REVENUE_YOY_PERCENT",
+    "value": 17.5,
+    "unit": "percent"
+  },
+  {
+    "logicalFactKey": "TSM|MONTHLY_REVENUE|MONTH|2026-05|NT$ millions|tsmc-monthly-revenue",
+    "id": "metric-observation:sha256:c17ee3ee7681a05ea68af98fc7244b7136561a381b9d9dac9b37b353a0dcaa2a",
+    "period": "2026-05",
+    "metric": "MONTHLY_REVENUE",
+    "value": 416975,
+    "unit": "NT$ millions"
+  },
+  {
+    "logicalFactKey": "TSM|MONTHLY_REVENUE_YOY_PERCENT|MONTH|2026-05|percent|tsmc-monthly-revenue",
+    "id": "metric-observation:sha256:1d2f84714340fc3539617bd037ac1ffa9c17ee658a2ea8486b57ab80a8ef9cd8",
+    "period": "2026-05",
+    "metric": "MONTHLY_REVENUE_YOY_PERCENT",
+    "value": 30.1,
+    "unit": "percent"
+  },
+  {
+    "logicalFactKey": "TSM|MONTHLY_REVENUE|MONTH|2026-06|NT$ millions|tsmc-monthly-revenue",
+    "id": "metric-observation:sha256:c95816deeec451f2aa37087d8725d96d22bb5f3c98ef0ee796de6acf8403ec6d",
+    "period": "2026-06",
+    "metric": "MONTHLY_REVENUE",
+    "value": 442680,
+    "unit": "NT$ millions"
+  },
+  {
+    "logicalFactKey": "TSM|MONTHLY_REVENUE_YOY_PERCENT|MONTH|2026-06|percent|tsmc-monthly-revenue",
+    "id": "metric-observation:sha256:4364c8012c0dc15dee761eae67458eb6dbb81b3eaa744968ffda9277e73ee7cc",
+    "period": "2026-06",
+    "metric": "MONTHLY_REVENUE_YOY_PERCENT",
+    "value": 67.9,
+    "unit": "percent"
+  }
+]

@@ -1,19 +1,32 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
+  "pipelineId": "tsm-monthly-sec",
   "issuer": "TSM",
   "sourceId": "tsmc-monthly-revenue",
-  "latestSnapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+  "latestSnapshotIds": [
+    "raw-snapshot:fixture:sha256:88f1353d0bed947e70626e3bcacac783ae45b00fbe056fda38100c18c9c24757",
+    "raw-snapshot:fixture:sha256:bc06b52e249450dc3e5923d8bf8ff9b8dbc458fbd58c15fa34a4db3af77eea86",
+    "raw-snapshot:fixture:sha256:f1e7ce45fe495d6cbd3844d4ea8b68aa4f62358233b1a35dabe7bb5625622d15",
+    "raw-snapshot:fixture:sha256:8d80d663265b5063bb3fad3fd0d9e96e42094f548fc7ac42a3d775b0dd3343ea",
+    "raw-snapshot:fixture:sha256:fa070846d01a2902f84b2321138f45d5b619496007db841e9009be3961c70972",
+    "raw-snapshot:fixture:sha256:db07f2ddf3ebefcd9f587ace7488e8716b267742fa625c0da2cd414cebb2115f"
+  ],
   "records": [
     {
+      "recordId": "canonical-record:sha256:e2bf161e9f7b4b3f2a7c8645aa7629d8907bd8e86cc5d0ad2c4d76d4525e6226",
+      "sourceDocumentVersionId": "0001046179-26-000015",
       "logicalFactKey": "TSM|MONTHLY_REVENUE|MONTH|2026-01|NT$ millions|tsmc-monthly-revenue",
-      "snapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+      "snapshotId": "raw-snapshot:fixture:sha256:88f1353d0bed947e70626e3bcacac783ae45b00fbe056fda38100c18c9c24757",
       "sourceLocator": {
-        "table": "2026 Monthly Revenue",
-        "row": 3,
-        "monthLabel": "Jan.",
-        "column": "Net Revenue"
+        "accessionNumber": "0001046179-26-000015",
+        "primaryDocument": "tsm-revenue20260210.htm",
+        "table": "TSMC January Revenue Report (Consolidated)",
+        "row": "Net Revenue",
+        "reportedUnit": "NT$ million",
+        "column": "January 2026"
       },
       "status": "ACTIVE",
+      "supersedesRecordId": null,
       "supersedesObservationId": null,
       "observation": {
         "id": "metric-observation:sha256:4c8a723b20e21a71096830099088d0e67d27e290940f1c19528d6b1ebb064501",
@@ -23,22 +36,27 @@
         "unit": "NT$ millions",
         "period": "2026-01",
         "periodType": "MONTH",
-        "publishedAt": "2026-02-10T09:00:00.000Z",
-        "retrievedAt": "2026-08-13T14:00:00.000Z",
+        "publishedAt": "2026-02-10T00:00:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
         "sourceId": "tsmc-monthly-revenue",
-        "sourceUrl": "https://investor.tsmc.com/english/monthly-revenue/2026"
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1046179/000104617926000015/tsm-revenue20260210.htm"
       }
     },
     {
+      "recordId": "canonical-record:sha256:6260a266f2d9f91c18f46f7866e3d7946f0cd6f40d2a4b8cbcf5bf625bf4b9ef",
+      "sourceDocumentVersionId": "0001046179-26-000015",
       "logicalFactKey": "TSM|MONTHLY_REVENUE_YOY_PERCENT|MONTH|2026-01|percent|tsmc-monthly-revenue",
-      "snapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+      "snapshotId": "raw-snapshot:fixture:sha256:88f1353d0bed947e70626e3bcacac783ae45b00fbe056fda38100c18c9c24757",
       "sourceLocator": {
-        "table": "2026 Monthly Revenue",
-        "row": 3,
-        "monthLabel": "Jan.",
-        "column": "YoY Change"
+        "accessionNumber": "0001046179-26-000015",
+        "primaryDocument": "tsm-revenue20260210.htm",
+        "table": "TSMC January Revenue Report (Consolidated)",
+        "row": "Net Revenue",
+        "reportedUnit": "NT$ million",
+        "column": "Y-o-Y Increase(Decrease)%"
       },
       "status": "ACTIVE",
+      "supersedesRecordId": null,
       "supersedesObservationId": null,
       "observation": {
         "id": "metric-observation:sha256:da5fc76879c4aac6fadd1c050c759d318c36c6ee7fab34c5b0d8407dae924ea3",
@@ -48,22 +66,27 @@
         "unit": "percent",
         "period": "2026-01",
         "periodType": "MONTH",
-        "publishedAt": "2026-02-10T09:00:00.000Z",
-        "retrievedAt": "2026-08-13T14:00:00.000Z",
+        "publishedAt": "2026-02-10T00:00:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
         "sourceId": "tsmc-monthly-revenue",
-        "sourceUrl": "https://investor.tsmc.com/english/monthly-revenue/2026"
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1046179/000104617926000015/tsm-revenue20260210.htm"
       }
     },
     {
+      "recordId": "canonical-record:sha256:b599c2312d1fae6ed8caf8786a4965ae5129dcd4fb07b4acc58238ff11c2d633",
+      "sourceDocumentVersionId": "0001046179-26-000031",
       "logicalFactKey": "TSM|MONTHLY_REVENUE|MONTH|2026-02|NT$ millions|tsmc-monthly-revenue",
-      "snapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+      "snapshotId": "raw-snapshot:fixture:sha256:bc06b52e249450dc3e5923d8bf8ff9b8dbc458fbd58c15fa34a4db3af77eea86",
       "sourceLocator": {
-        "table": "2026 Monthly Revenue",
-        "row": 4,
-        "monthLabel": "Feb.",
-        "column": "Net Revenue"
+        "accessionNumber": "0001046179-26-000031",
+        "primaryDocument": "tsm-revenue20260310.htm",
+        "table": "TSMC February Revenue Report (Consolidated)",
+        "row": "Net Revenue",
+        "reportedUnit": "NT$ million",
+        "column": "February 2026"
       },
       "status": "ACTIVE",
+      "supersedesRecordId": null,
       "supersedesObservationId": null,
       "observation": {
         "id": "metric-observation:sha256:6cca860302cb219302ce720c1019b770fa3c5f755357ac0d388b4c7f676fea3b",
@@ -73,22 +96,27 @@
         "unit": "NT$ millions",
         "period": "2026-02",
         "periodType": "MONTH",
-        "publishedAt": "2026-03-10T09:00:00.000Z",
-        "retrievedAt": "2026-08-13T14:00:00.000Z",
+        "publishedAt": "2026-03-10T00:00:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
         "sourceId": "tsmc-monthly-revenue",
-        "sourceUrl": "https://investor.tsmc.com/english/monthly-revenue/2026"
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1046179/000104617926000031/tsm-revenue20260310.htm"
       }
     },
     {
+      "recordId": "canonical-record:sha256:865192034aa69e5b2a90480ef4c274794f452075228904c2c4f73c86fe2f2d27",
+      "sourceDocumentVersionId": "0001046179-26-000031",
       "logicalFactKey": "TSM|MONTHLY_REVENUE_YOY_PERCENT|MONTH|2026-02|percent|tsmc-monthly-revenue",
-      "snapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+      "snapshotId": "raw-snapshot:fixture:sha256:bc06b52e249450dc3e5923d8bf8ff9b8dbc458fbd58c15fa34a4db3af77eea86",
       "sourceLocator": {
-        "table": "2026 Monthly Revenue",
-        "row": 4,
-        "monthLabel": "Feb.",
-        "column": "YoY Change"
+        "accessionNumber": "0001046179-26-000031",
+        "primaryDocument": "tsm-revenue20260310.htm",
+        "table": "TSMC February Revenue Report (Consolidated)",
+        "row": "Net Revenue",
+        "reportedUnit": "NT$ million",
+        "column": "Y-o-Y Increase(Decrease)%"
       },
       "status": "ACTIVE",
+      "supersedesRecordId": null,
       "supersedesObservationId": null,
       "observation": {
         "id": "metric-observation:sha256:8e51f257c95405e5f6064d5569e483568a8b9819204cf690fad0124c00bbfe6b",
@@ -98,22 +126,27 @@
         "unit": "percent",
         "period": "2026-02",
         "periodType": "MONTH",
-        "publishedAt": "2026-03-10T09:00:00.000Z",
-        "retrievedAt": "2026-08-13T14:00:00.000Z",
+        "publishedAt": "2026-03-10T00:00:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
         "sourceId": "tsmc-monthly-revenue",
-        "sourceUrl": "https://investor.tsmc.com/english/monthly-revenue/2026"
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1046179/000104617926000031/tsm-revenue20260310.htm"
       }
     },
     {
+      "recordId": "canonical-record:sha256:d879bb7f9b6b71cb33245d7dde7e2972ffd85e3a66190bd0ea2e4e9438a54b9c",
+      "sourceDocumentVersionId": "0001046179-26-000136",
       "logicalFactKey": "TSM|MONTHLY_REVENUE|MONTH|2026-03|NT$ millions|tsmc-monthly-revenue",
-      "snapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+      "snapshotId": "raw-snapshot:fixture:sha256:f1e7ce45fe495d6cbd3844d4ea8b68aa4f62358233b1a35dabe7bb5625622d15",
       "sourceLocator": {
-        "table": "2026 Monthly Revenue",
-        "row": 5,
-        "monthLabel": "Mar.",
-        "column": "Net Revenue"
+        "accessionNumber": "0001046179-26-000136",
+        "primaryDocument": "tsm-revenue20260410.htm",
+        "table": "TSMC March Revenue Report (Consolidated)",
+        "row": "Net Revenue",
+        "reportedUnit": "NT$ million",
+        "column": "March 2026"
       },
       "status": "ACTIVE",
+      "supersedesRecordId": null,
       "supersedesObservationId": null,
       "observation": {
         "id": "metric-observation:sha256:798df43542f67e8a3bffb94b23a3da9b3df4fdf343d5213d17ebe3a1689c0324",
@@ -123,22 +156,27 @@
         "unit": "NT$ millions",
         "period": "2026-03",
         "periodType": "MONTH",
-        "publishedAt": "2026-04-10T09:00:00.000Z",
-        "retrievedAt": "2026-08-13T14:00:00.000Z",
+        "publishedAt": "2026-04-10T00:00:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
         "sourceId": "tsmc-monthly-revenue",
-        "sourceUrl": "https://investor.tsmc.com/english/monthly-revenue/2026"
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1046179/000104617926000136/tsm-revenue20260410.htm"
       }
     },
     {
+      "recordId": "canonical-record:sha256:4e911b3b865e8923e07b795c5a9ebb93e9fbd627b0dec3606f07b09650951ff5",
+      "sourceDocumentVersionId": "0001046179-26-000136",
       "logicalFactKey": "TSM|MONTHLY_REVENUE_YOY_PERCENT|MONTH|2026-03|percent|tsmc-monthly-revenue",
-      "snapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+      "snapshotId": "raw-snapshot:fixture:sha256:f1e7ce45fe495d6cbd3844d4ea8b68aa4f62358233b1a35dabe7bb5625622d15",
       "sourceLocator": {
-        "table": "2026 Monthly Revenue",
-        "row": 5,
-        "monthLabel": "Mar.",
-        "column": "YoY Change"
+        "accessionNumber": "0001046179-26-000136",
+        "primaryDocument": "tsm-revenue20260410.htm",
+        "table": "TSMC March Revenue Report (Consolidated)",
+        "row": "Net Revenue",
+        "reportedUnit": "NT$ million",
+        "column": "Y-o-Y Increase(Decrease)%"
       },
       "status": "ACTIVE",
+      "supersedesRecordId": null,
       "supersedesObservationId": null,
       "observation": {
         "id": "metric-observation:sha256:33f5b7cd8516aef31bea2583e2c8a055ff33e1251f7c6b47c210626a608b52de",
@@ -148,22 +186,27 @@
         "unit": "percent",
         "period": "2026-03",
         "periodType": "MONTH",
-        "publishedAt": "2026-04-10T09:00:00.000Z",
-        "retrievedAt": "2026-08-13T14:00:00.000Z",
+        "publishedAt": "2026-04-10T00:00:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
         "sourceId": "tsmc-monthly-revenue",
-        "sourceUrl": "https://investor.tsmc.com/english/monthly-revenue/2026"
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1046179/000104617926000136/tsm-revenue20260410.htm"
       }
     },
     {
+      "recordId": "canonical-record:sha256:6cdf84ee0c28272e5dbaf80893c4dd20b7f043f124c1100d28f783c7945e6839",
+      "sourceDocumentVersionId": "0001046179-26-000213",
       "logicalFactKey": "TSM|MONTHLY_REVENUE|MONTH|2026-04|NT$ millions|tsmc-monthly-revenue",
-      "snapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+      "snapshotId": "raw-snapshot:fixture:sha256:8d80d663265b5063bb3fad3fd0d9e96e42094f548fc7ac42a3d775b0dd3343ea",
       "sourceLocator": {
-        "table": "2026 Monthly Revenue",
-        "row": 6,
-        "monthLabel": "Apr.",
-        "column": "Net Revenue"
+        "accessionNumber": "0001046179-26-000213",
+        "primaryDocument": "tsm-revenue20260508.htm",
+        "table": "TSMC April Revenue Report (Consolidated)",
+        "row": "Net Revenue",
+        "reportedUnit": "NT$ million",
+        "column": "April 2026"
       },
       "status": "ACTIVE",
+      "supersedesRecordId": null,
       "supersedesObservationId": null,
       "observation": {
         "id": "metric-observation:sha256:442555f376ffe9cd83843a2d751166069a19d68849ac74dfbeb5f6d24d948d4e",
@@ -173,22 +216,27 @@
         "unit": "NT$ millions",
         "period": "2026-04",
         "periodType": "MONTH",
-        "publishedAt": "2026-05-10T09:00:00.000Z",
-        "retrievedAt": "2026-08-13T14:00:00.000Z",
+        "publishedAt": "2026-05-08T00:00:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
         "sourceId": "tsmc-monthly-revenue",
-        "sourceUrl": "https://investor.tsmc.com/english/monthly-revenue/2026"
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1046179/000104617926000213/tsm-revenue20260508.htm"
       }
     },
     {
+      "recordId": "canonical-record:sha256:1dd1ec5f296526ab598bc8b8c2014f522a8bfe73ae54bf27b24af1f4534e4c6e",
+      "sourceDocumentVersionId": "0001046179-26-000213",
       "logicalFactKey": "TSM|MONTHLY_REVENUE_YOY_PERCENT|MONTH|2026-04|percent|tsmc-monthly-revenue",
-      "snapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+      "snapshotId": "raw-snapshot:fixture:sha256:8d80d663265b5063bb3fad3fd0d9e96e42094f548fc7ac42a3d775b0dd3343ea",
       "sourceLocator": {
-        "table": "2026 Monthly Revenue",
-        "row": 6,
-        "monthLabel": "Apr.",
-        "column": "YoY Change"
+        "accessionNumber": "0001046179-26-000213",
+        "primaryDocument": "tsm-revenue20260508.htm",
+        "table": "TSMC April Revenue Report (Consolidated)",
+        "row": "Net Revenue",
+        "reportedUnit": "NT$ million",
+        "column": "Y-o-Y Increase(Decrease)%"
       },
       "status": "ACTIVE",
+      "supersedesRecordId": null,
       "supersedesObservationId": null,
       "observation": {
         "id": "metric-observation:sha256:3b76ff4648f1b3c3f107b5309ea28b11cd7327f91707dc618324217937494c06",
@@ -198,22 +246,27 @@
         "unit": "percent",
         "period": "2026-04",
         "periodType": "MONTH",
-        "publishedAt": "2026-05-10T09:00:00.000Z",
-        "retrievedAt": "2026-08-13T14:00:00.000Z",
+        "publishedAt": "2026-05-08T00:00:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
         "sourceId": "tsmc-monthly-revenue",
-        "sourceUrl": "https://investor.tsmc.com/english/monthly-revenue/2026"
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1046179/000104617926000213/tsm-revenue20260508.htm"
       }
     },
     {
+      "recordId": "canonical-record:sha256:cd834a791933006ea5568c40343e22dc064aa049e655fb25ac2731a52d30e2ba",
+      "sourceDocumentVersionId": "0001046179-26-000367",
       "logicalFactKey": "TSM|MONTHLY_REVENUE|MONTH|2026-05|NT$ millions|tsmc-monthly-revenue",
-      "snapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+      "snapshotId": "raw-snapshot:fixture:sha256:fa070846d01a2902f84b2321138f45d5b619496007db841e9009be3961c70972",
       "sourceLocator": {
-        "table": "2026 Monthly Revenue",
-        "row": 7,
-        "monthLabel": "May",
-        "column": "Net Revenue"
+        "accessionNumber": "0001046179-26-000367",
+        "primaryDocument": "tsm-revenue20260610.htm",
+        "table": "TSMC May Revenue Report (Consolidated)",
+        "row": "Net Revenue",
+        "reportedUnit": "NT$ million",
+        "column": "May 2026"
       },
       "status": "ACTIVE",
+      "supersedesRecordId": null,
       "supersedesObservationId": null,
       "observation": {
         "id": "metric-observation:sha256:c17ee3ee7681a05ea68af98fc7244b7136561a381b9d9dac9b37b353a0dcaa2a",
@@ -223,22 +276,27 @@
         "unit": "NT$ millions",
         "period": "2026-05",
         "periodType": "MONTH",
-        "publishedAt": "2026-06-10T09:00:00.000Z",
-        "retrievedAt": "2026-08-13T14:00:00.000Z",
+        "publishedAt": "2026-06-10T00:00:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
         "sourceId": "tsmc-monthly-revenue",
-        "sourceUrl": "https://investor.tsmc.com/english/monthly-revenue/2026"
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1046179/000104617926000367/tsm-revenue20260610.htm"
       }
     },
     {
+      "recordId": "canonical-record:sha256:b75b04faab9fad2aef1b35e0c3cca2aa798ec3b2f7c8c01d229ffb8c2e2176f8",
+      "sourceDocumentVersionId": "0001046179-26-000367",
       "logicalFactKey": "TSM|MONTHLY_REVENUE_YOY_PERCENT|MONTH|2026-05|percent|tsmc-monthly-revenue",
-      "snapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+      "snapshotId": "raw-snapshot:fixture:sha256:fa070846d01a2902f84b2321138f45d5b619496007db841e9009be3961c70972",
       "sourceLocator": {
-        "table": "2026 Monthly Revenue",
-        "row": 7,
-        "monthLabel": "May",
-        "column": "YoY Change"
+        "accessionNumber": "0001046179-26-000367",
+        "primaryDocument": "tsm-revenue20260610.htm",
+        "table": "TSMC May Revenue Report (Consolidated)",
+        "row": "Net Revenue",
+        "reportedUnit": "NT$ million",
+        "column": "Y-o-Y Increase(Decrease)%"
       },
       "status": "ACTIVE",
+      "supersedesRecordId": null,
       "supersedesObservationId": null,
       "observation": {
         "id": "metric-observation:sha256:1d2f84714340fc3539617bd037ac1ffa9c17ee658a2ea8486b57ab80a8ef9cd8",
@@ -248,22 +306,27 @@
         "unit": "percent",
         "period": "2026-05",
         "periodType": "MONTH",
-        "publishedAt": "2026-06-10T09:00:00.000Z",
-        "retrievedAt": "2026-08-13T14:00:00.000Z",
+        "publishedAt": "2026-06-10T00:00:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
         "sourceId": "tsmc-monthly-revenue",
-        "sourceUrl": "https://investor.tsmc.com/english/monthly-revenue/2026"
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1046179/000104617926000367/tsm-revenue20260610.htm"
       }
     },
     {
+      "recordId": "canonical-record:sha256:f5e1b39209b08389260e8a9fcd5b68d3f6d44d09c2eead57d165a4dae0bf4fd3",
+      "sourceDocumentVersionId": "0001046179-26-000447",
       "logicalFactKey": "TSM|MONTHLY_REVENUE|MONTH|2026-06|NT$ millions|tsmc-monthly-revenue",
-      "snapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+      "snapshotId": "raw-snapshot:fixture:sha256:db07f2ddf3ebefcd9f587ace7488e8716b267742fa625c0da2cd414cebb2115f",
       "sourceLocator": {
-        "table": "2026 Monthly Revenue",
-        "row": 8,
-        "monthLabel": "Jun.",
-        "column": "Net Revenue"
+        "accessionNumber": "0001046179-26-000447",
+        "primaryDocument": "tsm-revenue20260713.htm",
+        "table": "TSMC June Revenue Report (Consolidated)",
+        "row": "Net Revenue",
+        "reportedUnit": "NT$ million",
+        "column": "June 2026"
       },
       "status": "ACTIVE",
+      "supersedesRecordId": null,
       "supersedesObservationId": null,
       "observation": {
         "id": "metric-observation:sha256:c95816deeec451f2aa37087d8725d96d22bb5f3c98ef0ee796de6acf8403ec6d",
@@ -273,22 +336,27 @@
         "unit": "NT$ millions",
         "period": "2026-06",
         "periodType": "MONTH",
-        "publishedAt": "2026-07-10T09:00:00.000Z",
-        "retrievedAt": "2026-08-13T14:00:00.000Z",
+        "publishedAt": "2026-07-13T00:00:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
         "sourceId": "tsmc-monthly-revenue",
-        "sourceUrl": "https://investor.tsmc.com/english/monthly-revenue/2026"
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1046179/000104617926000447/tsm-revenue20260713.htm"
       }
     },
     {
+      "recordId": "canonical-record:sha256:85184084884d7878d74e1972ae8f9948e6ee8442db12d6290dca2ca9bf30f64c",
+      "sourceDocumentVersionId": "0001046179-26-000447",
       "logicalFactKey": "TSM|MONTHLY_REVENUE_YOY_PERCENT|MONTH|2026-06|percent|tsmc-monthly-revenue",
-      "snapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+      "snapshotId": "raw-snapshot:fixture:sha256:db07f2ddf3ebefcd9f587ace7488e8716b267742fa625c0da2cd414cebb2115f",
       "sourceLocator": {
-        "table": "2026 Monthly Revenue",
-        "row": 8,
-        "monthLabel": "Jun.",
-        "column": "YoY Change"
+        "accessionNumber": "0001046179-26-000447",
+        "primaryDocument": "tsm-revenue20260713.htm",
+        "table": "TSMC June Revenue Report (Consolidated)",
+        "row": "Net Revenue",
+        "reportedUnit": "NT$ million",
+        "column": "Y-o-Y Increase(Decrease)%"
       },
       "status": "ACTIVE",
+      "supersedesRecordId": null,
       "supersedesObservationId": null,
       "observation": {
         "id": "metric-observation:sha256:4364c8012c0dc15dee761eae67458eb6dbb81b3eaa744968ffda9277e73ee7cc",
@@ -298,10 +366,10 @@
         "unit": "percent",
         "period": "2026-06",
         "periodType": "MONTH",
-        "publishedAt": "2026-07-10T09:00:00.000Z",
-        "retrievedAt": "2026-08-13T14:00:00.000Z",
+        "publishedAt": "2026-07-13T00:00:00.000Z",
+        "retrievedAt": "2026-08-14T00:00:00.000Z",
         "sourceId": "tsmc-monthly-revenue",
-        "sourceUrl": "https://investor.tsmc.com/english/monthly-revenue/2026"
+        "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1046179/000104617926000447/tsm-revenue20260713.htm"
       }
     }
   ]

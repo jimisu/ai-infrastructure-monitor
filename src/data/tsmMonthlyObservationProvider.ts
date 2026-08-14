@@ -16,6 +16,8 @@ interface CanonicalDocument {
   schemaVersion: number
   issuer: string
   sourceId: string
+  pipelineId?: string
+  latestSnapshotIds?: string[]
   records: CanonicalRecord[]
 }
 
@@ -65,7 +67,7 @@ function validateObservation(value: unknown): MetricObservation {
 export function parseCanonicalTsmMonthlyObservations(document: unknown): MetricObservation[] {
   if (!isRecord(document)) fail('document is missing')
   const canonical = document as unknown as CanonicalDocument
-  if (canonical.schemaVersion !== 1 || canonical.issuer !== 'TSM' || canonical.sourceId !== 'tsmc-monthly-revenue' || !Array.isArray(canonical.records)) fail('document envelope is invalid')
+  if (![1, 2].includes(canonical.schemaVersion) || canonical.issuer !== 'TSM' || canonical.sourceId !== 'tsmc-monthly-revenue' || !Array.isArray(canonical.records)) fail('document envelope is invalid')
   const active = canonical.records.filter((record) => record?.status === 'ACTIVE')
   if (active.length === 0) fail('no active promoted observations')
   const observations: MetricObservation[] = []

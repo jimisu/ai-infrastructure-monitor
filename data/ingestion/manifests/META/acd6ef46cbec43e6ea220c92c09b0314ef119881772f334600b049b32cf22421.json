@@ -1,0 +1,39 @@
+{
+  "snapshotId": "raw-snapshot:fixture:sha256:acd6ef46cbec43e6ea220c92c09b0314ef119881772f334600b049b32cf22421",
+  "acquisitionMode": "FIXTURE",
+  "sourceId": "meta-annual-capex-guidance-sec",
+  "issuer": "META",
+  "requestedUrl": null,
+  "finalUrl": null,
+  "evidenceUrl": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026050705/meta-20260630.htm",
+  "acquisitionChannel": "FIXTURE",
+  "fixture": {
+    "fixtureId": "0001628280-26-050705",
+    "fixturePath": "tests/ingestion/metaGuidanceIngestion.test.mjs",
+    "contentHash": "7d589731c0507b3e5eb366a3fc7cf32d6a749a0fa597fcc51db15051b50549b2"
+  },
+  "retrievedAt": "2026-08-14T00:00:00.000Z",
+  "httpStatus": 200,
+  "contentType": "text/html",
+  "contentLength": 430,
+  "sha256": "7d589731c0507b3e5eb366a3fc7cf32d6a749a0fa597fcc51db15051b50549b2",
+  "rawContentPath": "raw/META/7d589731c0507b3e5eb366a3fc7cf32d6a749a0fa597fcc51db15051b50549b2.html",
+  "manifestPath": "manifests/META/acd6ef46cbec43e6ea220c92c09b0314ef119881772f334600b049b32cf22421.json",
+  "provenance": {
+    "cik": "0001326801",
+    "accessionNumber": "0001628280-26-050705",
+    "formType": "10-Q",
+    "filingDate": "2026-07-30",
+    "reportDate": "2026-06-30",
+    "primaryDocument": "meta-20260630.htm",
+    "secFilingUrl": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026050705/meta-20260630.htm",
+    "issuer": "Meta Platforms, Inc.",
+    "economicIssuer": "META",
+    "evidenceDocument": "META_ISSUER_FILED_FORM_10_Q",
+    "filedWith": "SEC EDGAR",
+    "acquisitionChannel": "SEC_EDGAR",
+    "guidanceAsOfPeriod": "2026-Q2",
+    "sourceId": "meta-capex-2026q2-guidance",
+    "definitionId": "meta-capex-including-finance-lease-principal"
+  }
+}

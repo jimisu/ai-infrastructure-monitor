@@ -14,7 +14,7 @@ const key = (observation: MetricObservation) => [observation.companyTicker, obse
 export function parseCanonicalAmznPpeObservations(document: unknown): MetricObservation[] {
   if (!isObject(document)) return fail('document is missing')
   const canonical = document as Record<string, unknown>
-  if (canonical.schemaVersion !== 1 || canonical.issuer !== 'AMZN' || canonical.sourceId !== 'amzn-2026-q1-results' || canonical.capexDefinitionId !== definitionId || !Array.isArray(canonical.records)) fail('document envelope is invalid')
+  if (![1, 2].includes(canonical.schemaVersion as number) || canonical.issuer !== 'AMZN' || canonical.sourceId !== 'amzn-2026-q1-results' || canonical.capexDefinitionId !== definitionId || !Array.isArray(canonical.records)) fail('document envelope is invalid')
   const records = canonical.records
   if (!Array.isArray(records)) return fail('records are missing')
   const active = records.filter((record: unknown) => isObject(record) && record.status === 'ACTIVE')

@@ -1,6 +1,9 @@
-import { createHash } from 'node:crypto'
-import { mkdir, readFile, rename, writeFile } from 'node:fs/promises'
+import { readFile } from 'node:fs/promises'
 import path from 'node:path'
+import { IngestionError } from './shared/ingestion-error.mjs'
+import { sha256, persistRawSnapshot as persistSnapshot } from './shared/snapshot-store.mjs'
+import { promoteCanonicalAtomically, buildCanonicalPromotion } from './shared/canonical-store.mjs'
+export { IngestionError, sha256 }
 
 export const TSMC_MONTHLY_SOURCE = Object.freeze({
   id: 'tsmc-monthly-revenue',
@@ -18,19 +21,6 @@ const monthNumbers = new Map([
   ['jul', 7], ['aug', 8], ['sept', 9], ['sep', 9], ['oct', 10], ['nov', 11], ['dec', 12],
 ])
 
-export class IngestionError extends Error {
-  constructor(code, message, details = {}) {
-    super(message)
-    this.name = 'IngestionError'
-    this.code = code
-    this.details = details
-  }
-}
-
-export function sha256(value) {
-  return createHash('sha256').update(value).digest('hex')
-}
-
 function isoTimestamp(value, field) {
   const parsed = new Date(value)
   if (Number.isNaN(parsed.getTime())) {
@@ -39,60 +29,11 @@ function isoTimestamp(value, field) {
   return parsed.toISOString()
 }
 
-function extensionFor(contentType) {
-  return contentType.toLowerCase().includes('html') ? 'html' : 'bin'
+export async function persistRawSnapshot({ body, source = TSMC_MONTHLY_SOURCE, requestedUrl, finalUrl, retrievedAt, status, contentType, outputRoot, provenance, acquisitionMode = 'LIVE', acquisitionChannel = 'TSMC_IR_HTTP', fixturePath, fixtureId, evidenceUrl }) {
+  return persistSnapshot({ body, source, requestedUrl, finalUrl, retrievedAt, status, contentType, outputRoot, provenance, acquisitionMode, acquisitionChannel, fixturePath, fixtureId, evidenceUrl })
 }
 
-export async function persistRawSnapshot({
-  body,
-  source = TSMC_MONTHLY_SOURCE,
-  requestedUrl,
-  finalUrl,
-  retrievedAt,
-  status,
-  contentType,
-  outputRoot,
-  provenance,
-}) {
-  const bytes = Buffer.isBuffer(body) ? body : Buffer.from(body)
-  const digest = sha256(bytes)
-  const snapshotId = `raw-snapshot:sha256:${digest}`
-  const extension = extensionFor(contentType)
-  const rawRelativePath = path.posix.join('raw', source.issuer, `${digest}.${extension}`)
-  const manifestRelativePath = path.posix.join(
-    'manifests',
-    source.issuer,
-    `${digest}.json`
-  )
-  const rawPath = path.join(outputRoot, rawRelativePath)
-  const manifestPath = path.join(outputRoot, manifestRelativePath)
-  const snapshot = {
-    snapshotId,
-    sourceId: source.id,
-    issuer: source.issuer,
-    requestedUrl,
-    finalUrl,
-    retrievedAt: isoTimestamp(retrievedAt, 'retrievedAt'),
-    httpStatus: status,
-    contentType,
-    contentLength: bytes.byteLength,
-    sha256: digest,
-    rawContentPath: rawRelativePath,
-    ...(provenance ? { provenance } : {}),
-  }
-
-  await mkdir(path.dirname(rawPath), { recursive: true })
-  await mkdir(path.dirname(manifestPath), { recursive: true })
-  await writeFile(rawPath, bytes, { flag: 'wx' }).catch((error) => {
-    if (error.code !== 'EEXIST') throw error
-  })
-  await writeFile(manifestPath, `${JSON.stringify(snapshot, null, 2)}\n`, { flag: 'wx' })
-    .catch((error) => {
-      if (error.code !== 'EEXIST') throw error
-    })
-
-  return { snapshot, body: bytes.toString('utf8') }
-}
+function snapshotEvidenceUrl(snapshot) { return snapshot.acquisitionMode === 'FIXTURE' ? snapshot.evidenceUrl : snapshot.finalUrl }
 
 export function assertExpectedSnapshot(snapshot, body, source = TSMC_MONTHLY_SOURCE) {
   if (snapshot.httpStatus !== 200) {
@@ -104,7 +45,7 @@ export function assertExpectedSnapshot(snapshot, body, source = TSMC_MONTHLY_SOU
 
   let finalUrl
   try {
-    finalUrl = new URL(snapshot.finalUrl)
+    finalUrl = new URL(snapshotEvidenceUrl(snapshot))
   } catch {
     throw new IngestionError('FINAL_URL', 'Invalid final source URL')
   }
@@ -156,6 +97,8 @@ export async function collectOfficialHttp({
     status: response.status,
     contentType: response.headers.get('content-type') ?? '',
     outputRoot,
+    acquisitionMode: 'LIVE',
+    acquisitionChannel: 'TSMC_IR_HTTP',
   })
   assertExpectedSnapshot(persisted.snapshot, persisted.body, source)
   return persisted
@@ -177,6 +120,10 @@ export async function snapshotFromFixture({
     status: 200,
     contentType: 'text/html; charset=utf-8',
     outputRoot,
+    acquisitionMode: 'FIXTURE',
+    fixturePath,
+    fixtureId: path.basename(fixturePath),
+    evidenceUrl: source.url,
   })
   assertExpectedSnapshot(persisted.snapshot, persisted.body, source)
   return persisted
@@ -303,7 +250,7 @@ export function parseTsmcMonthlyRevenue(snapshot, html, source = TSMC_MONTHLY_SO
       period,
       periodType: 'MONTH',
       sourceId: source.id,
-      sourceUrl: snapshot.finalUrl,
+      sourceUrl: snapshotEvidenceUrl(snapshot),
       publishedAt: publicationForMonth(year, row.month),
       retrievedAt: snapshot.retrievedAt,
       snapshotId: snapshot.snapshotId,
@@ -342,6 +289,7 @@ export function logicalFactKey(candidate) {
   ].join('|')
 }
 
+// Legacy v1 identity is retained only to preserve established production/downstream IDs.
 export function immutableObservationId(candidate) {
   const identity = [
     logicalFactKey(candidate),
@@ -359,7 +307,7 @@ export function validateTsmcCandidates(candidates, snapshot, source = TSMC_MONTH
     errors.push('Snapshot source attribution mismatch')
   }
   try {
-    if (new URL(snapshot.finalUrl).hostname !== source.hostname) errors.push('Unexpected hostname')
+    if (new URL(snapshotEvidenceUrl(snapshot)).hostname !== source.hostname) errors.push('Unexpected hostname')
   } catch {
     errors.push('Invalid final URL')
   }
@@ -382,7 +330,7 @@ export function validateTsmcCandidates(candidates, snapshot, source = TSMC_MONTH
     }
     if (
       candidate.sourceId !== source.id ||
-      candidate.sourceUrl !== snapshot.finalUrl ||
+      candidate.sourceUrl !== snapshotEvidenceUrl(snapshot) ||
       candidate.snapshotId !== snapshot.snapshotId
     ) errors.push('Invalid source attribution')
     try {
@@ -447,66 +395,11 @@ export function promoteCandidate(candidate) {
 }
 
 export function buildPromotion(existingDocument, candidates, snapshot) {
-  const current = existingDocument?.records ?? []
-  const records = current.map((record) => ({
-    ...record,
-    observation: { ...record.observation },
-  }))
-  let created = 0
-  let revisions = 0
-
-  for (const candidate of candidates) {
-    const proposed = promoteCandidate(candidate)
-    if (records.some((record) => record.observation.id === proposed.observation.id)) continue
-
-    const active = records.find(
-      (record) => record.logicalFactKey === proposed.logicalFactKey && record.status === 'ACTIVE'
-    )
-    if (active) {
-      active.status = 'SUPERSEDED'
-      proposed.supersedesObservationId = active.observation.id
-      revisions++
-    }
-    records.push(proposed)
-    created++
-  }
-
-  records.sort((a, b) =>
-    a.observation.period.localeCompare(b.observation.period) ||
-    a.observation.metric.localeCompare(b.observation.metric) ||
-    a.observation.id.localeCompare(b.observation.id)
-  )
-
-  return {
-    document: {
-      schemaVersion: 1,
-      issuer: 'TSM',
-      sourceId: TSMC_MONTHLY_SOURCE.id,
-      latestSnapshotId: snapshot.snapshotId,
-      records,
-    },
-    created,
-    revisions,
-  }
+  return buildCanonicalPromotion({ existingDocument, candidates, snapshotIds: [snapshot.snapshotId], pipelineId: 'tsm-monthly', issuer: 'TSM', sourceId: TSMC_MONTHLY_SOURCE.id, logicalFactKey, observationId: immutableObservationId, toObservation: (candidate) => promoteCandidate(candidate).observation })
 }
 
-export async function promoteAtomically({
-  candidates,
-  snapshot,
-  canonicalPath,
-}) {
-  let existing = null
-  try {
-    existing = JSON.parse(await readFile(canonicalPath, 'utf8'))
-  } catch (error) {
-    if (error.code !== 'ENOENT') throw error
-  }
-  const result = buildPromotion(existing, candidates, snapshot)
-  await mkdir(path.dirname(canonicalPath), { recursive: true })
-  const temporaryPath = `${canonicalPath}.tmp-${process.pid}`
-  await writeFile(temporaryPath, `${JSON.stringify(result.document, null, 2)}\n`)
-  await rename(temporaryPath, canonicalPath)
-  return result
+export async function promoteAtomically({ candidates, snapshot, canonicalPath }) {
+  return promoteCanonicalAtomically({ candidates, snapshotIds: [snapshot.snapshotId], canonicalPath, pipelineId: 'tsm-monthly', issuer: 'TSM', sourceId: TSMC_MONTHLY_SOURCE.id, logicalFactKey, observationId: immutableObservationId, toObservation: (candidate) => promoteCandidate(candidate).observation })
 }
 
 export async function ingestTsmcMonthly({
