@@ -9,18 +9,18 @@ import { CompanyTable } from './components/CompanyTable'
 import { RealIntelligence } from './components/RealIntelligence'
 import { MOCK_COMPANIES } from './data/companies'
 import { MOCK_SIGNALS, MOCK_IMPACT_EVENTS } from './data/signals'
-import { TSM_METRIC_OBSERVATIONS } from './data/tsmMetrics'
+import { TSM_PRODUCTION_OBSERVATIONS } from './data/tsmMonthlyObservationProvider'
 import { getSourceById } from './data/sources'
 import { deriveTsmSignalsWithTrendConfirmation } from './signals/tsmSignalInterpreter'
 import { deriveHyperscalerTsmConfirmation } from './signals/hyperscalerTsmConfirmationEngine'
 import { deriveCurrentHyperscalerCapexTrend } from './signals/hyperscalerCapexBreadthEngine'
 import { createRealIntelligenceViewModel } from './presentation/realIntelligenceViewModel'
 
-const tsmResult = deriveTsmSignalsWithTrendConfirmation(TSM_METRIC_OBSERVATIONS)
+const tsmResult = deriveTsmSignalsWithTrendConfirmation(TSM_PRODUCTION_OBSERVATIONS)
 const hyperscalerCapexTrend = deriveCurrentHyperscalerCapexTrend()
 const crossCompanySignal = deriveHyperscalerTsmConfirmation(
   hyperscalerCapexTrend,
-  TSM_METRIC_OBSERVATIONS
+  TSM_PRODUCTION_OBSERVATIONS
 )
 const realIntelligence = createRealIntelligenceViewModel({
   crossCompanySignal,
@@ -29,7 +29,7 @@ const realIntelligence = createRealIntelligenceViewModel({
     (signal) => signal.signalType === 'REVENUE_OUTLOOK_ACCELERATION'
   ),
   tsmTrend: tsmResult.trend3M,
-  tsmObservations: TSM_METRIC_OBSERVATIONS,
+  tsmObservations: TSM_PRODUCTION_OBSERVATIONS,
   sources: ['meta-capex-2026q2-guidance', 'msft-fy2026-q3-earnings-call', 'goog-2025-q4-earnings-call', 'amzn-2026-q1-results', 'amzn-2025-q4-results', 'tsmc-ir-main']
     .map(getSourceById)
     .filter((source) => source !== undefined),
