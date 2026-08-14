@@ -1,0 +1,4 @@
+import path from 'node:path'
+import { ingestAmznPpe } from './amzn-ppe-lib.mjs'
+const argument=(name)=>{const index=process.argv.indexOf(name);return index===-1?undefined:process.argv[index+1]}
+try{const result=await ingestAmznPpe({outputRoot:argument('--output-root')??path.join(process.cwd(),'data','ingestion'),retrievedAt:argument('--retrieved-at')??new Date().toISOString(),reportPeriod:argument('--period')});process.stdout.write(JSON.stringify({snapshotId:result.snapshot.snapshotId,accessionNumber:result.filing.accessionNumber,candidateCount:result.candidateCount,created:result.created,revisions:result.revisions,canonicalPath:path.relative(process.cwd(),result.canonicalPath)},null,2)+'\n')}catch(error){process.stderr.write('Amazon PP&E ingestion failed closed ['+(error.code??'UNEXPECTED')+']: '+error.message+'\n');if(error.details&&Object.keys(error.details).length)process.stderr.write(JSON.stringify(error.details,null,2)+'\n');process.exitCode=1}

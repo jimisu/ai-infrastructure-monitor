@@ -4,10 +4,14 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "ingest:tsm": "node scripts/ingestion/ingest-tsm.mjs",
+    "verify:ingest:tsm": "node --test tests/ingestion/tsmMonthlyIngestion.test.mjs tests/ingestion/tsmSecIngestion.test.mjs && node scripts/ingestion/verify-tsm-downstream.mjs",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "oxlint",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "ingest:amzn-ppe": "node scripts/ingestion/ingest-amzn-ppe.mjs",
+    "verify:ingest:amzn-ppe": "npm run verify:ingest:tsm && node --test tests/ingestion/amznPpeIngestion.test.mjs && node scripts/ingestion/verify-amzn-ppe-downstream.mjs"
   },
   "dependencies": {
     "react": "^19.2.8",

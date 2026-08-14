@@ -1,0 +1,308 @@
+{
+  "schemaVersion": 1,
+  "issuer": "TSM",
+  "sourceId": "tsmc-monthly-revenue",
+  "latestSnapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+  "records": [
+    {
+      "logicalFactKey": "TSM|MONTHLY_REVENUE|MONTH|2026-01|NT$ millions|tsmc-monthly-revenue",
+      "snapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+      "sourceLocator": {
+        "table": "2026 Monthly Revenue",
+        "row": 3,
+        "monthLabel": "Jan.",
+        "column": "Net Revenue"
+      },
+      "status": "ACTIVE",
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "metric-observation:sha256:4c8a723b20e21a71096830099088d0e67d27e290940f1c19528d6b1ebb064501",
+        "companyTicker": "TSM",
+        "metric": "MONTHLY_REVENUE",
+        "value": 401255,
+        "unit": "NT$ millions",
+        "period": "2026-01",
+        "periodType": "MONTH",
+        "publishedAt": "2026-02-10T09:00:00.000Z",
+        "retrievedAt": "2026-08-13T14:00:00.000Z",
+        "sourceId": "tsmc-monthly-revenue",
+        "sourceUrl": "https://investor.tsmc.com/english/monthly-revenue/2026"
+      }
+    },
+    {
+      "logicalFactKey": "TSM|MONTHLY_REVENUE_YOY_PERCENT|MONTH|2026-01|percent|tsmc-monthly-revenue",
+      "snapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+      "sourceLocator": {
+        "table": "2026 Monthly Revenue",
+        "row": 3,
+        "monthLabel": "Jan.",
+        "column": "YoY Change"
+      },
+      "status": "ACTIVE",
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "metric-observation:sha256:da5fc76879c4aac6fadd1c050c759d318c36c6ee7fab34c5b0d8407dae924ea3",
+        "companyTicker": "TSM",
+        "metric": "MONTHLY_REVENUE_YOY_PERCENT",
+        "value": 36.8,
+        "unit": "percent",
+        "period": "2026-01",
+        "periodType": "MONTH",
+        "publishedAt": "2026-02-10T09:00:00.000Z",
+        "retrievedAt": "2026-08-13T14:00:00.000Z",
+        "sourceId": "tsmc-monthly-revenue",
+        "sourceUrl": "https://investor.tsmc.com/english/monthly-revenue/2026"
+      }
+    },
+    {
+      "logicalFactKey": "TSM|MONTHLY_REVENUE|MONTH|2026-02|NT$ millions|tsmc-monthly-revenue",
+      "snapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+      "sourceLocator": {
+        "table": "2026 Monthly Revenue",
+        "row": 4,
+        "monthLabel": "Feb.",
+        "column": "Net Revenue"
+      },
+      "status": "ACTIVE",
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "metric-observation:sha256:6cca860302cb219302ce720c1019b770fa3c5f755357ac0d388b4c7f676fea3b",
+        "companyTicker": "TSM",
+        "metric": "MONTHLY_REVENUE",
+        "value": 317657,
+        "unit": "NT$ millions",
+        "period": "2026-02",
+        "periodType": "MONTH",
+        "publishedAt": "2026-03-10T09:00:00.000Z",
+        "retrievedAt": "2026-08-13T14:00:00.000Z",
+        "sourceId": "tsmc-monthly-revenue",
+        "sourceUrl": "https://investor.tsmc.com/english/monthly-revenue/2026"
+      }
+    },
+    {
+      "logicalFactKey": "TSM|MONTHLY_REVENUE_YOY_PERCENT|MONTH|2026-02|percent|tsmc-monthly-revenue",
+      "snapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+      "sourceLocator": {
+        "table": "2026 Monthly Revenue",
+        "row": 4,
+        "monthLabel": "Feb.",
+        "column": "YoY Change"
+      },
+      "status": "ACTIVE",
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "metric-observation:sha256:8e51f257c95405e5f6064d5569e483568a8b9819204cf690fad0124c00bbfe6b",
+        "companyTicker": "TSM",
+        "metric": "MONTHLY_REVENUE_YOY_PERCENT",
+        "value": 22.2,
+        "unit": "percent",
+        "period": "2026-02",
+        "periodType": "MONTH",
+        "publishedAt": "2026-03-10T09:00:00.000Z",
+        "retrievedAt": "2026-08-13T14:00:00.000Z",
+        "sourceId": "tsmc-monthly-revenue",
+        "sourceUrl": "https://investor.tsmc.com/english/monthly-revenue/2026"
+      }
+    },
+    {
+      "logicalFactKey": "TSM|MONTHLY_REVENUE|MONTH|2026-03|NT$ millions|tsmc-monthly-revenue",
+      "snapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+      "sourceLocator": {
+        "table": "2026 Monthly Revenue",
+        "row": 5,
+        "monthLabel": "Mar.",
+        "column": "Net Revenue"
+      },
+      "status": "ACTIVE",
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "metric-observation:sha256:798df43542f67e8a3bffb94b23a3da9b3df4fdf343d5213d17ebe3a1689c0324",
+        "companyTicker": "TSM",
+        "metric": "MONTHLY_REVENUE",
+        "value": 415191,
+        "unit": "NT$ millions",
+        "period": "2026-03",
+        "periodType": "MONTH",
+        "publishedAt": "2026-04-10T09:00:00.000Z",
+        "retrievedAt": "2026-08-13T14:00:00.000Z",
+        "sourceId": "tsmc-monthly-revenue",
+        "sourceUrl": "https://investor.tsmc.com/english/monthly-revenue/2026"
+      }
+    },
+    {
+      "logicalFactKey": "TSM|MONTHLY_REVENUE_YOY_PERCENT|MONTH|2026-03|percent|tsmc-monthly-revenue",
+      "snapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+      "sourceLocator": {
+        "table": "2026 Monthly Revenue",
+        "row": 5,
+        "monthLabel": "Mar.",
+        "column": "YoY Change"
+      },
+      "status": "ACTIVE",
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "metric-observation:sha256:33f5b7cd8516aef31bea2583e2c8a055ff33e1251f7c6b47c210626a608b52de",
+        "companyTicker": "TSM",
+        "metric": "MONTHLY_REVENUE_YOY_PERCENT",
+        "value": 45.2,
+        "unit": "percent",
+        "period": "2026-03",
+        "periodType": "MONTH",
+        "publishedAt": "2026-04-10T09:00:00.000Z",
+        "retrievedAt": "2026-08-13T14:00:00.000Z",
+        "sourceId": "tsmc-monthly-revenue",
+        "sourceUrl": "https://investor.tsmc.com/english/monthly-revenue/2026"
+      }
+    },
+    {
+      "logicalFactKey": "TSM|MONTHLY_REVENUE|MONTH|2026-04|NT$ millions|tsmc-monthly-revenue",
+      "snapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+      "sourceLocator": {
+        "table": "2026 Monthly Revenue",
+        "row": 6,
+        "monthLabel": "Apr.",
+        "column": "Net Revenue"
+      },
+      "status": "ACTIVE",
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "metric-observation:sha256:442555f376ffe9cd83843a2d751166069a19d68849ac74dfbeb5f6d24d948d4e",
+        "companyTicker": "TSM",
+        "metric": "MONTHLY_REVENUE",
+        "value": 410726,
+        "unit": "NT$ millions",
+        "period": "2026-04",
+        "periodType": "MONTH",
+        "publishedAt": "2026-05-10T09:00:00.000Z",
+        "retrievedAt": "2026-08-13T14:00:00.000Z",
+        "sourceId": "tsmc-monthly-revenue",
+        "sourceUrl": "https://investor.tsmc.com/english/monthly-revenue/2026"
+      }
+    },
+    {
+      "logicalFactKey": "TSM|MONTHLY_REVENUE_YOY_PERCENT|MONTH|2026-04|percent|tsmc-monthly-revenue",
+      "snapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+      "sourceLocator": {
+        "table": "2026 Monthly Revenue",
+        "row": 6,
+        "monthLabel": "Apr.",
+        "column": "YoY Change"
+      },
+      "status": "ACTIVE",
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "metric-observation:sha256:3b76ff4648f1b3c3f107b5309ea28b11cd7327f91707dc618324217937494c06",
+        "companyTicker": "TSM",
+        "metric": "MONTHLY_REVENUE_YOY_PERCENT",
+        "value": 17.5,
+        "unit": "percent",
+        "period": "2026-04",
+        "periodType": "MONTH",
+        "publishedAt": "2026-05-10T09:00:00.000Z",
+        "retrievedAt": "2026-08-13T14:00:00.000Z",
+        "sourceId": "tsmc-monthly-revenue",
+        "sourceUrl": "https://investor.tsmc.com/english/monthly-revenue/2026"
+      }
+    },
+    {
+      "logicalFactKey": "TSM|MONTHLY_REVENUE|MONTH|2026-05|NT$ millions|tsmc-monthly-revenue",
+      "snapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+      "sourceLocator": {
+        "table": "2026 Monthly Revenue",
+        "row": 7,
+        "monthLabel": "May",
+        "column": "Net Revenue"
+      },
+      "status": "ACTIVE",
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "metric-observation:sha256:c17ee3ee7681a05ea68af98fc7244b7136561a381b9d9dac9b37b353a0dcaa2a",
+        "companyTicker": "TSM",
+        "metric": "MONTHLY_REVENUE",
+        "value": 416975,
+        "unit": "NT$ millions",
+        "period": "2026-05",
+        "periodType": "MONTH",
+        "publishedAt": "2026-06-10T09:00:00.000Z",
+        "retrievedAt": "2026-08-13T14:00:00.000Z",
+        "sourceId": "tsmc-monthly-revenue",
+        "sourceUrl": "https://investor.tsmc.com/english/monthly-revenue/2026"
+      }
+    },
+    {
+      "logicalFactKey": "TSM|MONTHLY_REVENUE_YOY_PERCENT|MONTH|2026-05|percent|tsmc-monthly-revenue",
+      "snapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+      "sourceLocator": {
+        "table": "2026 Monthly Revenue",
+        "row": 7,
+        "monthLabel": "May",
+        "column": "YoY Change"
+      },
+      "status": "ACTIVE",
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "metric-observation:sha256:1d2f84714340fc3539617bd037ac1ffa9c17ee658a2ea8486b57ab80a8ef9cd8",
+        "companyTicker": "TSM",
+        "metric": "MONTHLY_REVENUE_YOY_PERCENT",
+        "value": 30.1,
+        "unit": "percent",
+        "period": "2026-05",
+        "periodType": "MONTH",
+        "publishedAt": "2026-06-10T09:00:00.000Z",
+        "retrievedAt": "2026-08-13T14:00:00.000Z",
+        "sourceId": "tsmc-monthly-revenue",
+        "sourceUrl": "https://investor.tsmc.com/english/monthly-revenue/2026"
+      }
+    },
+    {
+      "logicalFactKey": "TSM|MONTHLY_REVENUE|MONTH|2026-06|NT$ millions|tsmc-monthly-revenue",
+      "snapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+      "sourceLocator": {
+        "table": "2026 Monthly Revenue",
+        "row": 8,
+        "monthLabel": "Jun.",
+        "column": "Net Revenue"
+      },
+      "status": "ACTIVE",
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "metric-observation:sha256:c95816deeec451f2aa37087d8725d96d22bb5f3c98ef0ee796de6acf8403ec6d",
+        "companyTicker": "TSM",
+        "metric": "MONTHLY_REVENUE",
+        "value": 442680,
+        "unit": "NT$ millions",
+        "period": "2026-06",
+        "periodType": "MONTH",
+        "publishedAt": "2026-07-10T09:00:00.000Z",
+        "retrievedAt": "2026-08-13T14:00:00.000Z",
+        "sourceId": "tsmc-monthly-revenue",
+        "sourceUrl": "https://investor.tsmc.com/english/monthly-revenue/2026"
+      }
+    },
+    {
+      "logicalFactKey": "TSM|MONTHLY_REVENUE_YOY_PERCENT|MONTH|2026-06|percent|tsmc-monthly-revenue",
+      "snapshotId": "raw-snapshot:sha256:2bfe5076f76dcb51ac1890e57f999a782332c572ed0b6c0b42c56400cbc6a0f3",
+      "sourceLocator": {
+        "table": "2026 Monthly Revenue",
+        "row": 8,
+        "monthLabel": "Jun.",
+        "column": "YoY Change"
+      },
+      "status": "ACTIVE",
+      "supersedesObservationId": null,
+      "observation": {
+        "id": "metric-observation:sha256:4364c8012c0dc15dee761eae67458eb6dbb81b3eaa744968ffda9277e73ee7cc",
+        "companyTicker": "TSM",
+        "metric": "MONTHLY_REVENUE_YOY_PERCENT",
+        "value": 67.9,
+        "unit": "percent",
+        "period": "2026-06",
+        "periodType": "MONTH",
+        "publishedAt": "2026-07-10T09:00:00.000Z",
+        "retrievedAt": "2026-08-13T14:00:00.000Z",
+        "sourceId": "tsmc-monthly-revenue",
+        "sourceUrl": "https://investor.tsmc.com/english/monthly-revenue/2026"
+      }
+    }
+  ]
+}

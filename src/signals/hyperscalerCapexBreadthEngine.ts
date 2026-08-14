@@ -1,6 +1,6 @@
 import { AMZN_2026_CAPEX_OUTLOOK_DEFINITION, AMZN_PP_AND_E_PURCHASES_DEFINITION, GOOG_REPORTED_CAPEX_DEFINITION, META_CAPEX_DEFINITION, MSFT_MANAGEMENT_REPORTED_CAPEX_DEFINITION } from '../config/capexDefinitionRegistry'
 import { AMZN_CAPEX_PROFILE, GOOG_CAPEX_PROFILE, META_CAPEX_PROFILE, MSFT_CAPEX_PROFILE } from '../config/hyperscalerCapexProfiles'
-import { AMZN_CAPEX_OBSERVATIONS } from '../data/amznCapexMetrics'
+import { AMZN_PRODUCTION_CAPEX_OBSERVATIONS } from '../data/amznPpeObservationProvider'
 import { GOOG_CAPEX_OBSERVATIONS } from '../data/googCapexMetrics'
 import { META_CAPEX_OBSERVATIONS } from '../data/metaCapexMetrics'
 import { MSFT_CAPEX_OBSERVATIONS } from '../data/msftCapexMetrics'
@@ -209,7 +209,7 @@ export function deriveCurrentHyperscalerCapexTrend(
   ]
 
   const amznNormalized = normalizeCapexObservations(
-    AMZN_CAPEX_OBSERVATIONS,
+    AMZN_PRODUCTION_CAPEX_OBSERVATIONS,
     AMZN_CAPEX_PROFILE,
     [AMZN_PP_AND_E_PURCHASES_DEFINITION, AMZN_2026_CAPEX_OUTLOOK_DEFINITION]
   )
@@ -273,8 +273,8 @@ export function deriveCurrentHyperscalerCapexTrend(
       primarySignalId: amzn?.id,
       evidenceObservationIds: amznEvidence,
       asOfPeriod: amzn?.period,
-      latestEvidencePublishedAt: latestPublishedAt(amznEvidence, AMZN_CAPEX_OBSERVATIONS),
-      tier1Evidence: hasOnlyTier1Evidence(amznEvidence, AMZN_CAPEX_OBSERVATIONS),
+      latestEvidencePublishedAt: latestPublishedAt(amznEvidence, AMZN_PRODUCTION_CAPEX_OBSERVATIONS),
+      tier1Evidence: hasOnlyTier1Evidence(amznEvidence, AMZN_PRODUCTION_CAPEX_OBSERVATIONS),
       comparabilityValid: amzn !== undefined,
     },
   ], generatedAt)
