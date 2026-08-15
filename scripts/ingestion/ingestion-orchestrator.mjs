@@ -3,6 +3,7 @@ import { cp, mkdir, mkdtemp, rename, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { ingestTsmcMonthlyFromSec } from './tsm-sec-lib.mjs'
+import { CURRENT_PRODUCTION_COVERAGE } from './coverage-contract.mjs'
 import { ingestMetaAnnualGuidance } from './meta-guidance-lib.mjs'
 import { ingestMsftManagementTotalCapex } from './msft-capex-lib.mjs'
 import { ingestGoogAnnualGuidance } from './goog-guidance-lib.mjs'
@@ -28,11 +29,11 @@ export function overallHealth(issuerResults, baselineVerification, proposedState
   return 'HEALTHY'
 }
 
-export function summarizeRun({ runId, startedAt, finishedAt, dryRun, issuerResults, baselineVerification, proposedStateVerification }) {
+export function summarizeRun({ runId, startedAt, finishedAt, dryRun, issuerResults, baselineVerification, proposedStateVerification, coverage = CURRENT_PRODUCTION_COVERAGE }) {
   const sum = (field) => issuerResults.reduce((total, item) => total + (item[field] ?? 0), 0)
   const failures = issuerResults.filter((x) => x.status === 'FAILED').length
   const warnings = issuerResults.reduce((total,item)=>total+(item.warnings?.length??0),0)
-  return { schemaVersion: 3, runId, startedAt, finishedAt, dryRun, issuerOrder: [...ISSUER_ORDER], issuerResults, totals: { newFacts: sum('newFacts'), revisions: sum('revisions'), provenanceReassertions: sum('provenanceReassertions'), unchanged: sum('unchanged'), quarantined: sum('quarantined'), failures, warnings }, baselineVerification, proposedStateVerification, verification: baselineVerification, overallHealth: overallHealth(issuerResults, baselineVerification, proposedStateVerification) }
+  return { schemaVersion: 4, runId, startedAt, finishedAt, dryRun, issuerOrder: [...ISSUER_ORDER], issuerResults, totals: { newFacts: sum('newFacts'), revisions: sum('revisions'), provenanceReassertions: sum('provenanceReassertions'), unchanged: sum('unchanged'), quarantined: sum('quarantined'), failures, warnings }, coverage, baselineVerification, proposedStateVerification, verification: baselineVerification, overallHealth: overallHealth(issuerResults, baselineVerification, proposedStateVerification) }
 }
 
 export function createProductionIssuerRunners({ outputRoot, retrievedAt, fetchImpl = fetch, secUserAgent = process.env.SEC_USER_AGENT }) {
@@ -70,8 +71,8 @@ export async function orchestrateIngestion({ outputRoot = path.join(process.cwd(
     const runVerification=async(runner,...args)=>{try { const details=await runner(...args); return {status:'PASSED',details:details??null} } catch(error) { return {status:'FAILED',errorCode:error?.code??'VERIFICATION_FAILED',errorMessage:error?.message??String(error)} }}
     const proposedStateVerification=await runVerification(proposedStateVerificationRunner,executionRoot)
     const baselineVerification=await runVerification(baselineVerificationRunner)
-    const finishedAt = now().toISOString(), identity = JSON.stringify({ startedAt, dryRun, issuerResults, baselineVerification, proposedStateVerification })
-    const report = summarizeRun({ runId: `ingestion-run:sha256:${hash(identity)}`, startedAt, finishedAt, dryRun, issuerResults, baselineVerification, proposedStateVerification })
+    const finishedAt = now().toISOString(), identity = JSON.stringify({ startedAt, dryRun, issuerResults, coverage: CURRENT_PRODUCTION_COVERAGE, baselineVerification, proposedStateVerification })
+    const report = summarizeRun({ runId: `ingestion-run:sha256:${hash(identity)}`, startedAt, finishedAt, dryRun, issuerResults, coverage: CURRENT_PRODUCTION_COVERAGE, baselineVerification, proposedStateVerification })
     const reportPath = persistReport ? await persistRunReport(report, outputRoot) : null
     return { report, reportPath, exitCode: report.overallHealth === 'HEALTHY' ? 0 : 1 }
   } finally { if (dryRun) await rm(executionRoot, { recursive: true, force: true }) }
@@ -80,6 +81,6 @@ export async function orchestrateIngestion({ outputRoot = path.join(process.cwd(
 export function formatRunSummary(report) {
   const lines = ['AI INFRASTRUCTURE INGESTION','']
   for (const item of report.issuerResults) { const warnings=(item.warnings??[]).map((warning)=>warning.code).join(','); lines.push(`${item.issuer.padEnd(6)} ${item.status}${item.errorCode ? ` [${item.errorCode}]` : ''}${warnings ? ` [${warnings}]` : ''}`) }
-  lines.push('',`New facts       ${report.totals.newFacts}`,`Revisions       ${report.totals.revisions}`,`Reassertions    ${report.totals.provenanceReassertions ?? 0}`,`Unchanged       ${report.totals.unchanged}`,`Quarantined     ${report.totals.quarantined}`,`Failures        ${report.totals.failures}`,`Warnings        ${report.totals.warnings ?? 0}`,'',`Baseline verification: ${report.baselineVerification.status}`,`Proposed-state verification: ${report.proposedStateVerification.status}`,'',`Overall:`,` ${report.overallHealth}`)
+  lines.push('',`New facts       ${report.totals.newFacts}`,`Revisions       ${report.totals.revisions}`,`Reassertions    ${report.totals.provenanceReassertions ?? 0}`,`Unchanged       ${report.totals.unchanged}`,`Quarantined     ${report.totals.quarantined}`,`Failures        ${report.totals.failures}`,`Warnings        ${report.totals.warnings ?? 0}`,'',`Coverage`,`Required fact families   ${report.coverage.counts.requiredFactFamilies}`,`INGESTED                 ${report.coverage.counts.ingested}`,`FROZEN                   ${report.coverage.counts.frozen}`,`MANUAL                   ${report.coverage.counts.manual}`,`NOT_DISCLOSED            ${report.coverage.counts.notDisclosed}`,`MISSING                  ${report.coverage.counts.missing}`,`Coverage status: ${report.coverage.status}`,'',`Baseline verification: ${report.baselineVerification.status}`,`Proposed-state verification: ${report.proposedStateVerification.status}`,'',`Overall:`,` ${report.overallHealth}`)
   return lines.join('\n')
 }
