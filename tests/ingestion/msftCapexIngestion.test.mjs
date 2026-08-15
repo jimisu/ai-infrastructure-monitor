@@ -11,7 +11,7 @@ async function fetcher(transform = (html) => html, status = 200) { const bodies 
 const root = () => mkdtemp(path.join(os.tmpdir(), 'msft-capex-test-'))
 async function ingest(outputRoot, transform, status) { return ingestMsftManagementTotalCapex({ outputRoot, retrievedAt: '2026-08-14T00:00:00.000Z', fetchImpl: await fetcher(transform, status), acquisitionMode: 'FIXTURE', fixturePath: 'tests/ingestion/msftCapexIngestion.test.mjs' }) }
 
-test('official transcripts promote exact issuer-fiscal management-total history', async () => { const r = await ingest(await root()); assert.equal(r.created, 7); assert.equal(r.revisions, 0); assert.deepEqual(r.candidates.map((x) => [x.period,x.value,x.financeLeaseTreatment]), MSFT_CAPEX_DISCLOSURES.map((x) => [x.period,x.expectedValue,'INCLUDED'])); assert.ok(r.snapshots.every((x) => x.provenance.publicationVenue === 'Microsoft Investor Relations' && x.provenance.fiscalYearEnd === 'June 30')) })
+test('official transcripts parse old and new management-total structures with exact history', async () => { const r = await ingest(await root()); assert.equal(r.created, 7); assert.equal(r.revisions, 0); assert.deepEqual(r.candidates.map((x) => [x.period,x.value,x.financeLeaseTreatment]), MSFT_CAPEX_DISCLOSURES.map((x) => [x.period,x.expectedValue,'INCLUDED'])); assert.deepEqual(r.candidates.map((x) => x.sourceLocator.disclosureStructure), ['ATOMIC_INCLUDING_FINANCE_LEASES','ATOMIC_INCLUDING_FINANCE_LEASES','ATOMIC_INCLUDING_FINANCE_LEASES','TOTAL_PLUS_FINANCE_LEASE_EVIDENCE_BUNDLE','TOTAL_PLUS_FINANCE_LEASE_EVIDENCE_BUNDLE','TOTAL_PLUS_FINANCE_LEASE_EVIDENCE_BUNDLE','TOTAL_PLUS_FINANCE_LEASE_EVIDENCE_BUNDLE']); assert.ok(r.snapshots.every((x) => x.provenance.publicationVenue === 'Microsoft Investor Relations' && x.provenance.fiscalYearEnd === 'June 30')) })
 test('same transcript versions are idempotent with stable IDs', async () => { const outputRoot = await root(), a = await ingest(outputRoot), b = await ingest(outputRoot); assert.equal(b.created, 0); assert.equal(b.revisions, 0); assert.deepEqual(a.document.records.map((x) => x.observation.id), b.document.records.map((x) => x.observation.id)) })
 
 const failures = [
@@ -19,11 +19,11 @@ const failures = [
   ['wrong document',(h,d)=>d.period==='MSFT-FY2026-Q3'?h.replace('Third Quarter','Second Quarter'):h,'WRONG_DOCUMENT'],
   ['wrong fiscal period',(h,d)=>d.period==='MSFT-FY2026-Q3'?h.replace('FY26','FY25'):h,'WRONG_DOCUMENT'],
   ['calendar confusion',(h,d)=>d.period==='MSFT-FY2026-Q3'?h.replace('FY26 Third Quarter','calendar 2026 third quarter'):h,'WRONG_DOCUMENT'],
-  ['management definition absent',(h,d)=>d.period==='MSFT-FY2026-Q3'?h.replace(' including finance leases',''):h,'MANAGEMENT_TOTAL_DEFINITION'],
-  ['finance leases absent',(h,d)=>d.period==='MSFT-FY2026-Q3'?h.replace('including finance leases','excluding finance leases'):h,'MANAGEMENT_TOTAL_DEFINITION'],
-  ['cash PP&E mistaken for total',(h,d)=>d.period==='MSFT-FY2026-Q3'?h.replace('Capital expenditures including finance leases were $31.9 billion. ',''):h,'MANAGEMENT_TOTAL_DEFINITION'],
-  ['incompatible definition',(h,d)=>d.period==='MSFT-FY2026-Q3'?h.replace('Capital expenditures including finance leases','Operating leases'):h,'MANAGEMENT_TOTAL_DEFINITION'],
-  ['duplicate fact',(h,d)=>d.period==='MSFT-FY2026-Q3'?h.replace('</body>','<p>Capital expenditures including finance leases were $31.9 billion.</p></body>'):h,'DUPLICATE_FACT'],
+  ['management definition absent',(h,d)=>d.period==='MSFT-FY2026-Q3'?h.replace('Capital expenditures were $31.9 billion. ',''):h,'MANAGEMENT_TOTAL_DEFINITION'],
+  ['finance leases absent',(h,d)=>d.period==='MSFT-FY2026-Q3'?h.replace('This quarter, total finance leases were $4.7 billion. ',''):h,'MANAGEMENT_TOTAL_DEFINITION'],
+  ['cash PP&E mistaken for total',(h,d)=>d.period==='MSFT-FY2026-Q3'?h.replace('Capital expenditures were $31.9 billion. ',''):h,'MANAGEMENT_TOTAL_DEFINITION'],
+  ['incompatible definition',(h,d)=>d.period==='MSFT-FY2026-Q3'?h.replace('Capital expenditures were','Operating leases were'):h,'MANAGEMENT_TOTAL_DEFINITION'],
+  ['duplicate fact',(h,d)=>d.period==='MSFT-FY2026-Q3'?h.replace('</body>','<p>Capital expenditures were $31.9 billion.</p></body>'):h,'DUPLICATE_FACT'],
   ['malformed number',(h,d)=>d.period==='MSFT-FY2026-Q3'?h.replace('$31.9 billion','$abc billion'):h,'MANAGEMENT_TOTAL_DEFINITION'],
   ['ambiguous units',(h,d)=>d.period==='MSFT-FY2026-Q3'?h.replace('$31.9 billion','$31.9 million'):h,'MANAGEMENT_TOTAL_DEFINITION'],
 ]

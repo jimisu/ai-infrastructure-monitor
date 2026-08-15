@@ -28,12 +28,15 @@ export function parseMsftManagementTotalCapex(snapshot, html, source = MSFT_CAPE
   const period = /^MSFT-FY(\d{4})-Q([1-4])$/.exec(p.issuerFiscalPeriod ?? ''); if (!period) fail('FISCAL_PERIOD', 'Issuer fiscal period is invalid')
   const ordinal = ['','First','Second','Third','Fourth'][Number(period[2])]
   if (!new RegExp(`Microsoft (?:Fiscal Year |FY)${period[1].slice(-2)}[^.]{0,80}(?:${ordinal}|Q${period[2]})`, 'i').test(body)) fail('WRONG_DOCUMENT', 'Transcript title does not match issuer fiscal period')
-  const actual = [...body.matchAll(/capital expenditures\s+including\s+finance leases\s+were\s+\$\s*([\d,.]+)\s+billion/gi)]
+  const oldStructure = [...body.matchAll(/capital expenditures\s+including\s+finance leases\s+were\s+\$\s*([\d,.]+)\s+billion/gi)]
+  const reportedTotals = [...body.matchAll(/capital expenditures\s+were\s+\$\s*([\d,.]+)\s+billion/gi)]
+  const explicitFinanceLeases = /(?:including\s+\$\s*[\d,.]+\s+billion\s+of\s+finance leases|this quarter\s*,?\s*total finance leases were\s+\$\s*[\d,.]+\s+billion)/i.test(body)
+  const actual = oldStructure.length ? oldStructure : (explicitFinanceLeases ? reportedTotals : [])
   if (actual.length !== 1) fail(actual.length ? 'DUPLICATE_FACT' : 'MANAGEMENT_TOTAL_DEFINITION', 'Expected one management-total CapEx disclosure including finance leases')
-  if (!/cash\s+paid\s+for\s+(?:P\s*,?\s*P\s*,?\s*and\s*E|property\s+and\s+equipment)\s+was\s+\$\s*[\d,.]+\s+billion/i.test(body)) fail('DEFINITION_ISOLATION', 'Separate cash-paid PP&E disclosure is required to prove definition isolation')
+  if (!/cash\s+paid\s+for\s+(?:P\s*,?\s*P\s*,?\s*and\s*E|property\s+and\s+equipment)\s*,?\s*was\s+\$\s*[\d,.]+\s+billion/i.test(body)) fail('DEFINITION_ISOLATION', 'Separate cash-paid PP&E disclosure is required to prove definition isolation')
   const raw = actual[0][1].replaceAll(',', ''); if (!/^\d+(?:\.\d+)?$/.test(raw)) fail('MALFORMED_NUMBER', 'Management-total CapEx value is malformed')
   const value = Number(raw); if (!Number.isFinite(value)) fail('MALFORMED_NUMBER', 'Management-total CapEx value is invalid')
-  return [{ issuer: source.issuer, candidateType: 'NUMERIC_METRIC', semanticRole: 'QUARTERLY_ACTUAL', companyTicker: source.ticker, metric: 'CAPEX_ACTUAL', value, unit: source.unit, period: p.issuerFiscalPeriod, periodType: 'QUARTER', capexDefinitionId: source.definitionId, financeLeaseTreatment: 'INCLUDED', fiscalCalendar: 'MICROSOFT_FISCAL_YEAR_END_JUNE_30', sourceId: p.sourceId, sourceUrl: url, publishedAt: p.publishedAt, retrievedAt: snapshot.retrievedAt, snapshotId: snapshot.snapshotId, sourceDocumentVersionId: p.sourceDocumentVersionId, sourceLocator: { document: 'Microsoft official earnings-call transcript', issuerFiscalPeriod: p.issuerFiscalPeriod, disclosure: actual[0][0] } }]
+  return [{ issuer: source.issuer, candidateType: 'NUMERIC_METRIC', semanticRole: 'QUARTERLY_ACTUAL', companyTicker: source.ticker, metric: 'CAPEX_ACTUAL', value, unit: source.unit, period: p.issuerFiscalPeriod, periodType: 'QUARTER', capexDefinitionId: source.definitionId, financeLeaseTreatment: 'INCLUDED', fiscalCalendar: 'MICROSOFT_FISCAL_YEAR_END_JUNE_30', sourceId: p.sourceId, sourceUrl: url, publishedAt: p.publishedAt, retrievedAt: snapshot.retrievedAt, snapshotId: snapshot.snapshotId, sourceDocumentVersionId: p.sourceDocumentVersionId, sourceLocator: { document: 'Microsoft official earnings-call transcript', issuerFiscalPeriod: p.issuerFiscalPeriod, disclosureStructure: oldStructure.length ? 'ATOMIC_INCLUDING_FINANCE_LEASES' : 'TOTAL_PLUS_FINANCE_LEASE_EVIDENCE_BUNDLE', disclosure: actual[0][0] } }]
 }
 
 export function validateMsftManagementTotalCapex(candidates, snapshot, source = MSFT_CAPEX_SOURCE) {

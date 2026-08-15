@@ -50,7 +50,9 @@ export function buildCanonicalPromotion({
   const records = (existingDocument?.records ?? []).map(cloneRecord)
   let created = 0
   let revisions = 0
+  let newFacts = 0
   let transitions = 0
+  let provenanceReassertions = 0
 
   for (const candidate of candidates) {
     const key = logicalFactKey(candidate)
@@ -60,6 +62,8 @@ export function buildCanonicalPromotion({
     if (records.some((record) => normalizedRecordId(record) === recordId)) continue
 
     const active = records.find((record) => record.logicalFactKey === key && record.status === 'ACTIVE')
+    const isRevision = Boolean(active && (active.observation.id !== id || active.observation.value !== candidate.value))
+    const isProvenanceReassertion = Boolean(active && !isRevision && (active.sourceDocumentVersionId ?? active.snapshotId) === version)
     if (active) {
       active.status = 'SUPERSEDED'
       transitions++
@@ -77,6 +81,8 @@ export function buildCanonicalPromotion({
       supersedesObservationId: active?.observation.id ?? null,
       observation,
     })
+    if (!active || (!isRevision && !isProvenanceReassertion)) newFacts++
+    if (isProvenanceReassertion) provenanceReassertions++
     created++
   }
 
@@ -91,7 +97,9 @@ export function buildCanonicalPromotion({
       ...envelope,
       records,
     },
+    newFacts,
     created,
+    provenanceReassertions,
     revisions,
     transitions,
   }

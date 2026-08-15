@@ -2,6 +2,7 @@ import path from 'node:path'
 import { IngestionError, TSMC_MONTHLY_SOURCE, persistRawSnapshot, logicalFactKey, immutableObservationId, promoteCandidate, validateTsmcCandidates } from './tsm-monthly-lib.mjs'
 import { promoteCanonicalAtomically } from './shared/canonical-store.mjs'
 import { buildSecArchiveUrl, validateSecUserAgent } from './shared/sec-client.mjs'
+import { matchesSecIssuerIdentity } from './shared/sec-issuer-identity.mjs'
 
 export const TSMC_SEC_ACQUISITION = Object.freeze({
   cik: '0001046179', submissionsUrl: 'https://data.sec.gov/submissions/CIK0001046179.json',
@@ -18,7 +19,7 @@ function urlFor(filing) {
 function metadataEligible(filing) { return filing.form === '6-K' && /^tsm-revenue\d+(?:x6k)?\.htm$/i.test(filing.primaryDocument) }
 
 export function discoverTsmcMonthlyFilings(submissions) {
-  if (String(submissions?.cik).padStart(10,'0') !== TSMC_SEC_ACQUISITION.cik || !/Taiwan Semiconductor Manufacturing Company/i.test(submissions?.name ?? '')) throw new IngestionError('DISCOVERY_ISSUER','SEC submissions response is not for TSMC')
+  if (!matchesSecIssuerIdentity(submissions, { cik: TSMC_SEC_ACQUISITION.cik, ticker: 'TSM', legalName: 'Taiwan Semiconductor Manufacturing Company Limited' })) throw new IngestionError('DISCOVERY_ISSUER','SEC submissions response is not for TSMC')
   const recent=submissions?.filings?.recent
   const fields=['accessionNumber','filingDate','form','primaryDocument']
   if (!recent || fields.some((field)=>!Array.isArray(recent[field]))) throw new IngestionError('DISCOVERY_SCHEMA','SEC recent-filings metadata is incomplete')

@@ -65,6 +65,13 @@ test('re-fetching every version never duplicates its canonical record', () => {
 })
 
 
+test('equivalent value from the same source version and a different snapshot is a provenance reassertion', () => {
+  const firstCandidate = { ...candidate(1, 'v1'), snapshotId: 'snapshot-fixture' }
+  const first = buildCanonicalPromotion({ existingDocument: null, candidates: [firstCandidate], snapshotIds: [firstCandidate.snapshotId], pipelineId: 'test', issuer: 'TEST', sourceId: 'test-source', toObservation: (item, id) => ({ id, companyTicker: item.companyTicker, metric: item.metric, value: item.value, unit: item.unit, period: item.period, periodType: item.periodType, sourceId: item.sourceId }) })
+  const liveCandidate = { ...candidate(1, 'v1'), snapshotId: 'snapshot-live' }
+  const live = buildCanonicalPromotion({ existingDocument: first.document, candidates: [liveCandidate], snapshotIds: [liveCandidate.snapshotId], pipelineId: 'test', issuer: 'TEST', sourceId: 'test-source', toObservation: (item, id) => ({ id, companyTicker: item.companyTicker, metric: item.metric, value: item.value, unit: item.unit, period: item.period, periodType: item.periodType, sourceId: item.sourceId }) })
+  assert.equal(live.created, 1); assert.equal(live.newFacts, 0); assert.equal(live.revisions, 0); assert.equal(live.provenanceReassertions, 1); assert.equal(live.transitions, 1)
+})
 test('same source version with changed snapshot content is an effective correction', () => {
   const firstCandidate = { ...candidate(1, 'v1'), snapshotId: 'snapshot-content-a' }
   const first = buildCanonicalPromotion({ existingDocument: null, candidates: [firstCandidate], snapshotIds: [firstCandidate.snapshotId], pipelineId: 'test', issuer: 'TEST', sourceId: 'test-source', observationId: () => 'legacy-stable-id', toObservation: (item, id) => ({ id, companyTicker: item.companyTicker, metric: item.metric, value: item.value, unit: item.unit, period: item.period, periodType: item.periodType, sourceId: item.sourceId }) })

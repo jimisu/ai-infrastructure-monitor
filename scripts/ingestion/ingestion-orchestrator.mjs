@@ -15,11 +15,11 @@ const duration = (started, finished) => Math.max(0, finished - started)
 
 export function normalizeIssuerResult(issuer, raw, durationMs) {
   const candidateCount = raw.candidateCount ?? raw.candidates?.length ?? 0
-  const newFacts = raw.created ?? 0, revisions = raw.revisions ?? 0
-  return { issuer, status: 'SUCCESS', newFacts, revisions, unchanged: Math.max(0, candidateCount - newFacts), quarantined: 0, durationMs, canonicalChanged: newFacts > 0 || (raw.transitions ?? 0) > 0 }
+  const newFacts = raw.newFacts ?? raw.created ?? 0, revisions = raw.revisions ?? 0, provenanceReassertions = raw.provenanceReassertions ?? 0
+  return { issuer, status: 'SUCCESS', newFacts, revisions, provenanceReassertions, unchanged: Math.max(0, candidateCount - newFacts - provenanceReassertions), quarantined: 0, durationMs, canonicalChanged: newFacts > 0 || provenanceReassertions > 0 || (raw.transitions ?? 0) > 0 }
 }
 
-export function failedIssuerResult(issuer, error, durationMs) { return { issuer, status: 'FAILED', newFacts: 0, revisions: 0, unchanged: 0, quarantined: 0, errorCode: error?.code ?? 'UNEXPECTED', errorMessage: error?.message ?? String(error), durationMs, canonicalChanged: false } }
+export function failedIssuerResult(issuer, error, durationMs) { return { issuer, status: 'FAILED', newFacts: 0, revisions: 0, provenanceReassertions: 0, unchanged: 0, quarantined: 0, errorCode: error?.code ?? 'UNEXPECTED', errorMessage: error?.message ?? String(error), durationMs, canonicalChanged: false } }
 
 export function overallHealth(issuerResults, verification) {
   if (issuerResults.some((x) => x.status === 'FAILED')) return 'PARTIAL_FAILURE'
@@ -28,9 +28,9 @@ export function overallHealth(issuerResults, verification) {
 }
 
 export function summarizeRun({ runId, startedAt, finishedAt, dryRun, issuerResults, verification }) {
-  const sum = (field) => issuerResults.reduce((total, item) => total + item[field], 0)
+  const sum = (field) => issuerResults.reduce((total, item) => total + (item[field] ?? 0), 0)
   const failures = issuerResults.filter((x) => x.status === 'FAILED').length
-  return { schemaVersion: 1, runId, startedAt, finishedAt, dryRun, issuerOrder: [...ISSUER_ORDER], issuerResults, totals: { newFacts: sum('newFacts'), revisions: sum('revisions'), unchanged: sum('unchanged'), quarantined: sum('quarantined'), failures }, verification, overallHealth: overallHealth(issuerResults, verification) }
+  return { schemaVersion: 1, runId, startedAt, finishedAt, dryRun, issuerOrder: [...ISSUER_ORDER], issuerResults, totals: { newFacts: sum('newFacts'), revisions: sum('revisions'), provenanceReassertions: sum('provenanceReassertions'), unchanged: sum('unchanged'), quarantined: sum('quarantined'), failures }, verification, overallHealth: overallHealth(issuerResults, verification) }
 }
 
 export function createProductionIssuerRunners({ outputRoot, retrievedAt, fetchImpl = fetch, secUserAgent = process.env.SEC_USER_AGENT }) {
@@ -76,6 +76,6 @@ export async function orchestrateIngestion({ outputRoot = path.join(process.cwd(
 export function formatRunSummary(report) {
   const lines = ['AI INFRASTRUCTURE INGESTION','']
   for (const item of report.issuerResults) lines.push(`${item.issuer.padEnd(6)} ${item.status}${item.errorCode ? ` [${item.errorCode}]` : ''}`)
-  lines.push('',`New facts       ${report.totals.newFacts}`,`Revisions       ${report.totals.revisions}`,`Unchanged       ${report.totals.unchanged}`,`Quarantined     ${report.totals.quarantined}`,`Failures        ${report.totals.failures}`,'',`Verification: ${report.verification.status}`,'',`Overall:`,` ${report.overallHealth}`)
+  lines.push('',`New facts       ${report.totals.newFacts}`,`Revisions       ${report.totals.revisions}`,`Reassertions    ${report.totals.provenanceReassertions ?? 0}`,`Unchanged       ${report.totals.unchanged}`,`Quarantined     ${report.totals.quarantined}`,`Failures        ${report.totals.failures}`,'',`Verification: ${report.verification.status}`,'',`Overall:`,` ${report.overallHealth}`)
   return lines.join('\n')
 }

@@ -13,7 +13,7 @@ export function classifyMonitoringReport(report) {
 export function renderMonitoringSummary(report) {
   const status = classifyMonitoringReport(report), lines = ['# AI Infrastructure Monitor','',`**Status: ${status}**`,'','| Issuer | Result |','|---|---|']
   for (const item of report.issuerResults ?? []) lines.push(`| ${item.issuer} | ${item.status}${item.errorCode ? ` — ${item.errorCode}` : ''} |`)
-  lines.push('','| Run metric | Count |','|---|---:|',`| New facts | ${report.totals?.newFacts ?? 0} |`,`| Revisions | ${report.totals?.revisions ?? 0} |`,`| Quarantined | ${report.totals?.quarantined ?? 0} |`,`| Failures | ${report.totals?.failures ?? 0} |`,'',`**Verification:** ${report.verification?.status ?? 'UNKNOWN'}`,`**Overall health:** ${report.overallHealth ?? 'UNKNOWN'}`,'','Monitoring is dry-run only; no production canonical observations are promoted by this workflow.')
+  lines.push('','| Run metric | Count |','|---|---:|',`| New facts | ${report.totals?.newFacts ?? 0} |`,`| Revisions | ${report.totals?.revisions ?? 0} |`,`| Provenance reassertions | ${report.totals?.provenanceReassertions ?? 0} |`,`| Quarantined | ${report.totals?.quarantined ?? 0} |`,`| Failures | ${report.totals?.failures ?? 0} |`,'',`**Verification:** ${report.verification?.status ?? 'UNKNOWN'}`,`**Overall health:** ${report.overallHealth ?? 'UNKNOWN'}`,'','Monitoring is dry-run only; no production canonical observations are promoted by this workflow.')
   return `${lines.join('\n')}\n`
 }
 
