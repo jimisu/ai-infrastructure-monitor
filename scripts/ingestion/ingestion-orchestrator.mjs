@@ -10,13 +10,14 @@ import { ingestAmznPpe } from './amzn-ppe-lib.mjs'
 
 export const ISSUER_ORDER = Object.freeze(['TSMC', 'META', 'MSFT', 'GOOG', 'AMZN'])
 const canonicalFiles = Object.freeze(['tsm-monthly.json','meta-annual-capex-guidance.json','msft-management-total-capex.json','goog-annual-capex-guidance.json','amzn-ppe-purchases.json'])
+const googFrozenFiles = Object.freeze([['manifests','GOOG','0a6941fd95f219193325a357a209cd5248765e662193d447a7a19f6b797ea85b.json'],['raw','GOOG','3cdd705034cd809cf911af0db442beef91e275ea9f049acf484f5662cba7bfae.html']])
 const hash = (value) => createHash('sha256').update(value).digest('hex')
 const duration = (started, finished) => Math.max(0, finished - started)
 
 export function normalizeIssuerResult(issuer, raw, durationMs) {
   const candidateCount = raw.candidateCount ?? raw.candidates?.length ?? 0
   const newFacts = raw.newFacts ?? raw.created ?? 0, revisions = raw.revisions ?? 0, provenanceReassertions = raw.provenanceReassertions ?? 0
-  return { issuer, status: 'SUCCESS', newFacts, revisions, provenanceReassertions, unchanged: Math.max(0, candidateCount - newFacts - provenanceReassertions), quarantined: 0, durationMs, canonicalChanged: newFacts > 0 || provenanceReassertions > 0 || (raw.transitions ?? 0) > 0 }
+  return { issuer, status: 'SUCCESS', newFacts, revisions, provenanceReassertions, unchanged: Math.max(0, candidateCount - newFacts - provenanceReassertions), quarantined: 0, durationMs, warnings: Array.isArray(raw.warnings) ? raw.warnings : [], canonicalChanged: newFacts > 0 || provenanceReassertions > 0 || (raw.transitions ?? 0) > 0 }
 }
 
 export function failedIssuerResult(issuer, error, durationMs) { return { issuer, status: 'FAILED', newFacts: 0, revisions: 0, provenanceReassertions: 0, unchanged: 0, quarantined: 0, errorCode: error?.code ?? 'UNEXPECTED', errorMessage: error?.message ?? String(error), durationMs, canonicalChanged: false } }
@@ -30,7 +31,8 @@ export function overallHealth(issuerResults, baselineVerification, proposedState
 export function summarizeRun({ runId, startedAt, finishedAt, dryRun, issuerResults, baselineVerification, proposedStateVerification }) {
   const sum = (field) => issuerResults.reduce((total, item) => total + (item[field] ?? 0), 0)
   const failures = issuerResults.filter((x) => x.status === 'FAILED').length
-  return { schemaVersion: 2, runId, startedAt, finishedAt, dryRun, issuerOrder: [...ISSUER_ORDER], issuerResults, totals: { newFacts: sum('newFacts'), revisions: sum('revisions'), provenanceReassertions: sum('provenanceReassertions'), unchanged: sum('unchanged'), quarantined: sum('quarantined'), failures }, baselineVerification, proposedStateVerification, verification: baselineVerification, overallHealth: overallHealth(issuerResults, baselineVerification, proposedStateVerification) }
+  const warnings = issuerResults.reduce((total,item)=>total+(item.warnings?.length??0),0)
+  return { schemaVersion: 3, runId, startedAt, finishedAt, dryRun, issuerOrder: [...ISSUER_ORDER], issuerResults, totals: { newFacts: sum('newFacts'), revisions: sum('revisions'), provenanceReassertions: sum('provenanceReassertions'), unchanged: sum('unchanged'), quarantined: sum('quarantined'), failures, warnings }, baselineVerification, proposedStateVerification, verification: baselineVerification, overallHealth: overallHealth(issuerResults, baselineVerification, proposedStateVerification) }
 }
 
 export function createProductionIssuerRunners({ outputRoot, retrievedAt, fetchImpl = fetch, secUserAgent = process.env.SEC_USER_AGENT }) {
@@ -43,10 +45,11 @@ export function createProductionIssuerRunners({ outputRoot, retrievedAt, fetchIm
   }
 }
 
-async function seedDryRun(productionRoot) {
+async function seedDryRun(productionRoot, includeFrozen) {
   const temporary = await mkdtemp(path.join(os.tmpdir(), 'ai-infra-ingestion-dry-run-'))
   await mkdir(path.join(temporary, 'observations'), { recursive: true })
   for (const file of canonicalFiles) await cp(path.join(productionRoot, 'observations', file), path.join(temporary, 'observations', file))
+  if (includeFrozen) for (const segments of googFrozenFiles) { const target=path.join(temporary,...segments); await mkdir(path.dirname(target),{recursive:true}); await cp(path.join(productionRoot,...segments),target) }
   return temporary
 }
 
@@ -59,7 +62,7 @@ export async function persistRunReport(report, outputRoot) {
 }
 
 export async function orchestrateIngestion({ outputRoot = path.join(process.cwd(),'data','ingestion'), dryRun = false, issuerRunners, issuerRunnerFactory, verificationRunner, baselineVerificationRunner = verificationRunner, proposedStateVerificationRunner = verificationRunner, now = () => new Date(), persistReport = true, fetchImpl = fetch, secUserAgent = process.env.SEC_USER_AGENT } = {}) {
-  const started = now(), startedAt = started.toISOString(), executionRoot = dryRun ? await seedDryRun(outputRoot) : outputRoot
+  const started = now(), startedAt = started.toISOString(), executionRoot = dryRun ? await seedDryRun(outputRoot, !issuerRunners && !issuerRunnerFactory) : outputRoot
   const runners = issuerRunners ?? issuerRunnerFactory?.(executionRoot) ?? createProductionIssuerRunners({ outputRoot: executionRoot, retrievedAt: startedAt, fetchImpl, secUserAgent })
   const issuerResults = []
   try {
@@ -76,7 +79,7 @@ export async function orchestrateIngestion({ outputRoot = path.join(process.cwd(
 
 export function formatRunSummary(report) {
   const lines = ['AI INFRASTRUCTURE INGESTION','']
-  for (const item of report.issuerResults) lines.push(`${item.issuer.padEnd(6)} ${item.status}${item.errorCode ? ` [${item.errorCode}]` : ''}`)
-  lines.push('',`New facts       ${report.totals.newFacts}`,`Revisions       ${report.totals.revisions}`,`Reassertions    ${report.totals.provenanceReassertions ?? 0}`,`Unchanged       ${report.totals.unchanged}`,`Quarantined     ${report.totals.quarantined}`,`Failures        ${report.totals.failures}`,'',`Baseline verification: ${report.baselineVerification.status}`,`Proposed-state verification: ${report.proposedStateVerification.status}`,'',`Overall:`,` ${report.overallHealth}`)
+  for (const item of report.issuerResults) { const warnings=(item.warnings??[]).map((warning)=>warning.code).join(','); lines.push(`${item.issuer.padEnd(6)} ${item.status}${item.errorCode ? ` [${item.errorCode}]` : ''}${warnings ? ` [${warnings}]` : ''}`) }
+  lines.push('',`New facts       ${report.totals.newFacts}`,`Revisions       ${report.totals.revisions}`,`Reassertions    ${report.totals.provenanceReassertions ?? 0}`,`Unchanged       ${report.totals.unchanged}`,`Quarantined     ${report.totals.quarantined}`,`Failures        ${report.totals.failures}`,`Warnings        ${report.totals.warnings ?? 0}`,'',`Baseline verification: ${report.baselineVerification.status}`,`Proposed-state verification: ${report.proposedStateVerification.status}`,'',`Overall:`,` ${report.overallHealth}`)
   return lines.join('\n')
 }

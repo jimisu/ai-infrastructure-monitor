@@ -21,22 +21,31 @@ test('five disclosures promote seven exact golden guidance observations', async 
 test('SEC discovery validates actual event dates and rejects fiscal quarter-end provenance', () => { const found = discoverGoogGuidanceFilings(submissions()); assert.deepEqual(found.map((item) => item.reportDate), ['2025-02-04','2025-07-23','2025-10-29','2026-02-04']); const wrong = submissions(); wrong.filings.recent.reportDate[0] = '2024-12-31'; assert.throws(() => discoverGoogGuidanceFilings(wrong), (error) => error.code === 'FILING_PROVENANCE') })
 test('same source versions are idempotent with stable observation IDs', async () => { const outputRoot = await root(), first = await ingest(outputRoot), second = await ingest(outputRoot); assert.equal(second.created, 0); assert.equal(second.revisions, 0); assert.deepEqual(second.document.records.map((x) => x.observation.id), first.document.records.map((x) => x.observation.id)) })
 
+test('explicit-unit and shared-unit official ranges parse as one atomic LOW/HIGH pair', async () => { const result = await ingest(await root()), explicit = await readFile(fixtures.get('2025-Q3'), 'utf8'), shared = await readFile(fixtures.get('2025-Q4'), 'utf8'); assert.deepEqual(parseGoogAnnualCapexGuidance(result.snapshots[3], explicit).map((x) => [x.bound, x.value]), [['LOW',91],['HIGH',93]]); assert.deepEqual(parseGoogAnnualCapexGuidance(result.snapshots[4], shared).map((x) => [x.bound, x.value]), [['LOW',175],['HIGH',185]]) })
 const failures = [
   ['wrong issuer', (h,d) => d.asOf === '2025-Q4' ? h.replace('Alphabet Inc.', 'Example Corp.') : h, 'WRONG_DOCUMENT'],
-  ['wrong document', (h,d) => d.asOf === '2025-Q4' ? h.replace('capital expenditures', 'operating expenses') : h, 'TARGET_PERIOD'],
+  ['wrong document', (h,d) => d.asOf === '2025-Q4' ? h.replace('CapEx investments', 'operating expenses') : h, 'TARGET_PERIOD'],
   ['wrong definition', (h,d) => d.asOf === '2025-Q4' ? h.replace('Purchases of property and equipment', 'Depreciation expense') : h, 'CAPEX_DEFINITION'],
   ['missing target year', (h,d) => d.asOf === '2025-Q2' ? h.replace('in 2025', 'in the future') : h, 'TARGET_PERIOD'],
   ['approximate wording lost', (h,d) => d.asOf === '2025-Q2' ? h.replace('approximately ', '') : h, 'APPROXIMATION_REQUIRED'],
   ['ambiguous approximation', (h,d) => d.asOf === '2025-Q2' ? h.replace('</body>', '<p>CapEx is approximately $86 billion.</p></body>') : h, 'AMBIGUOUS_APPROXIMATION'],
   ['incomplete range', (h,d) => d.asOf === '2025-Q3' ? h.replace(' to $93 billion', '') : h, 'INCOMPLETE_RANGE'],
   ['inconsistent units', (h,d) => d.asOf === '2025-Q3' ? h.replace('$93 billion', '$93 million') : h, 'INCOMPLETE_RANGE'],
+  ['missing LOW', (h,d) => d.asOf === '2025-Q4' ? h.replace('$175 to ', '') : h, 'INCOMPLETE_RANGE'],
+  ['missing HIGH', (h,d) => d.asOf === '2025-Q4' ? h.replace('$185 billion', '') : h, 'INCOMPLETE_RANGE'],
+  ['missing LOW dollar sign', (h,d) => d.asOf === '2025-Q4' ? h.replace('$175 to', '175 to') : h, 'INCOMPLETE_RANGE'],
+  ['missing HIGH dollar sign', (h,d) => d.asOf === '2025-Q4' ? h.replace('to $185', 'to 185') : h, 'INCOMPLETE_RANGE'],
+  ['missing final unit', (h,d) => d.asOf === '2025-Q4' ? h.replace('$185 billion', '$185') : h, 'INCOMPLETE_RANGE'],
+  ['missing range connector', (h,d) => d.asOf === '2025-Q4' ? h.replace('$175 to $185', '$175 $185') : h, 'INCOMPLETE_RANGE'],
   ['duplicate semantic fact', (h,d) => d.asOf === '2025-Q3' ? h.replace('</body>', '<p>CapEx range of $91 billion to $93 billion.</p></body>') : h, 'DUPLICATE_RANGE'],
   ['quarterly actual', (h,d) => d.asOf === '2025-Q2' ? h.replace('We are increasing our investment in capital expenditures in 2025 to approximately $85 billion.', 'Capital expenditures for the quarter were $85 billion.') : h, 'QUARTERLY_ACTUAL'],
+  ['ambiguous multiple candidate ranges', (h,d) => d.asOf === '2025-Q4' ? h.replace('</body>', '<p>CapEx range of $170 to $180 billion.</p></body>') : h, 'DUPLICATE_RANGE'],
   ['qualitative commentary', (h,d) => d.asOf === '2025-Q2' ? h.replace('We are increasing our investment in capital expenditures in 2025 to approximately $85 billion.', 'AI infrastructure investment remains important.') : h, 'TARGET_PERIOD'],
   ['malformed numeric', (h,d) => d.asOf === '2025-Q2' ? h.replace('$85 billion', '$abc billion') : h, 'APPROXIMATION_REQUIRED'],
+  ['malformed range numeric', (h,d) => d.asOf === '2025-Q4' ? h.replace('$175 to', '$17x to') : h, 'INCOMPLETE_RANGE'],
 ]
 for (const [name, transform, code] of failures) test(`${name} fails closed without canonical mutation`, async () => { const outputRoot = await root(); await ingest(outputRoot); const target = path.join(outputRoot, 'observations', 'goog-annual-capex-guidance.json'), before = await readFile(target, 'utf8'); await assert.rejects(() => ingest(outputRoot, transform), (error) => error instanceof IngestionError && error.code === code); assert.equal(await readFile(target, 'utf8'), before) })
 test('invalid guidanceAsOfPeriod fails closed', async () => { const result = await ingest(await root()), snapshot = structuredClone(result.snapshots[0]); snapshot.provenance.guidanceAsOfPeriod = 'bad'; assert.throws(() => parseGoogAnnualCapexGuidance(snapshot, '<html></html>'), (error) => error.code === 'GUIDANCE_PERIOD') })
 test('LOW greater than HIGH is rejected', async () => { const result = await ingest(await root()), snapshot = result.snapshots[3], html = (await readFile(fixtures.get('2025-Q3'), 'utf8')).replace('$91 billion to $93 billion', '$99 billion to $93 billion'); assert.throws(() => parseGoogAnnualCapexGuidance(snapshot, html), (error) => error.code === 'RANGE_ORDER') })
 test('range validator rejects mismatched units', async () => { const result = await ingest(await root()), pair = result.candidates.filter((x) => x.guidanceAsOfPeriod === '2025-Q3').map((x) => ({...x})); pair[1].unit = 'USD millions'; assert.throws(() => validateGoogGuidanceCandidates(pair, result.snapshots[3]), (error) => ['RANGE_ATOMICITY', 'VALIDATION_FAILED'].includes(error.code)) })
-test('source outage fails closed', async () => { const outputRoot = await root(); await assert.rejects(() => ingestGoogAnnualGuidance({ outputRoot, fetchImpl: async () => { throw new Error('offline') }, secUserAgent: agent }), (error) => error.code === 'DISCOVERY_UNAVAILABLE') })
+test('source outage fails closed', async () => { const outputRoot = await root(); await assert.rejects(() => ingestGoogAnnualGuidance({ outputRoot, fetchImpl: async () => { throw new Error('offline') }, secUserAgent: agent, acquisitionMode: 'FIXTURE' }), (error) => error.code === 'DISCOVERY_UNAVAILABLE') })

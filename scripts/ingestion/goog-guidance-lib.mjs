@@ -3,6 +3,7 @@ import { IngestionError, fail } from './shared/ingestion-error.mjs'
 import { buildSecArchiveUrl, fetchSecSubmissions, collectSecFiling } from './shared/sec-client.mjs'
 import { persistRawSnapshot, sha256 } from './shared/snapshot-store.mjs'
 import { promoteCanonicalAtomically } from './shared/canonical-store.mjs'
+import { verifyGoogFrozenQ1Baseline } from './goog-frozen-baseline.mjs'
 
 export const GOOG_GUIDANCE_SOURCE = Object.freeze({ id: 'goog-annual-capex-guidance-official', issuer: 'GOOG', ticker: 'GOOG', tier: 'TIER_1_OFFICIAL', definitionId: 'goog-purchases-of-property-and-equipment', unit: 'USD billions' })
 export const GOOG_SEC_ACQUISITION = Object.freeze({ cik: '0001652044', submissionsUrl: 'https://data.sec.gov/submissions/CIK0001652044.json', channel: 'SEC_EDGAR', filedWith: 'SEC EDGAR' })
@@ -49,7 +50,7 @@ export function parseGoogAnnualCapexGuidance(snapshot, html, source = GOOG_GUIDA
     const value = numeric(matches[0][1] ?? matches[0][2]); return [{ ...common, candidateType: 'NUMERIC_METRIC', metric: 'CAPEX_GUIDANCE_POINT', semanticRole: 'GUIDANCE_POINT', guidanceShape: 'APPROXIMATE_POINT', approximate: true, value, sourceLocator: { document: p.evidenceDocument, disclosure: matches[0][0] } }]
   }
   if (p.expectedShape !== 'RANGE') fail('GUIDANCE_SHAPE', 'Unsupported guidance shape')
-  const matches = [...body.matchAll(/(?:capital expenditures|CapEx)[^.]{0,140}(?:range of\s*)?\$\s*([\d,.]+)\s*billion\s*(?:to|–|-)\s*\$?\s*([\d,.]+)\s*billion/gi)]
+  const matches = [...body.matchAll(/(?:capital expenditures|CapEx)[^.]{0,140}(?:range of\s*)?\$\s*([\d,.]+)\s*(?:billion\s*)?(?:to|–|-)\s*\$\s*([\d,.]+)\s*billion/gi)]
   if (matches.length !== 1) fail(matches.length ? 'DUPLICATE_RANGE' : 'INCOMPLETE_RANGE', 'Expected one complete annual guidance range')
   const low = numeric(matches[0][1]), high = numeric(matches[0][2]); if (low > high) fail('RANGE_ORDER', 'Guidance LOW exceeds HIGH')
   const base = { ...common, candidateType: 'NUMERIC_METRIC', semanticRole: 'GUIDANCE_BOUND', guidanceShape: 'RANGE', approximate: false, sourceLocator: { document: p.evidenceDocument, disclosure: matches[0][0] } }
@@ -73,16 +74,17 @@ async function collectDisclosure({ disclosure, outputRoot, retrievedAt, fetchImp
 }
 
 export async function ingestGoogAnnualGuidance({ outputRoot, retrievedAt = new Date().toISOString(), fetchImpl = fetch, secUserAgent = process.env.SEC_USER_AGENT, source = GOOG_GUIDANCE_SOURCE, acquisitionMode = 'LIVE', fixturePath = 'tests/ingestion/googGuidanceIngestion.test.mjs' }) {
+  const frozen = acquisitionMode === 'LIVE' ? await verifyGoogFrozenQ1Baseline(outputRoot) : null
   const { submissions } = await fetchSecSubmissions({ cik: GOOG_SEC_ACQUISITION.cik, userAgent: secUserAgent, fetchImpl })
   const sec = discoverGoogGuidanceFilings(submissions), byAccession = new Map(sec.map((item) => [item.accessionNumber, item]))
   const disclosures = GOOG_GUIDANCE_DISCLOSURES.map((item) => item.accessionNumber ? byAccession.get(item.accessionNumber) : item)
   if (disclosures.some((item) => !item)) fail('MISSING_DISCLOSURE', 'Alphabet guidance history is incomplete')
-  const candidates = [], snapshots = []
-  for (const disclosure of disclosures) { const persisted = await collectDisclosure({ disclosure, outputRoot, retrievedAt, fetchImpl, secUserAgent, source, acquisitionMode, fixturePath }); const parsed = parseGoogAnnualCapexGuidance(persisted.snapshot, persisted.body, source); validateGoogGuidanceCandidates(parsed, persisted.snapshot, source); candidates.push(...parsed); snapshots.push(persisted.snapshot) }
+  const candidates = [], snapshots = [], collectable = frozen ? disclosures.filter((item) => item.accessionNumber) : disclosures
+  for (const disclosure of collectable) { const persisted = await collectDisclosure({ disclosure, outputRoot, retrievedAt, fetchImpl, secUserAgent, source, acquisitionMode, fixturePath }); const parsed = parseGoogAnnualCapexGuidance(persisted.snapshot, persisted.body, source); validateGoogGuidanceCandidates(parsed, persisted.snapshot, source); candidates.push(...parsed); snapshots.push(persisted.snapshot) }
   if (new Set(candidates.map(logicalKey)).size !== candidates.length) fail('DUPLICATE_FACT', 'Duplicate semantic guidance fact')
   const canonicalPath = path.join(outputRoot, 'observations', 'goog-annual-capex-guidance.json')
-  const promotion = await promoteCanonicalAtomically({ candidates, snapshotIds: snapshots.map((item) => item.snapshotId), canonicalPath, pipelineId: 'goog-annual-capex-guidance', issuer: 'GOOG', sourceId: source.id, logicalFactKey: logicalKey, observationId: legacyId, toObservation: observation, envelope: { capexDefinitionId: source.definitionId } })
-  return { disclosures, snapshots, candidates, canonicalPath, ...promotion }
+  const promotion = await promoteCanonicalAtomically({ candidates, snapshotIds: [...snapshots.map((item) => item.snapshotId), ...(frozen ? [frozen.snapshotId] : [])], canonicalPath, pipelineId: 'goog-annual-capex-guidance', issuer: 'GOOG', sourceId: source.id, logicalFactKey: logicalKey, observationId: legacyId, toObservation: observation, envelope: { capexDefinitionId: source.definitionId } })
+  return { disclosures, snapshots, candidates, warnings: frozen ? [frozen.warning] : [], frozenBaselineVerified: Boolean(frozen), canonicalPath, ...promotion }
 }
 
 export { IngestionError, sha256 }
