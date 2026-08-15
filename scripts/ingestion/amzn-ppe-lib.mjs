@@ -19,7 +19,6 @@ function text(value){return value.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,
 function parseCashValue(raw){const normalized=raw.replace(/[,$()\s]/g,'');if(!/^\d+$/.test(normalized))fail('MALFORMED_NUMBER','Malformed PP&E purchases value: '+raw);return Number(normalized)}
 function quarterForMonth(month){if(month===3)return 1;if(month===6)return 2;if(month===9)return 3;fail('INCOMPLETE_TTM_PERIOD','Quarterly filing period is not a completed Amazon quarter')}
 function parsedRows(table){return [...table.matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)].map((row)=>[...row[1].matchAll(/<t[dh]\b([^>]*)>([\s\S]*?)<\/t[dh]>/gi)].map((cell)=>({value:text(cell[2]),colspan:Number(cell[1].match(/colspan\s*=\s*["']?(\d+)/i)?.[1]??1)})))}
-function expandRow(row){return row.flatMap((cell)=>Array.from({length:cell.colspan},()=>cell.value))}
 function normalizedHeader(value){return value.replace(/,\s*$/,'').replace(/\s+/g,' ').trim()}
 export function parseAmznPpePurchases(snapshot,html,source=AMZN_PPE_SOURCE){
   if(source.definitionId!==AMZN_PPE_SOURCE.definitionId)fail('INCOMPATIBLE_DEFINITION','Only purchases of property and equipment may enter this pipeline')
@@ -38,14 +37,17 @@ export function parseAmznPpePurchases(snapshot,html,source=AMZN_PPE_SOURCE){
   for(const table of [...html.matchAll(/<table\b[^>]*>[\s\S]*?<\/table>/gi)].map((match)=>match[0])){const rows=parsedRows(table);for(const row of rows)if(row.some((cell)=>cell.value==='Purchases of property and equipment'))matches.push({table,rows,row})}
   if(matches.length===0)fail('MISSING_PPE_ROW','Purchases of property and equipment row is missing')
   if(matches.length!==1)fail('DUPLICATE_PPE_ROW','Purchases of property and equipment row is duplicated')
-  const {rows,row}=matches[0], expandedData=expandRow(row), target='Twelve Months Ended '+monthName+' '+ended[2]
-  const groupRows=rows.map(expandRow).filter((cells)=>cells.filter((cell)=>normalizedHeader(cell)===target).length===2)
-  if(groupRows.length!==1)fail('INCOMPLETE_TTM_PERIOD','Expected one unambiguous TTM header group')
-  const group=groupRows[0], yearRows=rows.map(expandRow).filter((cells)=>cells.length===group.length&&cells.some((cell)=>cell===String(prior))&&cells.some((cell)=>cell===String(year)))
-  if(yearRows.length!==1||expandedData.length!==group.length)fail('INCOMPLETE_TTM_PERIOD','TTM period headers do not align with PP&E values')
-  const years=yearRows[0], priorIndexes=group.map((cell,index)=>normalizedHeader(cell)===target&&years[index]===String(prior)?index:-1).filter((index)=>index>=0), currentIndexes=group.map((cell,index)=>normalizedHeader(cell)===target&&years[index]===String(year)?index:-1).filter((index)=>index>=0)
-  if(priorIndexes.length!==1||currentIndexes.length!==1)fail('INCOMPLETE_TTM_PERIOD','Expected unique prior and current TTM columns')
-  const priorRaw=expandedData[priorIndexes[0]], currentRaw=expandedData[currentIndexes[0]]
+  const {rows,row}=matches[0], target='Twelve Months Ended '+monthName+' '+ended[2]
+  const expectedGroups=quarter===1?['Three Months Ended '+monthName+' '+ended[2],target]:quarter===2?['Three Months Ended '+monthName+' '+ended[2],'Six Months Ended '+monthName+' '+ended[2],target]:['Three Months Ended '+monthName+' '+ended[2],'Nine Months Ended '+monthName+' '+ended[2],target]
+  const semanticGroups=(cells)=>cells.map((cell)=>normalizedHeader(cell.value)).filter((value)=>/^(?:Three|Six|Nine|Twelve) Months Ended /.test(value))
+  const groupRows=rows.filter((cells)=>{const groups=semanticGroups(cells);return groups.length>0&&groups.join('|')===expectedGroups.join('|')})
+  if(groupRows.length!==1)fail('INCOMPLETE_TTM_PERIOD','Expected one unambiguous ordered period-group header')
+  const expectedYears=expectedGroups.flatMap(()=>[String(prior),String(year)]), yearRows=rows.filter((cells)=>{const years=cells.map((cell)=>cell.value).filter((value)=>/^20\d{2}$/.test(value));return years.join('|')===expectedYears.join('|')})
+  if(yearRows.length!==1)fail('INCOMPLETE_TTM_PERIOD','Expected one unambiguous ordered year header')
+  const labelIndex=row.findIndex((cell)=>cell.value==='Purchases of property and equipment'), financialCells=row.slice(labelIndex+1).filter((cell)=>cell.value!==''&&cell.value!=='$')
+  if(financialCells.length!==expectedYears.length)fail('INCOMPLETE_TTM_PERIOD','PP&E row does not contain exactly one value per logical period')
+  const values=financialCells.map((cell)=>({raw:cell.value,value:parseCashValue(cell.value)})), ttmOffset=(expectedGroups.length-1)*2
+  const priorRaw=values[ttmOffset].raw, currentRaw=values[ttmOffset+1].raw
   const locator={accessionNumber:p.accessionNumber,primaryDocument:p.primaryDocument,statement:'Consolidated Statements of Cash Flows',row:'Purchases of property and equipment',reportedUnit:'USD millions',columns:['Twelve Months Ended '+monthName+' '+prior,'Twelve Months Ended '+monthName+' '+year]}
   const common={issuer:source.issuer,companyTicker:source.ticker,candidateType:'NUMERIC_METRIC',metric:'CAPEX_ACTUAL',unit:source.unit,periodType:'POINT_IN_TIME',capexDefinitionId:source.definitionId,sourceId:source.id,sourceUrl:snapshotEvidenceUrl(snapshot),publishedAt:p.filingDate+'T00:00:00.000Z',retrievedAt:snapshot.retrievedAt,snapshotId:snapshot.snapshotId,sourceDocumentVersionId:p.accessionNumber,sourceLocator:locator}
   return [{...common,period:'TTM-'+prior+'-Q'+quarter,value:parseCashValue(priorRaw)/1000,originalText:priorRaw},{...common,period:'TTM-'+year+'-Q'+quarter,value:parseCashValue(currentRaw)/1000,originalText:currentRaw}]
