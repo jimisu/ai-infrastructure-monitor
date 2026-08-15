@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 
 export function classifyMonitoringReport(report) {
   if (report?.overallHealth === 'PARTIAL_FAILURE' || (report?.totals?.failures ?? 0) > 0) return 'INGESTION FAILURE'
-  if (report?.overallHealth === 'VERIFICATION_FAILURE' || report?.verification?.status === 'FAILED') return 'VERIFICATION FAILURE'
+  if (report?.overallHealth === 'VERIFICATION_FAILURE' || report?.baselineVerification?.status === 'FAILED' || report?.proposedStateVerification?.status === 'FAILED' || report?.verification?.status === 'FAILED') return 'VERIFICATION FAILURE'
   if ((report?.totals?.revisions ?? 0) > 0) return 'REVISION DETECTED'
   if ((report?.totals?.newFacts ?? 0) > 0) return 'NEW FACTS DETECTED'
   return 'NO CHANGE'
@@ -13,7 +13,7 @@ export function classifyMonitoringReport(report) {
 export function renderMonitoringSummary(report) {
   const status = classifyMonitoringReport(report), lines = ['# AI Infrastructure Monitor','',`**Status: ${status}**`,'','| Issuer | Result |','|---|---|']
   for (const item of report.issuerResults ?? []) lines.push(`| ${item.issuer} | ${item.status}${item.errorCode ? ` — ${item.errorCode}` : ''} |`)
-  lines.push('','| Run metric | Count |','|---|---:|',`| New facts | ${report.totals?.newFacts ?? 0} |`,`| Revisions | ${report.totals?.revisions ?? 0} |`,`| Provenance reassertions | ${report.totals?.provenanceReassertions ?? 0} |`,`| Quarantined | ${report.totals?.quarantined ?? 0} |`,`| Failures | ${report.totals?.failures ?? 0} |`,'',`**Verification:** ${report.verification?.status ?? 'UNKNOWN'}`,`**Overall health:** ${report.overallHealth ?? 'UNKNOWN'}`,'','Monitoring is dry-run only; no production canonical observations are promoted by this workflow.')
+  lines.push('','| Run metric | Count |','|---|---:|',`| New facts | ${report.totals?.newFacts ?? 0} |`,`| Revisions | ${report.totals?.revisions ?? 0} |`,`| Provenance reassertions | ${report.totals?.provenanceReassertions ?? 0} |`,`| Quarantined | ${report.totals?.quarantined ?? 0} |`,`| Failures | ${report.totals?.failures ?? 0} |`,'',`**Baseline verification:** ${report.baselineVerification?.status ?? report.verification?.status ?? 'UNKNOWN'}`,`**Proposed-state verification:** ${report.proposedStateVerification?.status ?? report.verification?.status ?? 'UNKNOWN'}`,`**Overall health:** ${report.overallHealth ?? 'UNKNOWN'}`,'','Monitoring is dry-run only; no production canonical observations are promoted by this workflow.')
   return `${lines.join('\n')}\n`
 }
 

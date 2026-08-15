@@ -48,6 +48,9 @@ function validateObservation(value: unknown): MetricObservation {
   if (typeof observation.id !== 'string' || observation.id.length === 0) fail('observation ID is missing')
   if (observation.companyTicker !== 'TSM') fail('ticker is not TSM')
   if (!MONTHLY_METRICS.includes(observation.metric)) fail('unexpected metric')
+  if (observation.metric === 'MONTHLY_REVENUE' && observation.value <= 0) fail('monthly revenue must be positive')
+  // Conservative bound: permits extreme real growth but rejects obvious shifted revenue/YTD values.
+  if (observation.metric === 'MONTHLY_REVENUE_YOY_PERCENT' && Math.abs(observation.value) > 1000) fail('monthly YoY exceeds sanity bound')
   if (observation.periodType !== 'MONTH' || !/^20\d{2}-(0[1-9]|1[0-2])$/.test(observation.period)) fail('invalid monthly period')
   if (typeof observation.value !== 'number' || !Number.isFinite(observation.value)) fail('invalid numeric value')
   const expectedUnit = observation.metric === 'MONTHLY_REVENUE' ? 'NT$ millions' : 'percent'

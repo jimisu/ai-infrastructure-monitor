@@ -4,7 +4,7 @@ import os from 'node:os'
 import path from 'node:path'
 import test from 'node:test'
 import { IngestionError } from '../../scripts/ingestion/tsm-monthly-lib.mjs'
-import { AMZN_SEC_ACQUISITION, discoverAmznQuarterlyFilings, ingestAmznPpe } from '../../scripts/ingestion/amzn-ppe-lib.mjs'
+import { AMZN_SEC_ACQUISITION, discoverAmznQuarterlyFilings, ingestAmznPpe, parseAmznPpePurchases } from '../../scripts/ingestion/amzn-ppe-lib.mjs'
 const fixturePath=path.resolve('tests/fixtures/ingestion/amzn/2026-q1-10q-ppe.html'),agent='AI Infrastructure Monitor tests maintainer@example.com'
 const filing={accessionNumber:'0001018724-26-000014',filingDate:'2026-04-30',reportDate:'2026-03-31',form:'10-Q',primaryDocument:'amzn-20260331.htm'}
 function submissions(extra=[]){const values=[filing,{accessionNumber:'0001018724-26-000012',filingDate:'2026-04-29',reportDate:'2026-03-31',form:'8-K',primaryDocument:'amzn-20260331x8k.htm'},...extra];return{cik:1018724,name:'Amazon.com, Inc.',tickers:['AMZN'],filings:{recent:Object.fromEntries(['accessionNumber','filingDate','reportDate','form','primaryDocument'].map((field)=>[field,values.map((value)=>value[field])]))}}}
@@ -21,7 +21,7 @@ const failures=[
  ['wrong document',(html)=>html.replace(/form 10-q/gi,'FORM 8-K'),'WRONG_ISSUER'],
  ['missing PP&E row',(html)=>html.replace('Purchases of property and equipment</td>','Capital additions</td>'),'MISSING_PPE_ROW'],
  ['duplicate PP&E row',(html)=>html.replace('</table><table>','<tr><td>Purchases of property and equipment</td><td>(25,019)</td><td>(44,203)</td><td>(93,093)</td><td>(151,003)</td></tr></table><table>'),'DUPLICATE_PPE_ROW'],
- ['malformed value',(html)=>html.replace('(151,003)','not-a-number'),'INCOMPLETE_TTM_PERIOD'],
+ ['malformed value',(html)=>html.replace('(151,003)','not-a-number'),'MALFORMED_NUMBER'],
  ['ambiguous units',(html)=>html.replace('(in millions)','(units omitted)'),'AMBIGUOUS_UNITS'],
  ['incomplete TTM period',(html)=>html.replace('Twelve Months Ended March 31,','Year to date March 31,'),'INCOMPLETE_TTM_PERIOD'],
 ]
@@ -29,3 +29,5 @@ for(const [name,transform,code] of failures)test(name+' fails closed without cha
 test('source outage fails closed',async()=>{const outputRoot=await root();await assert.rejects(()=>ingest(outputRoot,{status:503}),(error)=>error instanceof IngestionError&&error.code==='FILING_RESPONSE')})
 test('inconsistent provenance redirect fails closed',async()=>{const outputRoot=await root();await assert.rejects(()=>ingest(outputRoot,{finalUrl:'https://example.com/filing.htm'}),(error)=>error instanceof IngestionError&&error.code==='FILING_PROVENANCE')})
 test('incompatible definition provenance is rejected',async()=>{const outputRoot=await root();const bad={...filing,filingUrl:'https://www.sec.gov/Archives/edgar/data/1018724/000101872426000014/amzn-20260331.htm'};void bad;const transform=(html)=>html;const fetchImpl=await fetcher(transform);await assert.rejects(()=>ingestAmznPpe({outputRoot,retrievedAt:'2026-08-14T00:00:00.000Z',fetchImpl,secUserAgent:agent,reportPeriod:'2026-Q1',acquisitionMode:'FIXTURE',fixturePath,source:{id:'amzn-2026-q1-results',issuer:'AMZN',ticker:'AMZN',tier:'TIER_1_OFFICIAL',definitionId:'amzn-property-equipment-sales-and-incentives',unit:'USD billions'}}),(error)=>error instanceof IngestionError&&error.code==='INCOMPATIBLE_DEFINITION')})
+
+test('Q2 six-column layout selects only compatible TTM columns',async()=>{const html=await readFile(path.resolve('tests/fixtures/ingestion/amzn/2026-q2-10q-ppe.html'),'utf8'),url='https://www.sec.gov/Archives/edgar/data/1018724/000101872426000026/amzn-20260630.htm',snapshot={httpStatus:200,contentType:'text/html',finalUrl:url,retrievedAt:'2026-08-14T00:00:00.000Z',snapshotId:'q2',provenance:{cik:'0001018724',formType:'10-Q',issuer:'Amazon',definitionId:'amzn-purchases-of-property-and-equipment',secFilingUrl:url,filingDate:'2026-07-31',reportDate:'2026-06-30',accessionNumber:'0001018724-26-000026',primaryDocument:'amzn-20260630.htm'}};const parsed=parseAmznPpePurchases(snapshot,html);assert.deepEqual(parsed.map((item)=>[item.period,item.value]),[['TTM-2025-Q2',107.656],['TTM-2026-Q2',173.028]])})

@@ -21,16 +21,16 @@ export function normalizeIssuerResult(issuer, raw, durationMs) {
 
 export function failedIssuerResult(issuer, error, durationMs) { return { issuer, status: 'FAILED', newFacts: 0, revisions: 0, provenanceReassertions: 0, unchanged: 0, quarantined: 0, errorCode: error?.code ?? 'UNEXPECTED', errorMessage: error?.message ?? String(error), durationMs, canonicalChanged: false } }
 
-export function overallHealth(issuerResults, verification) {
+export function overallHealth(issuerResults, baselineVerification, proposedStateVerification = baselineVerification) {
   if (issuerResults.some((x) => x.status === 'FAILED')) return 'PARTIAL_FAILURE'
-  if (verification.status === 'FAILED') return 'VERIFICATION_FAILURE'
+  if (baselineVerification.status === 'FAILED' || proposedStateVerification.status === 'FAILED') return 'VERIFICATION_FAILURE'
   return 'HEALTHY'
 }
 
-export function summarizeRun({ runId, startedAt, finishedAt, dryRun, issuerResults, verification }) {
+export function summarizeRun({ runId, startedAt, finishedAt, dryRun, issuerResults, baselineVerification, proposedStateVerification }) {
   const sum = (field) => issuerResults.reduce((total, item) => total + (item[field] ?? 0), 0)
   const failures = issuerResults.filter((x) => x.status === 'FAILED').length
-  return { schemaVersion: 1, runId, startedAt, finishedAt, dryRun, issuerOrder: [...ISSUER_ORDER], issuerResults, totals: { newFacts: sum('newFacts'), revisions: sum('revisions'), provenanceReassertions: sum('provenanceReassertions'), unchanged: sum('unchanged'), quarantined: sum('quarantined'), failures }, verification, overallHealth: overallHealth(issuerResults, verification) }
+  return { schemaVersion: 2, runId, startedAt, finishedAt, dryRun, issuerOrder: [...ISSUER_ORDER], issuerResults, totals: { newFacts: sum('newFacts'), revisions: sum('revisions'), provenanceReassertions: sum('provenanceReassertions'), unchanged: sum('unchanged'), quarantined: sum('quarantined'), failures }, baselineVerification, proposedStateVerification, verification: baselineVerification, overallHealth: overallHealth(issuerResults, baselineVerification, proposedStateVerification) }
 }
 
 export function createProductionIssuerRunners({ outputRoot, retrievedAt, fetchImpl = fetch, secUserAgent = process.env.SEC_USER_AGENT }) {
@@ -58,16 +58,17 @@ export async function persistRunReport(report, outputRoot) {
   await writeFile(temporary, `${JSON.stringify(report, null, 2)}\n`); await rename(temporary, target); return target
 }
 
-export async function orchestrateIngestion({ outputRoot = path.join(process.cwd(),'data','ingestion'), dryRun = false, issuerRunners, issuerRunnerFactory, verificationRunner, now = () => new Date(), persistReport = true, fetchImpl = fetch, secUserAgent = process.env.SEC_USER_AGENT } = {}) {
+export async function orchestrateIngestion({ outputRoot = path.join(process.cwd(),'data','ingestion'), dryRun = false, issuerRunners, issuerRunnerFactory, verificationRunner, baselineVerificationRunner = verificationRunner, proposedStateVerificationRunner = verificationRunner, now = () => new Date(), persistReport = true, fetchImpl = fetch, secUserAgent = process.env.SEC_USER_AGENT } = {}) {
   const started = now(), startedAt = started.toISOString(), executionRoot = dryRun ? await seedDryRun(outputRoot) : outputRoot
   const runners = issuerRunners ?? issuerRunnerFactory?.(executionRoot) ?? createProductionIssuerRunners({ outputRoot: executionRoot, retrievedAt: startedAt, fetchImpl, secUserAgent })
   const issuerResults = []
   try {
     for (const issuer of ISSUER_ORDER) { const began = now().getTime(); try { const raw = await runners[issuer](); issuerResults.push(normalizeIssuerResult(issuer, raw, duration(began, now().getTime()))) } catch (error) { issuerResults.push(failedIssuerResult(issuer, error, duration(began, now().getTime()))) } }
-    let verification
-    try { const details = await verificationRunner(); verification = { status: 'PASSED', details: details ?? null } } catch (error) { verification = { status: 'FAILED', errorCode: error?.code ?? 'VERIFICATION_FAILED', errorMessage: error?.message ?? String(error) } }
-    const finishedAt = now().toISOString(), identity = JSON.stringify({ startedAt, dryRun, issuerResults, verification })
-    const report = summarizeRun({ runId: `ingestion-run:sha256:${hash(identity)}`, startedAt, finishedAt, dryRun, issuerResults, verification })
+    const runVerification=async(runner,...args)=>{try { const details=await runner(...args); return {status:'PASSED',details:details??null} } catch(error) { return {status:'FAILED',errorCode:error?.code??'VERIFICATION_FAILED',errorMessage:error?.message??String(error)} }}
+    const proposedStateVerification=await runVerification(proposedStateVerificationRunner,executionRoot)
+    const baselineVerification=await runVerification(baselineVerificationRunner)
+    const finishedAt = now().toISOString(), identity = JSON.stringify({ startedAt, dryRun, issuerResults, baselineVerification, proposedStateVerification })
+    const report = summarizeRun({ runId: `ingestion-run:sha256:${hash(identity)}`, startedAt, finishedAt, dryRun, issuerResults, baselineVerification, proposedStateVerification })
     const reportPath = persistReport ? await persistRunReport(report, outputRoot) : null
     return { report, reportPath, exitCode: report.overallHealth === 'HEALTHY' ? 0 : 1 }
   } finally { if (dryRun) await rm(executionRoot, { recursive: true, force: true }) }
@@ -76,6 +77,6 @@ export async function orchestrateIngestion({ outputRoot = path.join(process.cwd(
 export function formatRunSummary(report) {
   const lines = ['AI INFRASTRUCTURE INGESTION','']
   for (const item of report.issuerResults) lines.push(`${item.issuer.padEnd(6)} ${item.status}${item.errorCode ? ` [${item.errorCode}]` : ''}`)
-  lines.push('',`New facts       ${report.totals.newFacts}`,`Revisions       ${report.totals.revisions}`,`Reassertions    ${report.totals.provenanceReassertions ?? 0}`,`Unchanged       ${report.totals.unchanged}`,`Quarantined     ${report.totals.quarantined}`,`Failures        ${report.totals.failures}`,'',`Verification: ${report.verification.status}`,'',`Overall:`,` ${report.overallHealth}`)
+  lines.push('',`New facts       ${report.totals.newFacts}`,`Revisions       ${report.totals.revisions}`,`Reassertions    ${report.totals.provenanceReassertions ?? 0}`,`Unchanged       ${report.totals.unchanged}`,`Quarantined     ${report.totals.quarantined}`,`Failures        ${report.totals.failures}`,'',`Baseline verification: ${report.baselineVerification.status}`,`Proposed-state verification: ${report.proposedStateVerification.status}`,'',`Overall:`,` ${report.overallHealth}`)
   return lines.join('\n')
 }

@@ -45,7 +45,9 @@ export async function discoverFromSec({fetchImpl=fetch,secUserAgent}) {
 }
 function snapshotEvidenceUrl(snapshot) { return snapshot.acquisitionMode === 'FIXTURE' ? snapshot.evidenceUrl : snapshot.finalUrl }
 function textContent(value) { return value.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi,'').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi,'').replace(/&nbsp;|&#160;/gi,' ').replace(/&#58;/gi,':').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim() }
-function numeric(value,field) { const normalized=value.replace(/,/g,'').trim(); if(!/^-?\d+(?:\.\d+)?$/.test(normalized)) throw new IngestionError('MALFORMED_NUMBER','Malformed '+field+': '+value); return Number(normalized) }
+// A 1,000% absolute ceiling admits extreme real growth while rejecting obvious column-shift corruption.
+export const MAX_ABSOLUTE_MONTHLY_YOY_PERCENT = 1000
+function numeric(value,field) { const raw=value.replace(/,/g,'').trim(), parenthesized=/^\(\d+(?:\.\d+)?\)$/.test(raw), normalized=parenthesized?'-'+raw.slice(1,-1):raw; if(!/^-?\d+(?:\.\d+)?$/.test(normalized)) throw new IngestionError('MALFORMED_NUMBER','Malformed '+field+': '+value); return Number(normalized) }
 
 export function parseSecMonthlyRevenue(snapshot,html,source=TSMC_MONTHLY_SOURCE) {
   const p=snapshot.provenance
@@ -62,17 +64,26 @@ export function parseSecMonthlyRevenue(snapshot,html,source=TSMC_MONTHLY_SOURCE)
   const rows=[...tables[0].matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr>/gi)].map((match)=>[...match[1].matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]>/gi)].map((cell)=>textContent(cell[1])))
   const revenueRows=rows.filter((cells)=>cells.some((cell)=>/^Net Revenue$/i.test(cell)))
   if(revenueRows.length!==1) throw new IngestionError('TABLE_STRUCTURE','Expected one Net Revenue row')
-  const cells=revenueRows[0], start=cells.findIndex((cell)=>/^Net Revenue$/i.test(cell))+1
-  const values=cells.slice(start).filter((cell)=>/^-?[\d,.]+$/.test(cell))
-  if(values.length<5) throw new IngestionError('TABLE_STRUCTURE','Monthly revenue row is incomplete')
   const month=months.get(title[1].toLowerCase()), year=Number(title[2])
   if(!month) throw new IngestionError('REPORTING_MONTH','Reporting month is ambiguous')
+  const monthHeader=title[1]+' '+year, priorMonthHeader=title[1]+' '+(year-1)
+  const headerRows=rows.filter((row)=>row.filter((cell)=>cell===monthHeader).length===1&&row.filter((cell)=>cell===priorMonthHeader).length===1)
+  if(headerRows.length!==1) throw new IngestionError('TABLE_STRUCTURE','Expected one unambiguous monthly header row')
+  const headers=headerRows[0], periodIndex=headers.findIndex((cell)=>/^Period$/i.test(cell)), currentIndex=headers.indexOf(monthHeader), priorIndex=headers.indexOf(priorMonthHeader)
+  if(periodIndex<0||currentIndex<=periodIndex||priorIndex<=currentIndex) throw new IngestionError('TABLE_STRUCTURE','Monthly header order is invalid')
+  if(!/^Y-o-Y Increase\s*\(Decrease\)\s*%$/i.test(headers[priorIndex+1]??'')) throw new IngestionError('TABLE_STRUCTURE','Monthly YoY header is missing or ambiguous')
+  const cells=revenueRows[0], labelIndex=cells.findIndex((cell)=>/^Net Revenue$/i.test(cell)), offset=labelIndex-periodIndex
+  const revenueRaw=cells[currentIndex+offset], yoyRaw=cells[priorIndex+1+offset]
+  if(revenueRaw===undefined||yoyRaw===undefined) throw new IngestionError('TABLE_STRUCTURE','Monthly revenue row is incomplete')
+  const revenue=numeric(revenueRaw,'monthly revenue'), yoy=numeric(yoyRaw,'reported YoY')
+  if(revenue<=0) throw new IngestionError('VALUE_RANGE','Monthly revenue must be positive')
+  if(Math.abs(yoy)>MAX_ABSOLUTE_MONTHLY_YOY_PERCENT) throw new IngestionError('YOY_PERCENT_RANGE','Reported monthly YoY exceeds conservative sanity bound')
   const period=year+'-'+String(month).padStart(2,'0')
   const common={issuer:source.issuer,companyTicker:source.ticker,period,periodType:'MONTH',sourceId:source.id,sourceUrl:snapshotEvidenceUrl(snapshot),publishedAt:p.filingDate+'T00:00:00.000Z',retrievedAt:snapshot.retrievedAt,snapshotId:snapshot.snapshotId,sourceDocumentVersionId:p.accessionNumber}
   const locator={accessionNumber:p.accessionNumber,primaryDocument:p.primaryDocument,table:'TSMC '+title[1]+' Revenue Report (Consolidated)',row:'Net Revenue',reportedUnit:'NT$ million'}
   return [
-    {...common,candidateType:'NUMERIC_METRIC',metric:'MONTHLY_REVENUE',value:numeric(values[0],'monthly revenue'),unit:source.revenueUnit,sourceLocator:{...locator,column:title[1]+' '+year},originalText:values[0]},
-    {...common,candidateType:'NUMERIC_METRIC',metric:'MONTHLY_REVENUE_YOY_PERCENT',value:numeric(values[4],'reported YoY'),unit:source.yoyUnit,sourceLocator:{...locator,column:'Y-o-Y Increase(Decrease)%'},originalText:values[4]},
+    {...common,candidateType:'NUMERIC_METRIC',metric:'MONTHLY_REVENUE',value:revenue,unit:source.revenueUnit,sourceLocator:{...locator,column:monthHeader},originalText:revenueRaw},
+    {...common,candidateType:'NUMERIC_METRIC',metric:'MONTHLY_REVENUE_YOY_PERCENT',value:yoy,unit:source.yoyUnit,sourceLocator:{...locator,column:headers[priorIndex+1]},originalText:yoyRaw},
   ]
 }
 async function collect({filing,outputRoot,retrievedAt,fetchImpl,secUserAgent,source,acquisitionMode,fixturePath}) {
