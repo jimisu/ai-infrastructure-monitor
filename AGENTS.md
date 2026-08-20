@@ -69,16 +69,14 @@ is unclear, stop and report the conflict. Never stage unrelated changes.
 [W4] State the planned scope, forbidden scope, assumptions, and unresolved human decisions.
 [W5] Implement against fixtures or a disposable proposed state where ingestion/canonical data is
 involved. Do not use production canonical paths as a development workspace.
-[W6] Run targeted tests, full ingestion verification when applicable, lint, build, and
-`git diff --check`. Report exact failures without bypassing them.
+[W6] For general code changes, run `npm run verify:agent` before reporting complete. It currently
+composes lint, build, complete ingestion tests, and downstream verification. Use narrower
+issuer-specific checks during development when useful, and run `git diff --check` separately.
 [W7] Report changed files, verification results, production/provenance impact, and human decisions.
 
-Common baseline commands currently include:
+Common completion commands currently include:
 
-- `npm run lint`
-- `npm run build`
-- `npm run verify:ingestion`
-- `npm run verify:ingest:orchestration`
+- `npm run verify:agent`
 - `git diff --check`
 
 Choose additional issuer-specific commands from `package.json`.

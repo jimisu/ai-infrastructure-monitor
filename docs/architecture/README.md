@@ -90,10 +90,10 @@ Providers and downstream verification are under [`src/data/`](../../src/data/) a
 | Separate baseline and disposable proposed verification | [`productionIngestionVerification.ts`](../../src/ingestion/productionIngestionVerification.ts), [`proposedStateIngestionVerification.ts`](../../src/ingestion/proposedStateIngestionVerification.ts), [`proposedStateResolver.test.mjs`](../../tests/ingestion/proposedStateResolver.test.mjs) |
 | Dry-run production-state isolation | [`ingestion-orchestrator.mjs`](../../scripts/ingestion/ingestion-orchestrator.mjs), [`ingestionOrchestrator.test.mjs`](../../tests/ingestion/ingestionOrchestrator.test.mjs) |
 | Coverage kept separate from ingestion health | [`coverage-contract.mjs`](../../scripts/ingestion/coverage-contract.mjs), [`coverageContract.test.mjs`](../../tests/ingestion/coverageContract.test.mjs) |
+| Unified agent verification | [`npm run verify:agent`](../../package.json) composes `npm run lint`, `npm run build`, and `npm run verify:ingestion`. It is production-non-mutating, but may write ignored build output and disposable temporary test files. |
 
-Current verification commands are defined in [`package.json`](../../package.json). The broad existing
-checks are `npm run verify:ingestion`, `npm run verify:ingest:orchestration`, `npm run lint`, and
-`npm run build`.
+Current verification commands are defined in [`package.json`](../../package.json). Use
+`npm run verify:agent` for the broad composed check and issuer-specific commands for narrower feedback.
 
 ## Known gaps
 
@@ -106,7 +106,6 @@ checks are `npm run verify:ingestion`, `npm run verify:ingest:orchestration`, `n
   fully unified behind one identity implementation.
 - There is no generic qualitative canonical store/provider boundary.
 - There is no repository-wide `tests/architecture/` invariant suite.
-- There is no unified `verify:agent` command.
 
 ## Vertiv status
 
