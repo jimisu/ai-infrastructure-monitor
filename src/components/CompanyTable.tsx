@@ -1,4 +1,5 @@
 import type { Company } from '../types/company'
+import { calculateOpportunityScore } from '../scoring/opportunity'
 
 interface Props {
   companies: Company[]
@@ -55,7 +56,12 @@ export function CompanyTable({ companies }: Props) {
               </td>
               <td>
                 <strong className="opportunity-score">
-                  {Math.round(company.aiss * 0.35 + company.tenxScore * 0.25 + company.valuationAttractiveness * 0.2 + company.signalMomentum * 0.2)}
+                  {calculateOpportunityScore({
+                    aiss: company.aiss,
+                    tenxScore: company.tenxScore,
+                    valuationAttractiveness: company.valuationAttractiveness,
+                    signalMomentum: company.signalMomentum,
+                  })}
                 </strong>
               </td>
               <td>
