@@ -21,7 +21,7 @@ export function normalizeIssuerResult(issuer, raw, durationMs) {
   return { issuer, status: 'SUCCESS', newFacts, revisions, provenanceReassertions, unchanged: Math.max(0, candidateCount - newFacts - provenanceReassertions), quarantined: 0, durationMs, warnings: Array.isArray(raw.warnings) ? raw.warnings : [], canonicalChanged: newFacts > 0 || provenanceReassertions > 0 || (raw.transitions ?? 0) > 0 }
 }
 
-export function failedIssuerResult(issuer, error, durationMs) { return { issuer, status: 'FAILED', newFacts: 0, revisions: 0, provenanceReassertions: 0, unchanged: 0, quarantined: 0, errorCode: error?.code ?? 'UNEXPECTED', errorMessage: error?.message ?? String(error), durationMs, canonicalChanged: false } }
+export function failedIssuerResult(issuer, error, durationMs) { return { issuer, status: 'FAILED', newFacts: 0, revisions: 0, provenanceReassertions: 0, unchanged: 0, quarantined: 0, errorCode: error?.code ?? 'UNEXPECTED', errorMessage: error?.message ?? String(error), ...(error?.details && Object.keys(error.details).length > 0 ? { errorDetails: error.details } : {}), durationMs, canonicalChanged: false } }
 
 export function overallHealth(issuerResults, baselineVerification, proposedStateVerification = baselineVerification) {
   if (issuerResults.some((x) => x.status === 'FAILED')) return 'PARTIAL_FAILURE'
@@ -36,13 +36,13 @@ export function summarizeRun({ runId, startedAt, finishedAt, dryRun, issuerResul
   return { schemaVersion: 4, runId, startedAt, finishedAt, dryRun, issuerOrder: [...ISSUER_ORDER], issuerResults, totals: { newFacts: sum('newFacts'), revisions: sum('revisions'), provenanceReassertions: sum('provenanceReassertions'), unchanged: sum('unchanged'), quarantined: sum('quarantined'), failures, warnings }, coverage, baselineVerification, proposedStateVerification, verification: baselineVerification, overallHealth: overallHealth(issuerResults, baselineVerification, proposedStateVerification) }
 }
 
-export function createProductionIssuerRunners({ outputRoot, retrievedAt, fetchImpl = fetch, secUserAgent = process.env.SEC_USER_AGENT }) {
+export function createProductionIssuerRunners({ outputRoot, retrievedAt, fetchImpl = fetch, secUserAgent = process.env.SEC_USER_AGENT, signal, transport = {} }) {
   return {
-    TSMC: () => ingestTsmcMonthlyFromSec({ outputRoot, retrievedAt, fetchImpl, secUserAgent }),
-    META: () => ingestMetaAnnualGuidance({ outputRoot, retrievedAt, fetchImpl, secUserAgent }),
-    MSFT: () => ingestMsftManagementTotalCapex({ outputRoot, retrievedAt, fetchImpl }),
-    GOOG: () => ingestGoogAnnualGuidance({ outputRoot, retrievedAt, fetchImpl, secUserAgent }),
-    AMZN: () => ingestAmznPpe({ outputRoot, retrievedAt, fetchImpl, secUserAgent }),
+    TSMC: () => ingestTsmcMonthlyFromSec({ outputRoot, retrievedAt, fetchImpl, secUserAgent, signal, transport }),
+    META: () => ingestMetaAnnualGuidance({ outputRoot, retrievedAt, fetchImpl, secUserAgent, signal, transport }),
+    MSFT: () => ingestMsftManagementTotalCapex({ outputRoot, retrievedAt, fetchImpl, signal, transport }),
+    GOOG: () => ingestGoogAnnualGuidance({ outputRoot, retrievedAt, fetchImpl, secUserAgent, signal, transport }),
+    AMZN: () => ingestAmznPpe({ outputRoot, retrievedAt, fetchImpl, secUserAgent, signal, transport }),
   }
 }
 
@@ -62,9 +62,9 @@ export async function persistRunReport(report, outputRoot) {
   await writeFile(temporary, `${JSON.stringify(report, null, 2)}\n`); await rename(temporary, target); return target
 }
 
-export async function orchestrateIngestion({ outputRoot = path.join(process.cwd(),'data','ingestion'), dryRun = false, issuerRunners, issuerRunnerFactory, verificationRunner, baselineVerificationRunner = verificationRunner, proposedStateVerificationRunner = verificationRunner, now = () => new Date(), persistReport = true, fetchImpl = fetch, secUserAgent = process.env.SEC_USER_AGENT } = {}) {
+export async function orchestrateIngestion({ outputRoot = path.join(process.cwd(),'data','ingestion'), dryRun = false, issuerRunners, issuerRunnerFactory, verificationRunner, baselineVerificationRunner = verificationRunner, proposedStateVerificationRunner = verificationRunner, now = () => new Date(), persistReport = true, fetchImpl = fetch, secUserAgent = process.env.SEC_USER_AGENT, signal, transport = {} } = {}) {
   const started = now(), startedAt = started.toISOString(), executionRoot = dryRun ? await seedDryRun(outputRoot, !issuerRunners && !issuerRunnerFactory) : outputRoot
-  const runners = issuerRunners ?? issuerRunnerFactory?.(executionRoot) ?? createProductionIssuerRunners({ outputRoot: executionRoot, retrievedAt: startedAt, fetchImpl, secUserAgent })
+  const runners = issuerRunners ?? issuerRunnerFactory?.(executionRoot, { signal, transport }) ?? createProductionIssuerRunners({ outputRoot: executionRoot, retrievedAt: startedAt, fetchImpl, secUserAgent, signal, transport })
   const issuerResults = []
   try {
     for (const issuer of ISSUER_ORDER) { const began = now().getTime(); try { const raw = await runners[issuer](); issuerResults.push(normalizeIssuerResult(issuer, raw, duration(began, now().getTime()))) } catch (error) { issuerResults.push(failedIssuerResult(issuer, error, duration(began, now().getTime()))) } }
