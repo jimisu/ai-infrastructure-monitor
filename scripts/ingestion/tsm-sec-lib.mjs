@@ -3,6 +3,7 @@ import { IngestionError, TSMC_MONTHLY_SOURCE, persistRawSnapshot, logicalFactKey
 import { promoteCanonicalAtomically } from './shared/canonical-store.mjs'
 import { buildSecArchiveUrl, validateSecUserAgent } from './shared/sec-client.mjs'
 import { matchesSecIssuerIdentity } from './shared/sec-issuer-identity.mjs'
+import { requestWithRetry } from './shared/http-client.mjs'
 
 export const TSMC_SEC_ACQUISITION = Object.freeze({
   cik: '0001046179', submissionsUrl: 'https://data.sec.gov/submissions/CIK0001046179.json',
@@ -33,12 +34,13 @@ export function discoverTsmcMonthlyFilings(submissions) {
   if(new Set(result.map((item)=>item.accessionNumber)).size!==result.length) throw new IngestionError('DUPLICATE_ACCESSION','SEC discovery contains a duplicate accession')
   return result.sort((a,b)=>a.filingDate.localeCompare(b.filingDate)||a.accessionNumber.localeCompare(b.accessionNumber))
 }
-async function request(fetchImpl,url,options,code) {
-  try { return await fetchImpl(url,options) } catch(error) { throw new IngestionError(code,'Request failed for '+url,{cause:error.message}) }
+async function request(fetchImpl,url,options,code,signal,transport={},httpErrorCode=code) {
+  const collected=await requestWithRetry({...transport,url,options,errorCode:code,httpErrorCode,fetchImpl,signal})
+  return {status:collected.response.status,url:collected.finalUrl,headers:collected.response.headers,arrayBuffer:async()=>collected.body,json:async()=>JSON.parse(collected.body.toString('utf8')),attempts:collected.attempts}
 }
-export async function discoverFromSec({fetchImpl=fetch,secUserAgent}) {
+export async function discoverFromSec({fetchImpl=fetch,secUserAgent,signal,transport={}}) {
   const agent=requireUserAgent(secUserAgent??process.env.SEC_USER_AGENT)
-  const response=await request(fetchImpl,TSMC_SEC_ACQUISITION.submissionsUrl,{headers:{'user-agent':agent,accept:'application/json'},redirect:'follow'},'DISCOVERY_UNAVAILABLE')
+  const response=await request(fetchImpl,TSMC_SEC_ACQUISITION.submissionsUrl,{headers:{'user-agent':agent,accept:'application/json'},redirect:'follow'},'DISCOVERY_UNAVAILABLE',signal,transport)
   if(response.status!==200) throw new IngestionError('DISCOVERY_UNAVAILABLE','SEC submissions returned '+response.status)
   if(!(response.headers.get('content-type')??'').toLowerCase().includes('json')) throw new IngestionError('DISCOVERY_CONTENT_TYPE','SEC submissions did not return JSON')
   try { return discoverTsmcMonthlyFilings(await response.json()) } catch(error) { if(error instanceof IngestionError) throw error; throw new IngestionError('DISCOVERY_JSON','SEC submissions response is malformed JSON') }
@@ -86,20 +88,20 @@ export function parseSecMonthlyRevenue(snapshot,html,source=TSMC_MONTHLY_SOURCE)
     {...common,candidateType:'NUMERIC_METRIC',metric:'MONTHLY_REVENUE_YOY_PERCENT',value:yoy,unit:source.yoyUnit,sourceLocator:{...locator,column:headers[priorIndex+1]},originalText:yoyRaw},
   ]
 }
-async function collect({filing,outputRoot,retrievedAt,fetchImpl,secUserAgent,source,acquisitionMode,fixturePath}) {
+async function collect({filing,outputRoot,retrievedAt,fetchImpl,secUserAgent,source,acquisitionMode,fixturePath,signal,transport}) {
   if(!metadataEligible(filing)) throw new IngestionError('FILING_METADATA','Filing metadata is not an eligible monthly revenue 6-K')
   const expected=urlFor(filing)
   if(filing.filingUrl!==expected) throw new IngestionError('FILING_METADATA','Filing URL and accession are inconsistent')
   const agent=requireUserAgent(secUserAgent??process.env.SEC_USER_AGENT)
-  const response=await request(fetchImpl,expected,{headers:{'user-agent':agent,accept:'text/html,application/xhtml+xml'},redirect:'follow'},'FILING_UNAVAILABLE')
+  const response=await request(fetchImpl,expected,{headers:{'user-agent':agent,accept:'text/html,application/xhtml+xml'},redirect:'follow'},'FILING_UNAVAILABLE',signal,transport,'FILING_RESPONSE')
   const finalUrl=response.url||expected
   if(finalUrl!==expected||new URL(finalUrl).hostname!==TSMC_SEC_ACQUISITION.archivesHostname) throw new IngestionError('FILING_REDIRECT','Filing did not resolve to its immutable SEC URL')
   return persistRawSnapshot({body:Buffer.from(await response.arrayBuffer()),source,requestedUrl:expected,finalUrl,retrievedAt,status:response.status,contentType:response.headers.get('content-type')??'',outputRoot,acquisitionMode,acquisitionChannel:TSMC_SEC_ACQUISITION.acquisitionChannel,fixturePath:acquisitionMode==='FIXTURE'?fixturePath:undefined,fixtureId:acquisitionMode==='FIXTURE'?filing.accessionNumber:undefined,evidenceUrl:expected,provenance:{cik:TSMC_SEC_ACQUISITION.cik,accessionNumber:filing.accessionNumber,formType:filing.form,filingDate:filing.filingDate,primaryDocument:filing.primaryDocument,secFilingUrl:expected,issuer:'TSMC',evidenceSourceId:source.id,evidenceDocument:TSMC_SEC_ACQUISITION.evidenceType,filedWith:TSMC_SEC_ACQUISITION.filedWith,acquisitionChannel:TSMC_SEC_ACQUISITION.acquisitionChannel}})
 }
-export async function ingestTsmcMonthlyFromSec({outputRoot,retrievedAt=new Date().toISOString(),fetchImpl=fetch,secUserAgent,source=TSMC_MONTHLY_SOURCE,reportingYear,acquisitionMode='LIVE',fixturePath='tests/ingestion/tsmSecIngestion.test.mjs'}) {
-  const filings=(await discoverFromSec({fetchImpl,secUserAgent})).filter((filing)=>!reportingYear||filing.filingDate.startsWith(String(reportingYear)))
+export async function ingestTsmcMonthlyFromSec({outputRoot,retrievedAt=new Date().toISOString(),fetchImpl=fetch,secUserAgent,source=TSMC_MONTHLY_SOURCE,reportingYear,acquisitionMode='LIVE',fixturePath='tests/ingestion/tsmSecIngestion.test.mjs',signal,transport={}}) {
+  const filings=(await discoverFromSec({fetchImpl,secUserAgent,signal,transport})).filter((filing)=>!reportingYear||filing.filingDate.startsWith(String(reportingYear)))
   const candidates=[], snapshots=[]
-  for(const filing of filings) { const persisted=await collect({filing,outputRoot,retrievedAt,fetchImpl,secUserAgent,source,acquisitionMode,fixturePath}); const parsed=parseSecMonthlyRevenue(persisted.snapshot,persisted.body,source); validateTsmcCandidates(parsed,persisted.snapshot,{...source,hostname:TSMC_SEC_ACQUISITION.archivesHostname}); candidates.push(...parsed); snapshots.push(persisted.snapshot) }
+  for(const filing of filings) { const persisted=await collect({filing,outputRoot,retrievedAt,fetchImpl,secUserAgent,source,acquisitionMode,fixturePath,signal,transport}); const parsed=parseSecMonthlyRevenue(persisted.snapshot,persisted.body,source); validateTsmcCandidates(parsed,persisted.snapshot,{...source,hostname:TSMC_SEC_ACQUISITION.archivesHostname}); candidates.push(...parsed); snapshots.push(persisted.snapshot) }
   if(candidates.length===0) throw new IngestionError('NO_ELIGIBLE_FILINGS','SEC discovery returned no eligible monthly revenue filings')
   const keys=new Set()
   for(const candidate of candidates) { const key=[candidate.companyTicker,candidate.metric,candidate.period,candidate.unit].join('|'); if(keys.has(key)) throw new IngestionError('DUPLICATE_SEMANTIC_OBSERVATION','Multiple SEC filings contain the same semantic observation'); keys.add(key) }

@@ -3,6 +3,7 @@ import path from 'node:path'
 import { IngestionError } from './shared/ingestion-error.mjs'
 import { sha256, persistRawSnapshot as persistSnapshot } from './shared/snapshot-store.mjs'
 import { promoteCanonicalAtomically, buildCanonicalPromotion } from './shared/canonical-store.mjs'
+import { requestWithRetry } from './shared/http-client.mjs'
 export { IngestionError, sha256 }
 
 export const TSMC_MONTHLY_SOURCE = Object.freeze({
@@ -78,21 +79,23 @@ export async function collectOfficialHttp({
   outputRoot,
   retrievedAt = new Date().toISOString(),
   fetchImpl = fetch,
+  signal,
+  transport = {},
 }) {
-  const response = await fetchImpl(source.url, {
+  const collected = await requestWithRetry({ ...transport, url: source.url, options: {
     headers: {
       'user-agent': 'Mozilla/5.0 (compatible; AIInfrastructureMonitor/0.1; +https://investor.tsmc.com/english)',
       'accept-language': 'en-US,en;q=0.9',
       accept: 'text/html,application/xhtml+xml',
     },
     redirect: 'follow',
-  })
-  const body = Buffer.from(await response.arrayBuffer())
+  }, errorCode: 'SOURCE_UNAVAILABLE', httpErrorCode: 'HTTP_STATUS', fetchImpl, signal })
+  const { response, body } = collected
   const persisted = await persistRawSnapshot({
     body,
     source,
     requestedUrl: source.url,
-    finalUrl: response.url || source.url,
+    finalUrl: collected.finalUrl,
     retrievedAt,
     status: response.status,
     contentType: response.headers.get('content-type') ?? '',
