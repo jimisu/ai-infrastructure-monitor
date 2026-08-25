@@ -1,10 +1,11 @@
 import assert from 'node:assert/strict'
-import { mkdtemp, readFile, writeFile } from 'node:fs/promises'
+import { mkdtemp, readFile, readdir, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import test from 'node:test'
 import {
   IngestionError,
+  collectOfficialHttp,
   ingestTsmcMonthly,
   parseTsmcMonthlyRevenue,
   persistRawSnapshot,
@@ -34,6 +35,17 @@ const expected = [
 async function tempRoot() {
   return mkdtemp(path.join(os.tmpdir(), 'tsm-ingestion-test-'))
 }
+
+test('failed legacy IR retry attempts create no snapshot or manifest', async () => {
+  const outputRoot = await tempRoot()
+  let attempts = 0
+  await assert.rejects(
+    collectOfficialHttp({ outputRoot, fetchImpl: async () => { attempts += 1; throw new TypeError('offline') }, transport: { sleep: async () => {} } }),
+    (error) => error.code === 'SOURCE_UNAVAILABLE' && error.details.reason === 'RETRY_EXHAUSTED',
+  )
+  assert.equal(attempts, 3)
+  assert.deepEqual(await readdir(outputRoot), [])
+})
 
 test('frozen fixture promotes exact Jan-Jun canonical facts', async () => {
   const outputRoot = await tempRoot()

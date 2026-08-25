@@ -2,6 +2,7 @@ import path from 'node:path'
 import { IngestionError, fail } from './shared/ingestion-error.mjs'
 import { persistRawSnapshot, sha256 } from './shared/snapshot-store.mjs'
 import { promoteCanonicalAtomically } from './shared/canonical-store.mjs'
+import { requestWithRetry } from './shared/http-client.mjs'
 
 export const MSFT_CAPEX_SOURCE = Object.freeze({ id: 'msft-management-total-capex-official', issuer: 'MSFT', ticker: 'MSFT', tier: 'TIER_1_OFFICIAL', definitionId: 'msft-management-reported-total-capex', unit: 'USD billions' })
 export const MSFT_CAPEX_DISCLOSURES = Object.freeze([
@@ -46,20 +47,18 @@ export function validateMsftManagementTotalCapex(candidates, snapshot, source = 
   return candidates
 }
 
-async function collect({ disclosure, outputRoot, retrievedAt, fetchImpl, source, acquisitionMode, fixturePath }) {
-  let response
-  try { response = await fetchImpl(disclosure.officialUrl, { headers: { 'user-agent': 'AI Infrastructure Monitor data-ingestion', accept: 'text/html,application/xhtml+xml' }, redirect: 'follow' }) } catch (error) { fail('SOURCE_UNAVAILABLE', 'Microsoft IR request failed', { cause: error.message }) }
-  const finalUrl = response.url || disclosure.officialUrl
+async function collect({ disclosure, outputRoot, retrievedAt, fetchImpl, source, acquisitionMode, fixturePath, signal, transport }) {
+  const collected = await requestWithRetry({ ...transport, url: disclosure.officialUrl, options: { headers: { 'user-agent': 'AI Infrastructure Monitor data-ingestion', accept: 'text/html,application/xhtml+xml' }, redirect: 'follow' }, errorCode: 'SOURCE_UNAVAILABLE', httpErrorCode: 'DOCUMENT_RESPONSE', fetchImpl, signal })
+  const { response, body, finalUrl } = collected
   if (finalUrl !== disclosure.officialUrl || new URL(finalUrl).hostname !== 'www.microsoft.com') fail('DOCUMENT_PROVENANCE', 'Microsoft IR document redirected unexpectedly')
-  const body = Buffer.from(await response.arrayBuffer())
   return persistRawSnapshot({ body, source, requestedUrl: disclosure.officialUrl, finalUrl, retrievedAt, status: response.status, contentType: response.headers.get('content-type') ?? '', outputRoot, acquisitionMode, acquisitionChannel: 'MICROSOFT_INVESTOR_RELATIONS', fixturePath: acquisitionMode === 'FIXTURE' ? fixturePath : undefined, fixtureId: acquisitionMode === 'FIXTURE' ? disclosure.versionId : undefined, evidenceUrl: disclosure.officialUrl, provenance: { issuer: 'Microsoft Corporation', economicIssuer: 'MSFT', evidenceDocument: 'Microsoft official earnings-call transcript', publicationVenue: 'Microsoft Investor Relations', acquisitionChannel: 'MICROSOFT_INVESTOR_RELATIONS', documentType: 'EARNINGS_CALL_TRANSCRIPT', evidenceUrl: disclosure.officialUrl, sourceDocumentVersionId: disclosure.versionId, issuerFiscalPeriod: disclosure.period, fiscalYearEnd: 'June 30', sourceId: disclosure.sourceId, publishedAt: disclosure.publishedAt, definitionId: source.definitionId } })
 }
 
 export function validateMsftComparisonHistory(candidates) { const required = new Set(MSFT_CAPEX_DISCLOSURES.map((x) => x.period)); if (!Array.isArray(candidates) || required.size !== candidates.length || candidates.some((x) => !required.has(x.period))) fail('MISSING_COMPARISON_QUARTER', 'Required issuer fiscal comparison history is incomplete'); return candidates }
 
-export async function ingestMsftManagementTotalCapex({ outputRoot, retrievedAt = new Date().toISOString(), fetchImpl = fetch, source = MSFT_CAPEX_SOURCE, acquisitionMode = 'LIVE', fixturePath = 'tests/ingestion/msftCapexIngestion.test.mjs' }) {
+export async function ingestMsftManagementTotalCapex({ outputRoot, retrievedAt = new Date().toISOString(), fetchImpl = fetch, source = MSFT_CAPEX_SOURCE, acquisitionMode = 'LIVE', fixturePath = 'tests/ingestion/msftCapexIngestion.test.mjs', signal, transport = {} }) {
   const candidates = [], snapshots = []
-  for (const disclosure of MSFT_CAPEX_DISCLOSURES) { const persisted = await collect({ disclosure, outputRoot, retrievedAt, fetchImpl, source, acquisitionMode, fixturePath }); const parsed = parseMsftManagementTotalCapex(persisted.snapshot, persisted.body, source); validateMsftManagementTotalCapex(parsed, persisted.snapshot, source); if (parsed[0].value !== disclosure.expectedValue) fail('GOLDEN_VALUE_MISMATCH', `Unexpected value for ${disclosure.period}`); candidates.push(...parsed); snapshots.push(persisted.snapshot) }
+  for (const disclosure of MSFT_CAPEX_DISCLOSURES) { const persisted = await collect({ disclosure, outputRoot, retrievedAt, fetchImpl, source, acquisitionMode, fixturePath, signal, transport }); const parsed = parseMsftManagementTotalCapex(persisted.snapshot, persisted.body, source); validateMsftManagementTotalCapex(parsed, persisted.snapshot, source); if (parsed[0].value !== disclosure.expectedValue) fail('GOLDEN_VALUE_MISMATCH', `Unexpected value for ${disclosure.period}`); candidates.push(...parsed); snapshots.push(persisted.snapshot) }
   if (new Set(candidates.map(logicalKey)).size !== candidates.length) fail('DUPLICATE_FACT', 'Duplicate semantic management-total fact')
   validateMsftComparisonHistory(candidates)
   const canonicalPath = path.join(outputRoot, 'observations', 'msft-management-total-capex.json')

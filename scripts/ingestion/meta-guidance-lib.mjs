@@ -67,17 +67,17 @@ export function validateMetaGuidanceRange(candidates, snapshot, source = META_GU
   return candidates
 }
 
-async function collect({ filing, outputRoot, retrievedAt, fetchImpl, secUserAgent, source, acquisitionMode, fixturePath }) {
-  const collected = await collectSecFiling({ filing, cik: META_SEC_ACQUISITION.cik, userAgent: secUserAgent, fetchImpl })
+async function collect({ filing, outputRoot, retrievedAt, fetchImpl, secUserAgent, source, acquisitionMode, fixturePath, signal, transport }) {
+  const collected = await collectSecFiling({ filing, cik: META_SEC_ACQUISITION.cik, userAgent: secUserAgent, fetchImpl, signal, responseErrorCode: 'FILING_RESPONSE', transport })
   return persistRawSnapshot({ body: collected.body, source, requestedUrl: collected.requestedUrl, finalUrl: collected.finalUrl, retrievedAt, status: collected.response.status, contentType: collected.response.headers.get('content-type') ?? '', outputRoot, acquisitionMode, acquisitionChannel: META_SEC_ACQUISITION.channel, fixturePath: acquisitionMode === 'FIXTURE' ? fixturePath : undefined, fixtureId: acquisitionMode === 'FIXTURE' ? filing.accessionNumber : undefined, evidenceUrl: filing.filingUrl, provenance: { cik: META_SEC_ACQUISITION.cik, accessionNumber: filing.accessionNumber, formType: filing.form, filingDate: filing.filingDate, reportDate: filing.reportDate, primaryDocument: filing.primaryDocument, secFilingUrl: filing.filingUrl, issuer: 'Meta Platforms, Inc.', economicIssuer: 'META', evidenceDocument: `META_ISSUER_FILED_FORM_${filing.form.replace('-', '_')}`, filedWith: META_SEC_ACQUISITION.filedWith, acquisitionChannel: META_SEC_ACQUISITION.channel, guidanceAsOfPeriod: filing.guidanceAsOfPeriod, sourceId: filing.sourceId, definitionId: source.definitionId } })
 }
 
-export async function ingestMetaAnnualGuidance({ outputRoot, retrievedAt = new Date().toISOString(), fetchImpl = fetch, secUserAgent = process.env.SEC_USER_AGENT, source = META_GUIDANCE_SOURCE, acquisitionMode = 'LIVE', fixturePath = 'tests/ingestion/metaGuidanceIngestion.test.mjs' }) {
-  const { submissions } = await fetchSecSubmissions({ cik: META_SEC_ACQUISITION.cik, userAgent: secUserAgent, fetchImpl })
+export async function ingestMetaAnnualGuidance({ outputRoot, retrievedAt = new Date().toISOString(), fetchImpl = fetch, secUserAgent = process.env.SEC_USER_AGENT, source = META_GUIDANCE_SOURCE, acquisitionMode = 'LIVE', fixturePath = 'tests/ingestion/metaGuidanceIngestion.test.mjs', signal, transport = {} }) {
+  const { submissions } = await fetchSecSubmissions({ cik: META_SEC_ACQUISITION.cik, userAgent: secUserAgent, fetchImpl, signal, transport })
   const filings = discoverMetaGuidanceFilings(submissions)
   if (filings.length !== targetReports.size) fail('MISSING_DISCLOSURE', 'Required Meta guidance history is incomplete')
   const candidates = [], snapshots = []
-  for (const filing of filings) { const persisted = await collect({ filing, outputRoot, retrievedAt, fetchImpl, secUserAgent, source, acquisitionMode, fixturePath }); const pair = parseMetaAnnualCapexGuidance(persisted.snapshot, persisted.body, source); validateMetaGuidanceRange(pair, persisted.snapshot, source); candidates.push(...pair); snapshots.push(persisted.snapshot) }
+  for (const filing of filings) { const persisted = await collect({ filing, outputRoot, retrievedAt, fetchImpl, secUserAgent, source, acquisitionMode, fixturePath, signal, transport }); const pair = parseMetaAnnualCapexGuidance(persisted.snapshot, persisted.body, source); validateMetaGuidanceRange(pair, persisted.snapshot, source); candidates.push(...pair); snapshots.push(persisted.snapshot) }
   const canonicalPath = path.join(outputRoot, 'observations', 'meta-annual-capex-guidance.json')
   const promotion = await promoteCanonicalAtomically({ candidates, snapshotIds: snapshots.map((item) => item.snapshotId), canonicalPath, pipelineId: 'meta-annual-capex-guidance', issuer: 'META', sourceId: source.id, logicalFactKey: logicalKey, observationId: legacyId, toObservation: observation, envelope: { capexDefinitionId: source.definitionId } })
   return { filings, snapshots, candidates, canonicalPath, ...promotion }
