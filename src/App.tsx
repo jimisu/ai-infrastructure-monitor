@@ -1,20 +1,16 @@
 import './App.css'
 import { Header } from './components/Header'
-import { MarketRegime } from './components/MarketRegime'
-import { TodayOpportunities } from './components/TodayOpportunities'
-import { WhatChanged } from './components/WhatChanged'
-import { InfrastructureMomentum } from './components/InfrastructureMomentum'
-import { InvestmentCausalGraph } from './components/InvestmentCausalGraph'
-import { CompanyTable } from './components/CompanyTable'
 import { RealIntelligence } from './components/RealIntelligence'
-import { MOCK_COMPANIES } from './data/companies'
-import { MOCK_SIGNALS, MOCK_IMPACT_EVENTS } from './data/signals'
+import { AMZN_PRODUCTION_CAPEX_OBSERVATIONS } from './data/amznPpeObservationProvider'
+import { GOOG_PRODUCTION_CAPEX_OBSERVATIONS } from './data/googCapexGuidanceObservationProvider'
+import { META_PRODUCTION_CAPEX_OBSERVATIONS } from './data/metaGuidanceObservationProvider'
+import { MSFT_PRODUCTION_CAPEX_OBSERVATIONS } from './data/msftCapexObservationProvider'
+import { getSourcesByTicker } from './data/sources'
 import { TSM_PRODUCTION_OBSERVATIONS } from './data/tsmMonthlyObservationProvider'
-import { getSourceById } from './data/sources'
-import { deriveTsmSignalsWithTrendConfirmation } from './signals/tsmSignalInterpreter'
-import { deriveHyperscalerTsmConfirmation } from './signals/hyperscalerTsmConfirmationEngine'
-import { deriveCurrentHyperscalerCapexTrend } from './signals/hyperscalerCapexBreadthEngine'
 import { createRealIntelligenceViewModel } from './presentation/realIntelligenceViewModel'
+import { deriveCurrentHyperscalerCapexTrend } from './signals/hyperscalerCapexBreadthEngine'
+import { deriveHyperscalerTsmConfirmation } from './signals/hyperscalerTsmConfirmationEngine'
+import { deriveTsmSignalsWithTrendConfirmation } from './signals/tsmSignalInterpreter'
 
 const tsmResult = deriveTsmSignalsWithTrendConfirmation(TSM_PRODUCTION_OBSERVATIONS)
 const hyperscalerCapexTrend = deriveCurrentHyperscalerCapexTrend()
@@ -22,6 +18,20 @@ const crossCompanySignal = deriveHyperscalerTsmConfirmation(
   hyperscalerCapexTrend,
   TSM_PRODUCTION_OBSERVATIONS
 )
+const productionEvidenceObservations = [
+  ...META_PRODUCTION_CAPEX_OBSERVATIONS,
+  ...MSFT_PRODUCTION_CAPEX_OBSERVATIONS,
+  ...GOOG_PRODUCTION_CAPEX_OBSERVATIONS,
+  ...AMZN_PRODUCTION_CAPEX_OBSERVATIONS,
+  ...TSM_PRODUCTION_OBSERVATIONS,
+]
+const registeredSources = ['META', 'MSFT', 'GOOG', 'AMZN', 'TSM']
+  .flatMap(getSourcesByTicker)
+  .filter(
+    (source, index, sources) =>
+      sources.findIndex((candidate) => candidate.id === source.id) === index
+  )
+
 const realIntelligence = createRealIntelligenceViewModel({
   crossCompanySignal,
   hyperscalerCapexTrend,
@@ -30,16 +40,11 @@ const realIntelligence = createRealIntelligenceViewModel({
   ),
   tsmTrend: tsmResult.trend3M,
   tsmObservations: TSM_PRODUCTION_OBSERVATIONS,
-  sources: ['meta-capex-2026q2-guidance', 'msft-fy2026-q3-earnings-call', 'goog-2025-q4-earnings-call', 'amzn-2026-q1-results', 'amzn-2025-q4-results', 'tsmc-ir-main']
-    .map(getSourceById)
-    .filter((source) => source !== undefined),
+  evidenceObservations: productionEvidenceObservations,
+  sources: registeredSources,
 })
 
 function App() {
-  // Market signal: average of all infrastructure signals
-  const marketScore = Math.round(MOCK_SIGNALS.reduce((sum, s) => sum + s.score, 0) / MOCK_SIGNALS.length)
-  const marketChange30d = Math.round(MOCK_SIGNALS.reduce((sum, s) => sum + s.change30d, 0) / MOCK_SIGNALS.length)
-
   return (
     <div className="app-container">
       <Header />
@@ -48,41 +53,12 @@ function App() {
         <section className="real-intelligence-section">
           <RealIntelligence intelligence={realIntelligence} />
         </section>
-
-        <div className="demo-model-divider">
-          <span>DEMO MODEL</span>
-          <strong>DEMO DATA — AISS / OPPORTUNITY / 10X / MARKET REGIME</strong>
-        </div>
-
-        <section className="market-regime-section">
-          <MarketRegime score={marketScore} change30d={marketChange30d} trend="accelerating" />
-        </section>
-
-        <section className="opportunities-section">
-          <TodayOpportunities companies={MOCK_COMPANIES} />
-        </section>
-
-        <section className="changes-section">
-          <WhatChanged events={MOCK_IMPACT_EVENTS} />
-        </section>
-
-        <section className="momentum-section">
-          <InfrastructureMomentum signals={MOCK_SIGNALS} />
-        </section>
-
-        <section className="causal-section">
-          <InvestmentCausalGraph />
-        </section>
-
-        <section className="watchlist-section">
-          <CompanyTable companies={MOCK_COMPANIES} />
-        </section>
       </main>
 
       <footer className="footer">
         <p>
-          Real Intelligence is evidence-backed from registered sources. Investment model sections
-          remain mock/demo. Not for investment decisions. 2026 AI Infrastructure Monitor.
+          Evidence-backed monitoring from registered official sources. Data is static at build time
+          and may include explicitly retained manual facts. Not investment advice.
         </p>
       </footer>
     </div>

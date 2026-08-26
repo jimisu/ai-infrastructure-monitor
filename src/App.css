@@ -941,3 +941,549 @@ body,
 .company-capex-statuses .company-capex-negative { color: var(--accent-red); }
 .company-capex-statuses .company-capex-neutral { color: var(--text-secondary); }
 .real-intelligence-grid.supply-grid { grid-template-columns: repeat(2, 1fr); }
+
+
+/* Human-readable signal interpretation */
+.interpretation-card,
+.company-contributions,
+.supporting-evidence {
+  margin-top: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: 6px;
+  padding: 1.2rem;
+}
+
+.interpretation-card {
+  background: rgba(15, 23, 42, 0.58);
+}
+
+.demand-interpretation {
+  border-left: 3px solid var(--accent-green);
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.interpretation-card h3,
+.section-heading h3 {
+  margin: 0.4rem 0 0.9rem;
+  font-size: 1.05rem;
+}
+
+.interpretation-card > p,
+.semantic-boundary {
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.interpretation-status {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+}
+
+.interpretation-status strong {
+  color: var(--accent-green);
+  font-family: 'Courier New', monospace;
+  font-size: 2rem;
+}
+
+.interpretation-status span {
+  border: 1px solid rgba(34, 197, 94, 0.55);
+  border-radius: 3px;
+  color: var(--accent-green);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.35rem 0.55rem;
+}
+
+.interpretation-facts {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+}
+
+.interpretation-facts > div,
+.relationship-rows > div {
+  background: rgba(15, 44, 50, 0.45);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 4px;
+  padding: 0.75rem;
+}
+
+.interpretation-facts dt,
+.relationship-rows span {
+  color: var(--text-muted);
+  display: block;
+  font-size: 0.68rem;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.3rem;
+  text-transform: uppercase;
+}
+
+.interpretation-facts dd,
+.relationship-rows strong {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.relationship-rows {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.relationship-rows > div {
+  display: grid;
+  grid-template-columns: 8rem 1fr;
+  gap: 0.75rem;
+}
+
+.relationship-rows p {
+  color: var(--text-primary);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.contribution-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.contribution-card {
+  background: rgba(15, 44, 50, 0.45);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 4px;
+  min-width: 0;
+  padding: 0.8rem;
+}
+
+.contribution-card > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+
+.contribution-card > div strong,
+.contribution-card > b {
+  color: var(--accent-green);
+  font-family: 'Courier New', monospace;
+}
+
+.contribution-card > div span {
+  color: var(--text-muted);
+  font-size: 0.58rem;
+  text-align: right;
+}
+
+.contribution-card h4 {
+  min-height: 2.6rem;
+  margin: 0.65rem 0;
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.contribution-card > b,
+.contribution-card > small {
+  display: block;
+}
+
+.contribution-card > small {
+  color: var(--text-secondary);
+  font-size: 0.66rem;
+  margin-top: 0.35rem;
+}
+
+.semantic-boundary {
+  margin: 0.85rem 0;
+}
+
+.supporting-evidence .company-evidence-group {
+  margin-top: 1rem;
+}
+
+.company-evidence-group > h4 {
+  color: var(--accent-green);
+  font-family: 'Courier New', monospace;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.2);
+  padding-bottom: 0.4rem;
+}
+
+.technical-details {
+  margin-top: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 5px;
+  min-width: 0;
+  padding: 0.9rem 1rem;
+}
+
+.technical-details summary {
+  color: #93c5fd;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.technical-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+  min-width: 0;
+}
+
+.technical-grid > section {
+  background: rgba(15, 23, 42, 0.58);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 4px;
+  min-width: 0;
+  padding: 0.85rem;
+}
+
+.technical-grid h4,
+.technical-grid h5 {
+  margin-bottom: 0.65rem;
+}
+
+.technical-grid h5 {
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  margin-top: 0.9rem;
+}
+
+.technical-grid dl {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.technical-grid dl > div {
+  display: grid;
+  grid-template-columns: 6rem minmax(0, 1fr);
+  gap: 0.5rem;
+}
+
+.technical-grid dt {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+}
+
+.technical-grid dd,
+.technical-grid li {
+  color: var(--text-secondary);
+  font-size: 0.7rem;
+  min-width: 0;
+}
+
+.technical-grid ul {
+  display: grid;
+  gap: 0.4rem;
+  list-style: none;
+}
+
+.technical-grid code {
+  background: transparent;
+  color: var(--text-secondary);
+  display: inline;
+  font-size: 0.65rem;
+  overflow-wrap: anywhere;
+  padding: 0;
+  white-space: normal;
+  word-break: break-word;
+}
+
+@media (max-width: 1000px) {
+  .contribution-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .interpretation-facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .interpretation-card,
+  .company-contributions,
+  .supporting-evidence {
+    padding: 0.9rem;
+  }
+
+  .interpretation-facts,
+  .contribution-grid,
+  .technical-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .relationship-rows > div {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+
+  .interpretation-status strong {
+    flex-basis: 100%;
+  }
+
+  .technical-grid dl > div {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* Supporting factual observations */
+.freshness-line {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.evidence-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.evidence-item {
+  min-width: 0;
+  background: rgba(15, 23, 42, 0.58);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 4px;
+  padding: 0.85rem;
+}
+
+.evidence-item-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.evidence-item-heading span {
+  color: var(--text-primary);
+  font-size: 0.8rem;
+}
+
+.evidence-item-heading b {
+  color: var(--accent-green);
+  font-family: 'Courier New', monospace;
+  margin-left: auto;
+}
+
+.evidence-item dl {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0.65rem 0;
+  font-size: 0.72rem;
+}
+
+.evidence-item dl div {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr);
+  gap: 0.5rem;
+}
+
+.evidence-item dt,
+.evidence-item code {
+  color: var(--text-secondary);
+}
+
+.evidence-item dd,
+.evidence-item code {
+  overflow-wrap: anywhere;
+}
+
+.evidence-item a {
+  color: #93c5fd;
+  font-size: 0.74rem;
+}
+
+.evidence-item code {
+  background: transparent;
+  display: block;
+  font-size: 0.65rem;
+  margin-top: 0.55rem;
+  padding: 0;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.real-sources {
+  flex-wrap: wrap;
+}
+
+.company-capex-positive {
+  color: var(--accent-green);
+}
+
+.company-capex-unavailable {
+  color: var(--accent-amber);
+}
+
+.company-capex-negative {
+  color: var(--accent-red);
+}
+
+.company-capex-neutral {
+  color: var(--text-secondary);
+}
+
+@media (max-width: 768px) {
+  .real-intelligence-card {
+    padding: 1rem;
+  }
+
+  .real-intelligence-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .real-intelligence-grid.supply-grid,
+  .evidence-list {
+    grid-template-columns: 1fr;
+  }
+
+  .evidence-item-heading b {
+    flex-basis: 100%;
+    margin-left: 0;
+  }
+
+  .evidence-item dl div {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* Explicit TSMC forward-guidance periods */
+.outlook-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.outlook-heading strong {
+  border: 1px solid var(--accent-blue);
+  border-radius: 3px;
+  color: #93c5fd;
+  font-size: 0.65rem;
+  letter-spacing: 0.5px;
+  padding: 0.3rem 0.45rem;
+}
+
+.period-comparison {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.period-comparison > div {
+  background: rgba(15, 44, 50, 0.45);
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 4px;
+  min-width: 0;
+  padding: 0.7rem;
+}
+
+.period-comparison span,
+.period-comparison small,
+.period-comparison b {
+  display: block;
+}
+
+.period-comparison span {
+  color: #93c5fd;
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+}
+
+.period-comparison small {
+  color: var(--text-secondary);
+  font-size: 0.68rem;
+  margin: 0.45rem 0 0.25rem;
+}
+
+.period-comparison b {
+  color: var(--text-primary);
+  font-family: 'Courier New', monospace;
+  font-size: 1rem;
+}
+
+.outlook-summary {
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+
+.outlook-summary > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.outlook-summary dt {
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+}
+
+.outlook-summary dd {
+  color: var(--accent-green);
+  font-family: 'Courier New', monospace;
+  font-size: 0.86rem;
+  font-weight: 700;
+  text-align: right;
+}
+
+@media (max-width: 768px) {
+  .period-comparison {
+    grid-template-columns: 1fr;
+  }
+
+  .outlook-heading,
+  .outlook-summary > div {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .outlook-summary dd {
+    text-align: left;
+  }
+}
+
+/* Readable presentation metadata */
+.contribution-card .fact-count {
+  margin-top: 0.2rem;
+  white-space: nowrap;
+}
+
+.technical-observations {
+  grid-column: 1 / -1;
+}
+
+.technical-observation-list {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.technical-observation-list > li {
+  background: rgba(15, 44, 50, 0.35);
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: 4px;
+  min-width: 0;
+  padding: 0.7rem;
+}
+
+.technical-observation-list > li > strong {
+  color: var(--text-secondary);
+  display: block;
+  font-size: 0.7rem;
+  margin-bottom: 0.55rem;
+}
+
+@media (max-width: 768px) {
+  .technical-observation-list {
+    grid-template-columns: 1fr;
+  }
+}
