@@ -46,7 +46,23 @@ npm run build
 npm run preview
 ```
 
-The deployable static output is written to `dist/`. A public hosting target will be selected in the MVP deployment checkpoint; no host-specific configuration is committed yet.
+The deployable static output is written to `dist/`. The public MVP is configured for GitHub Pages at
+<https://jimisu.github.io/ai-infrastructure-monitor/> using the project base path
+`/ai-infrastructure-monitor/`.
+
+### GitHub Pages deployment
+
+Deployment is intentionally manual in MVP v0.1. The pinned GitHub Pages workflow can be started only
+through `workflow_dispatch`; its deployment jobs fail closed unless the selected ref is exactly
+`refs/heads/main`. Merging or pushing to `main` does not deploy automatically.
+
+The workflow installs locked dependencies, runs `npm run verify:agent`, builds `dist/`, and uploads
+only that verified static artifact. Deployment does not run live ingestion or production canonical
+promotion, and the published dashboard contains the same static build-time data described above.
+
+Rollback is isolated from product and data semantics: revert the hosting configuration through a
+reviewed PR or manually redeploy a last known-good `main` commit. If necessary, disable GitHub Pages
+in repository Settings. Do not rewrite Git history or alter canonical data during rollback.
 
 ## Verification
 
