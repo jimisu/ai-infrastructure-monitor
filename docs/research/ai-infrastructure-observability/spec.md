@@ -36,6 +36,42 @@ investment teams, industry analysts, corporate strategy teams, journalists, and 
 > incremental and physically executable demand, what lifecycle transition occurred, which constraint
 > it may tighten, what remains unknown, and which beneficiary conclusions are unsupported.
 
+### Highest-priority product output — confirmed AI capacity timeline
+
+The highest-priority product output is a coverage-bound timeline of publicly verified, large AI data
+center phases worldwide. Its core question is:
+
+> How much large-scale AI compute capacity is expected to become commissioned in each future year or
+> quarter, which projects are most likely to arrive on time, and where capacity concentration may
+> move physical-infrastructure bottlenecks?
+
+The primary completion point is `COMMISSIONED`: project-specific primary evidence states that the
+phase is operational or has begun providing AI compute. The system also preserves earlier
+`INFRASTRUCTURE_READY` and `EQUIPMENT_INSTALLED` milestones because buildings, power/cooling readiness,
+accelerator installation, and usable compute routinely occur at different times.
+
+Only a phase supported by `CONTRACTED`, `PROCURED`, secured critical power, or
+`UNDER_CONSTRUCTION` evidence enters the confirmed-build timeline. `ANNOUNCED`, ordinary MOU, funded
+vision, or political commitment may remain discoverable but cannot enter confirmed expected capacity.
+
+The default large-project threshold is either:
+
+- at least 50 MW of project-specifically attributable AI IT load; or
+- at least 10,000 disclosed data-center AI accelerators.
+
+Facility power, utility supply, campus total, MWac, or MWdc does not satisfy the 50 MW threshold
+unless eligible evidence establishes the AI IT-load basis. Accelerator generations remain separate;
+the system does not manufacture H100-equivalent counts or theoretical-FLOPS conversions.
+
+A human may approve `STRATEGIC_EXCEPTION` only when confirmed-build evidence exists and the phase is a
+national compute backbone, frontier-model training facility, material new supply-chain node, or is
+otherwise capable of materially changing regional capacity. The record must preserve the reviewer,
+reason, and evidence; importance inferred from press attention is insufficient.
+
+The timeline is global in search and presentation scope but means **publicly verified known
+projects**, not a claim of complete global capacity. Every output carries coverage, language and
+regional gaps, evidence date, and verification age.
+
 ### Differentiated value
 
 The product is not a larger news feed or a claim about complete global demand. Its differentiated
@@ -122,12 +158,19 @@ If the pilot mainly republishes, reformats, or summarizes existing trackers, the
 
 - preserve Demand Layer v1 as the hyperscaler and TSMC baseline;
 - sovereign/national AI and neocloud/GPU-cloud physical-build projects;
-- five cases: Middle East, Europe, Asia, U.S. government/scientific, and neocloud;
+- a global timeline seed of approximately 15–25 material confirmed projects, including all
+  still-uncommissioned qualifying phases found in scope and qualifying phases commissioned on or
+  after 2024-01-01;
+- five of those cases studied in evidence-ledger depth: Middle East, Europe, Asia, U.S.
+  government/scientific, and neocloud;
 - at least one low-English-accessibility stress-test case;
 - publicly disclosed defense funding may appear in the U.S. boundary case, but classified or inferred
   military activity is excluded;
 - project/phase identity, source registry, lifecycle, deduplication, conflicts, AI attribution,
-  coverage, unknowns, and decision value.
+  completion milestones, commissioning tranches, capacity, schedule risk, coverage, unknowns, and
+  decision value;
+- quarterly manual portfolio re-verification, with exception updates for material official
+  cancellation, delay, scope revision, or commissioning events.
 
 ### Out of scope
 
@@ -136,6 +179,9 @@ If the pilot mainly republishes, reformats, or summarizes existing trackers, the
 - automatic buy/sell, price target, portfolio, or beneficiary recommendations;
 - production schema, canonical state, signals, or UI changes;
 - changes to Demand Layer v1 semantics, identities, or history;
+- conversion of company CapEx into project capacity or attribution of aggregate CapEx to one project;
+- a claim that the timeline represents complete global AI capacity;
+- model-derived completion dates, AI shares, MW, accelerator equivalents, or FLOPS;
 - Track C implementation before Track B and the value gate pass.
 
 ## 5. Requirements
@@ -152,6 +198,11 @@ If the pilot mainly republishes, reformats, or summarizes existing trackers, the
   validation patterns before proposing new equivalents.
 - **PR-007 — Competitive increment:** Demonstrate decision-relevant capability beyond a sourced
   facility map, initiative directory, or news tracker.
+- **PR-008 — Confirmed capacity timeline:** Make the coverage-bound expected commissioned-capacity
+  timeline the highest-priority product output; derive schedule and regional concentration views from
+  the same verified evidence.
+- **PR-009 — Dual pilot:** Validate evidence-ledger depth with five cases and timeline coverage and
+  aggregation value with approximately 15–25 cross-region projects.
 
 ### Evidence and verification
 
@@ -191,6 +242,26 @@ If the pilot mainly republishes, reformats, or summarizes existing trackers, the
   deceleration.
 - **DR-009 — Revision:** New document versions may revise observations without duplicating the
   project.
+- **DR-010 — Confirmed-build eligibility:** Admit a phase to the confirmed timeline only with eligible
+  `CONTRACTED`, `PROCURED`, critical-power-secured, or `UNDER_CONSTRUCTION` evidence.
+- **DR-011 — Completion milestones:** Preserve reported time text, precision, earliest/latest bounds,
+  and separate `INFRASTRUCTURE_READY`, `EQUIPMENT_INSTALLED`, and `COMMISSIONED` milestones. Never
+  narrow a year, half-year, or range to an invented date or quarter.
+- **DR-012 — Large-project classification:** Classify `QUANTIFIED_LARGE` only when project-specific
+  evidence establishes at least 50 MW AI IT load or 10,000 AI accelerators. Preserve accelerator
+  model/generation and original units without equivalent-compute conversion.
+- **DR-013 — Phase and tranche accounting:** A campus is not an executable phase. Account for each
+  independently executable phase and commissioning tranche once; retain campus total only as a
+  non-additive reported planned upper bound.
+- **DR-014 — Capacity states:** Keep confirmed executable, installed, commissioned, schedule-at-risk,
+  reported planned upper bound, `VERIFIED_UNQUANTIFIED`, and `AI_UNRESOLVED` capacity distinct.
+  Unquantified and unresolved capacity never enters numeric AI-capacity aggregates.
+- **DR-015 — Schedule and scope events:** Preserve `OFFICIALLY_DELAYED`, evidence-backed
+  `SCHEDULE_AT_RISK`, scope increase/reduction, cancellation, and supersession as separate reviewable
+  events. Cancellation remains in history but is removed from current expected capacity.
+- **DR-016 — Strategic exception:** Require confirmed-build evidence, a defined structural-impact
+  criterion, human approval, rationale, and source trail; strategic exceptions remain unquantified
+  unless eligible capacity evidence exists.
 
 ### Coverage and presentation
 
@@ -202,6 +273,15 @@ If the pilot mainly republishes, reformats, or summarizes existing trackers, the
   unquantified-project count.
 - **CV-004:** Material totals remain visually bound to coverage context; no unlabeled headline total.
 - **CV-005:** State data-as-of and evidence latency without implying continuous or complete monitoring.
+- **CV-006:** The primary timeline aggregates only quantified confirmed expected capacity. Mark the
+  at-risk subset visually, present planned upper bounds separately, and show unquantified project
+  counts without assigning estimated capacity.
+- **CV-007:** A year-level disclosure may enter an annual bucket; half-year or ranged disclosures stay
+  ranged or unallocated in quarter views. Never distribute capacity across quarters by assumption.
+- **CV-008:** Preserve site, city/administrative area, country, and analytical region. Geographic
+  presentation must not replace the timeline as the primary product output.
+- **CV-009:** Perform full manual re-verification quarterly, allow exception updates for material
+  official events, display `last_verified_at`, and mark a record `STALE` after 120 days.
 
 ### Architecture and operations
 
@@ -217,6 +297,12 @@ If the pilot mainly republishes, reformats, or summarizes existing trackers, the
   protected-state comparison.
 - **AR-008:** External open-source data remains discovery/corroboration input until license,
   provenance, semantic compatibility, freshness, and original-source verification pass.
+- **AR-009:** Track B is an additive project/phase evidence store, not an extension of numeric
+  `MetricObservation`. It may reuse acquisition, immutable snapshot, document-version, provenance,
+  coverage, proposed-state, HTTP, and verification infrastructure only after R1 compatibility passes.
+- **AR-010:** Demand Layer v1 and Track B facts join only in Decision Intelligence after each layer is
+  independently validated. Track B must not rewrite CapEx, TSMC, canonical, or existing signal
+  history, and the presentation layer must not recompute timeline semantics from raw evidence.
 
 ### Track C
 
@@ -267,17 +353,39 @@ production-ineligible without later approval.
 Use `AVAILABLE_STRUCTURED`, `AVAILABLE_UNSTRUCTURED`, `PARTIAL`, `DELAYED`, `INACCESSIBLE`, or
 `UNKNOWN`, with source class, covered period, language, last verification date, and note.
 
+### Timeline aggregation policy
+
+- `COMMISSIONED` requires project-specific primary evidence that the applicable phase is operational
+  or providing AI compute. Building completion, power/cooling readiness, and equipment installation
+  remain earlier milestones.
+- Partial commissioning is recorded as dated tranches. A 100 MW phase commissioning 25 MW and later
+  75 MW contributes those amounts at their supported times, while phase total remains 100 MW.
+- Reported future accelerator deployment and verified installed/commissioned accelerators remain
+  separate and are never added together.
+- Current views use the latest supported version while preserving prior values and effective periods;
+  revisions generate explicit scope-change events rather than overwriting history.
+- Mixed cloud/AI facilities without a supported AI share are `AI_UNRESOLVED`. Investment amount is
+  not a capacity proxy.
+
 ## 7. Acceptance and negative cases
 
-Pilot acceptance requires stable identity for at least four of five cases, a classified failure mode
+Pilot acceptance requires stable identity for at least four of five depth cases, a classified failure mode
 for any unresolved case, credible primary evidence for at least four, auditable deduplication and
-revision behavior, at least one useful scale measure for a meaningful subset, explicit unknowns, and
-`VALUE_CONFIRMED`.
+revision behavior, a 15–25-project global timeline seed, explicit unknowns, measured quarterly
+maintenance effort, and `VALUE_CONFIRMED`.
 
 Product-value acceptance also requires a competitor baseline for every case and at least two pilot
 findings whose decision value could not be obtained by merely viewing the identified open-source
 trackers. A better visual presentation, a larger unsourced list, or aggregation without new evidence
 semantics does not satisfy this criterion.
+
+The timeline pilot must additionally demonstrate at least three of the following:
+
+- prevent cross-party or campus/phase duplicate capacity;
+- separate reported planned upper bounds from confirmed executable capacity;
+- expose a supported schedule risk, cancellation, or scope revision;
+- present annual/quarterly capacity without manufacturing date precision;
+- reveal a material evidence difference unavailable from the closest existing tracker.
 
 Required negative tests include:
 
@@ -297,7 +405,15 @@ Required negative tests include:
 - existing open-source tracker rows copied without original-source re-verification;
 - facility-map or initiative-directory output incorrectly claimed as differentiated intelligence;
 - external dataset license, attribution, freshness, or semantic limitations ignored; and
-- visual or record-count improvement mistaken for decision improvement.
+- visual or record-count improvement mistaken for decision improvement;
+- building completion treated as commissioned AI compute;
+- annual or half-year completion narrowed to an invented quarter or date;
+- different accelerator generations converted to an unsupported common equivalent;
+- planned, installed, commissioned, or at-risk capacity added together;
+- phased capacity counted once at campus level and again by phase or tranche;
+- unquantified or AI-unresolved capacity assigned a numeric estimate;
+- utility/facility power substituted for AI IT load; and
+- a canceled phase removed from history or retained in current expected capacity.
 
 ## 8. Open human decisions
 
@@ -311,3 +427,10 @@ Required negative tests include:
    public investor tool, or is tested as a commercial product.
 8. Approve or revise the open-source landscape, reuse-before-build policy, and differentiated product
    boundary in Section 3.
+
+## 9. Human decisions recorded for this draft
+
+On 2026-08-27, Jimmy W. Su confirmed the product semantics in the highest-priority timeline section,
+`PR-008`–`PR-009`, `DR-010`–`DR-016`, `CV-006`–`CV-009`, and `AR-009`–`AR-010`. This approval
+authorizes documentation updates to PR #6 and Issue #5 only. It does not authorize R1 or R2 execution,
+implementation, production writes, UI changes, PR readiness, merge, or deployment.
