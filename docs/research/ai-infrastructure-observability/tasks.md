@@ -17,6 +17,9 @@ These tasks are a GitHub tracking map. Creating an issue does not authorize exec
 - [ ] **T003:** Approve provisional Level 2 independence protocol (`EV-005`).
 - [ ] **T004:** Decide `FUNDED`, monetary aggregates, pilot budget, and maintenance budget.
 - [ ] **T005:** Record human approval, rejection, or narrowed pilot scope (`GV-001`, `GV-002`).
+- [x] **T006:** Approve the highest-priority confirmed large-AI-capacity timeline semantics and its
+  additive integration boundary with Demand Layer v1 (`PR-008`, `AR-009`, `AR-010`). Documentation
+  approval only; R1/R2 execution and implementation remain unauthorized.
 
 ## Milestone R1 — Repository compatibility
 
@@ -28,8 +31,12 @@ These tasks are a GitHub tracking map. Creating an issue does not authorize exec
 - [ ] **T106:** Evaluate Open Infrastructure Map, Open Supply Hub, GridStatus, PUDL, and applicable
   data-center/sovereign-AI trackers for reusable data, schemas, connectors, identity patterns, license,
   attribution, freshness, and provenance compatibility (`PR-006`, `AR-008`).
+- [ ] **T107:** Produce an explicit reuse matrix for acquisition, immutable snapshots, document
+  versioning, provenance, coverage, proposed-state isolation, HTTP and verification infrastructure;
+  identify why existing numeric `MetricObservation` cannot represent project/phase/tranche semantics
+  without changing Demand Layer v1 (`AR-009`, `AR-010`).
 
-## Milestone R2 — Five-case pilot
+## Milestone R2 — Dual research pilot
 
 - [ ] **T201:** Select five representative cases including one low-English-accessibility case.
 - [ ] **T202:** Build source/version registries and exact audit paths (`EV-001`–`EV-004`).
@@ -40,11 +47,23 @@ These tasks are a GitHub tracking map. Creating an issue does not authorize exec
 - [ ] **T206A:** Compare each result with the closest applicable open-source tracker and record the
   incremental lifecycle, deduplication, versioning, conflict, or decision value (`PR-007`).
 - [ ] **T207:** Record technical GO/NO-GO and product-value verdict (`PR-004`).
+- [ ] **T208:** Build a research-only global timeline seed of approximately 15–25 qualifying projects,
+  including uncommissioned phases and qualifying phases commissioned since 2024-01-01 (`PR-008`,
+  `PR-009`).
+- [ ] **T209:** Record project/phase/campus identity, separate completion milestones and commissioning
+  tranches, original date precision, AI IT-load or accelerator basis, and confirmed/planned/
+  unquantified/unresolved states (`DR-010`–`DR-016`).
+- [ ] **T210:** Produce annual and range-safe quarterly views with at-risk marking, separate planned
+  upper bounds, unquantified counts, geographic hierarchy, coverage gaps and `last_verified_at`
+  (`CV-006`–`CV-009`).
+- [ ] **T211:** Measure quarterly manual re-verification effort and test the timeline-specific
+  acceptance criteria; stop if at least three required incremental capabilities are not demonstrated.
 
 ## Milestone R3 — Domain and fixtures
 
-- [ ] **T301:** Draft deterministic project/phase/observation/source identities.
-- [ ] **T302:** Draft evidence, conflict, lifecycle, coverage, and absence contracts.
+- [ ] **T301:** Draft deterministic project/phase/tranche/observation/source identities.
+- [ ] **T302:** Draft evidence, conflict, lifecycle, milestone, capacity-state, schedule, coverage, and
+  absence contracts.
 - [ ] **T303:** Create faithful fixtures and acceptance/negative tests.
 - [ ] **T304:** Draft a repository execution plan; obtain separate implementation approval.
 
