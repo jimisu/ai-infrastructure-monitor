@@ -45,8 +45,10 @@ flowchart TB
     Sources["Public source systems"] --> Research["Research Evidence Workspace"]
     Research --> Registry["Source & Document Registry"]
     Registry --> TrackB["Track B Project Evidence Store"]
+    TrackB --> Timeline["Physical Capacity Timeline"]
     Demand["Demand Layer v1"] --> Decision["Decision Intelligence & Value Log"]
     TrackB --> Decision
+    Timeline --> Decision
     TrackB --> TrackC["Track C Bottleneck Research"]
     TrackC --> Decision
     Decision --> UI["Evidence-backed UI / reports"]
@@ -58,6 +60,7 @@ flowchart TB
 | Research Evidence Workspace | Discovery, translation, unresolved linkage, fixtures | Never production evidence |
 | Source & Document Registry | Eligibility, immutable version, hash, retrieval and locator | Provenance trust boundary |
 | Track B Project Evidence Store | Project/phase, lifecycle, conflicts, coverage and attribution | Later promotion approval required |
+| Physical Capacity Timeline | Completion milestones, commissioning tranches, confirmed capacity, schedule risk and coverage-bound aggregates | Derived only from validated Track B facts; no raw-evidence recomputation |
 | Track C Bottleneck Research | Constraint and exposure hypotheses | Blocked on Track B and value gate |
 | Decision Intelligence & Value Log | Compare with baseline/manual research | Interpretation separate from facts |
 | UI / reports | Present evidence, coverage and audit path together | No semantic recomputation |
@@ -69,7 +72,8 @@ flowchart TB
     Acquire["Source acquisition & versioning"] --> Extract["Semantic extraction"]
     Extract --> Attribute["AI-attribution classifier"]
     Attribute --> Identity["Project / phase identity resolver"]
-    Identity --> Lifecycle["Lifecycle & supersession engine"]
+    Identity --> Milestone["Milestone & capacity evaluator"]
+    Milestone --> Lifecycle["Lifecycle, schedule & supersession engine"]
     Lifecycle --> Evidence["Conflict, dedup & evidence evaluator"]
     Evidence --> Coverage["Coverage & unknown-state evaluator"]
     Coverage --> Value["Decision-value comparator"]
@@ -81,13 +85,33 @@ flowchart TB
 | Claim extractor | quotation/locator, normalized claim, inference boundary |
 | Identity resolver | aliases, parent/phase relation, match evidence, conflict |
 | Unit normalizer | original/normalized unit, conversion, basis, precision |
+| Milestone and capacity evaluator | reported time/range, completion kind, phase/tranche, original capacity basis, confirmed/planned/unquantified state |
 | Evidence evaluator | level, independence, conflict, supersession, missing reason |
-| Lifecycle engine | prior/new stage, transition evidence, effective date |
+| Lifecycle and schedule engine | prior/new stage, transition evidence, official delay, schedule-at-risk reason, scope revision, effective date |
 | Coverage evaluator | categorical availability, language, period, verification date |
 | Decision comparator | baseline/new conclusion, confidence/action change, maintenance cost |
 
 Every component fails closed with a reviewable reason. Model assistance remains advisory unless
 deterministic policy or human-reviewed evidence establishes the result.
+
+### Integration with the implemented baseline
+
+Demand Layer v1 remains the authority for hyperscaler capital intent and TSMC supply confirmation.
+Track B is a separate project/phase fact layer and must not encode project evidence as existing
+numeric `MetricObservation` records or infer project MW from company CapEx. The layers join only in
+Decision Intelligence after independent validation:
+
+```text
+Demand Layer v1: hyperscaler intent + TSMC confirmation
+Track B: confirmed physical build + commissioned capacity timeline
+Decision Intelligence: agreement, divergence, schedule risk and bottleneck research
+```
+
+R1 determines whether current acquisition, snapshot, document-version, provenance, coverage,
+disposable proposed-state, HTTP and verification facilities can be reused. A new project/phase domain
+store remains the expected boundary because the existing numeric observation contract cannot safely
+represent campus/phase/tranche relations, qualitative lifecycle evidence, or non-additive capacity
+states.
 
 ## 5. C4 — Code View Deferred
 
@@ -100,8 +124,8 @@ code-level ports, deterministic identities, fixtures, tests, migration, promotio
 | Stage | Duration | Output | Exit gate |
 |---|---:|---|---|
 | R0 — Positioning and specification decision | up to 1 week | Approved/narrowed product boundary, open-source landscape, reuse policy, evidence policy and issue map | Human approves differentiated research-only scope |
-| R1 — Repository and reuse compatibility | 1–2 days | Characterization of reusable repository contracts plus external license, provenance, schema and connector candidates | No semantic/legal incompatibility or new decision unresolved |
-| R2 — Five-case research pilot | 3–5 weeks | Dossiers, source registries, timelines, conflicts, coverage and decision logs | Track B technical verdict plus value verdict |
+| R1 — Repository and reuse compatibility | 1–2 days | Reuse matrix for existing acquisition/provenance/coverage/proposed-state/verification contracts, project-store gap analysis, plus external license, schema and connector candidates | No semantic/legal incompatibility or new decision unresolved |
+| R2 — Dual research pilot | 3–5 weeks | Five evidence-ledger depth cases plus a 15–25-project global timeline seed, capacity aggregates, schedule/coverage analysis and maintenance measurement | Track B technical verdict, timeline acceptance and value verdict |
 | R3 — Domain and fixture design | 1–2 weeks | Deterministic identities, schemas, faithful fixtures, negative tests | Separate execution plan approved |
 | R4 — Limited live ingestion | 2–4 weeks | Two or three repeatable Tier-1 paths in disposable state | Verification passes; no production write |
 | R5 — Production proposal | about 1 week | Promotion/rollback plan and coverage-bound presentation proposal | Separate production authorization |
@@ -157,3 +181,6 @@ provenance stops work for human review.
 | 2026-08-27 | AI drafts evidence policy; human approves ambiguity-sensitive rules | Jimmy | Gain research leverage without model-generated canonical facts |
 | 2026-08-27 | Require product value in addition to technical feasibility | Jimmy | Do not maintain a correct system that fails to improve decisions |
 | 2026-08-27 | Add open-source landscape and reuse-before-build gate to R0 | Jimmy | Avoid rebuilding maps/directories and require evidence-ledger differentiation |
+| 2026-08-27 | Make the confirmed large-AI-capacity timeline the highest-priority Track B output | Jimmy W. Su | Connect capital intent to physically executable and commissioned capacity without converting CapEx into MW |
+| 2026-08-27 | Join Demand Layer v1 and Track B only in Decision Intelligence | Jimmy W. Su | Preserve existing production semantics and make Track B additive and removable |
+| 2026-08-27 | Use a dual R2 pilot: five depth cases plus 15–25 timeline projects | Jimmy W. Su | Test evidence quality and global aggregation value without claiming complete coverage |
