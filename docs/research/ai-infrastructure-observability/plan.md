@@ -99,8 +99,8 @@ code-level ports, deterministic identities, fixtures, tests, migration, promotio
 
 | Stage | Duration | Output | Exit gate |
 |---|---:|---|---|
-| R0 — Specification decision | up to 1 week | Approved/narrowed spec, policy and issue map | Human approves research-only scope |
-| R1 — Repository compatibility | 1–2 days | Characterization of reusable provenance, identity, coverage and proposed state | No semantic incompatibility or new decision unresolved |
+| R0 — Positioning and specification decision | up to 1 week | Approved/narrowed product boundary, open-source landscape, reuse policy, evidence policy and issue map | Human approves differentiated research-only scope |
+| R1 — Repository and reuse compatibility | 1–2 days | Characterization of reusable repository contracts plus external license, provenance, schema and connector candidates | No semantic/legal incompatibility or new decision unresolved |
 | R2 — Five-case research pilot | 3–5 weeks | Dossiers, source registries, timelines, conflicts, coverage and decision logs | Track B technical verdict plus value verdict |
 | R3 — Domain and fixture design | 1–2 weeks | Deterministic identities, schemas, faithful fixtures, negative tests | Separate execution plan approved |
 | R4 — Limited live ingestion | 2–4 weeks | Two or three repeatable Tier-1 paths in disposable state | Verification passes; no production write |
@@ -114,11 +114,12 @@ Expected Track B usable version is 8–14 weeks. A first credible Track B + Trac
 ## 7. Gates and authorization
 
 1. Approve/narrow this specification.
-2. Authorize repository-local compatibility research.
-3. Authorize the research-only pilot.
-4. Accept/reject Track B technical and product-value verdicts.
-5. Approve a separate implementation execution plan.
-6. Separately authorize fixtures, live ingestion, production promotion, signals, UI, commit, push,
+2. Approve/narrow the differentiated boundary and reuse-before-build policy.
+3. Authorize repository-local and open-source reuse compatibility research.
+4. Authorize the research-only pilot.
+5. Accept/reject Track B technical and product-value verdicts.
+6. Approve a separate implementation execution plan.
+7. Separately authorize fixtures, live ingestion, production promotion, signals, UI, commit, push,
    PR, merge, and deployment as applicable.
 
 No gate grants the next one automatically.
@@ -140,6 +141,8 @@ provenance stops work for human review.
 - stable identity or deterministic deduplication cannot be achieved for at least four cases;
 - verification requires private/paid/inaccessible data;
 - the result becomes a manually scored news feed;
+- the result primarily duplicates an existing facility map, initiative tracker, or open dataset;
+- reuse candidates cannot preserve required license, provenance, semantic, or freshness boundaries;
 - coverage caveats cannot prevent false completeness;
 - acceptance criteria cannot be tested;
 - a new semantic, production, migration, or authorization decision appears; or
@@ -153,3 +156,4 @@ provenance stops work for human review.
 | 2026-08-27 | Use C4 for architecture and `spec.md` for requirements | Jimmy | Separate system boundaries, product semantics, roadmap and tasks |
 | 2026-08-27 | AI drafts evidence policy; human approves ambiguity-sensitive rules | Jimmy | Gain research leverage without model-generated canonical facts |
 | 2026-08-27 | Require product value in addition to technical feasibility | Jimmy | Do not maintain a correct system that fails to improve decisions |
+| 2026-08-27 | Add open-source landscape and reuse-before-build gate to R0 | Jimmy | Avoid rebuilding maps/directories and require evidence-ledger differentiation |

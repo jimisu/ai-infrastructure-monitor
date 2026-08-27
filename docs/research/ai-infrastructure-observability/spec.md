@@ -70,7 +70,53 @@ The responsible human assigns exactly one verdict:
 
 Only `VALUE_CONFIRMED` may support a recommendation to draft an implementation execution plan.
 
-## 3. Scope
+## 3. Open-source landscape and product boundary
+
+An initial repository scan on 2026-08-27 found useful adjacent open-source systems but no mature
+project that combines project-specific source versioning, physical-phase identity, deterministic
+deduplication, commitment lifecycle, bottleneck evidence, and decision-value verification.
+
+| Project | Useful existing capability | Boundary relative to this specification |
+|---|---|---|
+| [India Datacenter Watch](https://github.com/Ashwask/india-datacenter-watch) | Sourced facility records, operational/construction/proposed status, schema validation, link checking, community review | No retained source-document version, cross-announcement deduplication, commitment evidence hierarchy, or auditable project-phase progression |
+| [US Data Center Atlas](https://github.com/ballacw1742/us-data-center-atlas) | Searchable map built from the PNNL/IM3 open data-center atlas | Primarily a facility inventory; not a commitment or bottleneck lifecycle ledger |
+| [The Sovereign AI Tracker](https://github.com/machinelearnear/the-sovereign-ai-tracker) | National AI initiatives, status, funding fields, timelines, and links | Initiative-level curation rather than physical-project accounting and versioned evidence |
+| [Open Infrastructure Map](https://github.com/openinframap/openinframap) | Mature global geospatial infrastructure presentation based on OpenStreetMap | Infrastructure location, not AI attribution, commitment progression, or investment causality |
+| [Open Supply Hub](https://github.com/opensupplyhub/open-supply-hub) | Facility identity, matching/conflation, review, and global search | Reusable identity pattern, but not an AI/data-center commitment system |
+| [GridStatus](https://github.com/gridstatus/gridstatus) | Source-specific ISO/RTO/EIA acquisition including grid and interconnection data | Reusable source-connector pattern, but not physical AI-project identity or lifecycle |
+| [PUDL](https://github.com/catalyst-cooperative/pudl) | Public-energy data normalization, provenance, schemas, and quality controls | Reusable data-engineering reference, but not AI build commitment intelligence |
+
+This proposal must not differentiate itself by merely publishing a data-center map, facility count,
+source-link directory, or manually curated news list. Those capabilities already exist and are not
+sufficient justification for a new maintained system.
+
+The proposed differentiated boundary is:
+
+> A reviewable physical-build evidence ledger that preserves exact source versions, accounts for one
+> real project or executable phase once, proves lifecycle transitions, expresses conflicts and
+> unknowns, and records whether the new evidence changes a decision.
+
+### Reuse-before-build policy
+
+R1 and R2 must evaluate whether existing open-source data, schemas, source connectors, identity
+patterns, geospatial components, or validation approaches can be reused legally and semantically.
+Reuse requires license compatibility, provenance retention, data-definition compatibility, freshness
+assessment, and independent verification against the original source. An external tracker is a
+discovery or corroboration aid unless its evidence satisfies this specification; it is never
+automatically canonical.
+
+### Competitive value test
+
+For each pilot case, the decision log must state what a competent user could already learn from the
+closest existing open-source tracker or public facility atlas. Track B adds value only when it
+provides at least one material capability those references do not provide, such as document-version
+verification, deterministic cross-party deduplication, project-phase resolution, supported lifecycle
+transition, conflict preservation, or a decision-changing negative finding.
+
+If the pilot mainly republishes, reformats, or summarizes existing trackers, the product verdict is
+`NO_INCREMENTAL_VALUE` even when the output is accurate and visually superior.
+
+## 4. Scope
 
 ### In scope for research pilot
 
@@ -92,7 +138,7 @@ Only `VALUE_CONFIRMED` may support a recommendation to draft an implementation e
 - changes to Demand Layer v1 semantics, identities, or history;
 - Track C implementation before Track B and the value gate pass.
 
-## 4. Requirements
+## 5. Requirements
 
 ### Product requirements
 
@@ -102,6 +148,10 @@ Only `VALUE_CONFIRMED` may support a recommendation to draft an implementation e
 - **PR-003:** Compare pilot findings with Demand Layer v1 and ordinary headline research.
 - **PR-004:** Require the product-value gate before implementation planning.
 - **PR-005:** Never automate investment recommendations.
+- **PR-006 — Reuse before build:** Evaluate applicable open-source datasets, components, and
+  validation patterns before proposing new equivalents.
+- **PR-007 — Competitive increment:** Demonstrate decision-relevant capability beyond a sourced
+  facility map, initiative directory, or news tracker.
 
 ### Evidence and verification
 
@@ -165,6 +215,8 @@ Only `VALUE_CONFIRMED` may support a recommendation to draft an implementation e
 - **AR-006:** A future Track B layer must be removable without corrupting existing data or signals.
 - **AR-007:** Future implementation requires negative tests, repository completion guardrails, and
   protected-state comparison.
+- **AR-008:** External open-source data remains discovery/corroboration input until license,
+  provenance, semantic compatibility, freshness, and original-source verification pass.
 
 ### Track C
 
@@ -187,7 +239,7 @@ Only `VALUE_CONFIRMED` may support a recommendation to draft an implementation e
 - **GV-004:** Approved work packages must map to GitHub issues carrying requirement IDs,
   dependencies, acceptance criteria, forbidden scope, and gate status.
 
-## 5. Evidence policies to approve before pilot
+## 6. Evidence policies to approve before pilot
 
 ### AI attribution
 
@@ -215,12 +267,17 @@ production-ineligible without later approval.
 Use `AVAILABLE_STRUCTURED`, `AVAILABLE_UNSTRUCTURED`, `PARTIAL`, `DELAYED`, `INACCESSIBLE`, or
 `UNKNOWN`, with source class, covered period, language, last verification date, and note.
 
-## 6. Acceptance and negative cases
+## 7. Acceptance and negative cases
 
 Pilot acceptance requires stable identity for at least four of five cases, a classified failure mode
 for any unresolved case, credible primary evidence for at least four, auditable deduplication and
 revision behavior, at least one useful scale measure for a meaningful subset, explicit unknowns, and
 `VALUE_CONFIRMED`.
+
+Product-value acceptance also requires a competitor baseline for every case and at least two pilot
+findings whose decision value could not be obtained by merely viewing the identified open-source
+trackers. A better visual presentation, a larger unsourced list, or aggregation without new evidence
+semantics does not satisfy this criterion.
 
 Required negative tests include:
 
@@ -237,8 +294,12 @@ Required negative tests include:
 - same URL serving a revised document;
 - absence of new evidence treated as deceleration; and
 - English-rich case selection overstating global feasibility.
+- existing open-source tracker rows copied without original-source re-verification;
+- facility-map or initiative-directory output incorrectly claimed as differentiated intelligence;
+- external dataset license, attribution, freshness, or semantic limitations ignored; and
+- visual or record-count improvement mistaken for decision improvement.
 
-## 7. Open human decisions
+## 8. Open human decisions
 
 1. Approve or revise the product question, primary user, and job to be done.
 2. Approve sovereign AI and neocloud as first expansion channels.
@@ -248,3 +309,5 @@ Required negative tests include:
 6. Set the maximum research and recurring maintenance time budget.
 7. After value is proven, decide whether this remains a personal research advantage, becomes a
    public investor tool, or is tested as a commercial product.
+8. Approve or revise the open-source landscape, reuse-before-build policy, and differentiated product
+   boundary in Section 3.

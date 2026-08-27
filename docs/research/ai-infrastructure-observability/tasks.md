@@ -9,6 +9,10 @@ These tasks are a GitHub tracking map. Creating an issue does not authorize exec
 ## Milestone R0 — Specification decision
 
 - [ ] **T001:** Review primary user, job to be done, product-value gate (`PR-001`–`PR-005`).
+- [ ] **T001A:** Review the open-source landscape and approve the evidence-ledger differentiation
+  boundary (`PR-006`, `PR-007`).
+- [ ] **T001B:** Approve reuse-before-build policy and legal/semantic qualification requirements
+  (`AR-008`).
 - [ ] **T002:** Approve or revise AI-attribution policy (`DR-005`, `EV-008`).
 - [ ] **T003:** Approve provisional Level 2 independence protocol (`EV-005`).
 - [ ] **T004:** Decide `FUNDED`, monetary aggregates, pilot budget, and maintenance budget.
@@ -21,6 +25,9 @@ These tasks are a GitHub tracking map. Creating an issue does not authorize exec
 - [ ] **T103:** Characterize coverage and proposed-state boundaries (`CV-001`, `AR-003`).
 - [ ] **T104:** Identify qualitative evidence and architecture-invariant gaps (`AR-001`, `AR-007`).
 - [ ] **T105:** Produce compatibility verdict; stop on semantic mismatch (`GV-003`).
+- [ ] **T106:** Evaluate Open Infrastructure Map, Open Supply Hub, GridStatus, PUDL, and applicable
+  data-center/sovereign-AI trackers for reusable data, schemas, connectors, identity patterns, license,
+  attribution, freshness, and provenance compatibility (`PR-006`, `AR-008`).
 
 ## Milestone R2 — Five-case pilot
 
@@ -30,6 +37,8 @@ These tasks are a GitHub tracking map. Creating an issue does not authorize exec
 - [ ] **T204:** Build lifecycle, supersession, unit, conflict, attribution, and coverage records.
 - [ ] **T205:** Execute all required negative cases in `spec.md`.
 - [ ] **T206:** Compare each result with Demand Layer v1 and headline research (`PR-003`).
+- [ ] **T206A:** Compare each result with the closest applicable open-source tracker and record the
+  incremental lifecycle, deduplication, versioning, conflict, or decision value (`PR-007`).
 - [ ] **T207:** Record technical GO/NO-GO and product-value verdict (`PR-004`).
 
 ## Milestone R3 — Domain and fixtures
