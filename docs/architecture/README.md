@@ -112,3 +112,11 @@ Current verification commands are defined in [`package.json`](../../package.json
 The [Vertiv Physical Build Commitment v0.1 specification](../research/vertiv-physical-build-commitment-v0.1.md)
 is research and proposed implementation design only. Vertiv Phase 2 is not implemented, approval is
 pending, and no Vertiv production data or signal integration is authorized.
+
+## Proposed AI infrastructure observability expansion
+
+The research-only [AI Infrastructure Observability specification](../research/ai-infrastructure-observability/spec.md)
+and [C4 architecture roadmap](../research/ai-infrastructure-observability/plan.md) propose an additive
+physical-project evidence layer for sovereign AI and neocloud demand. The proposal is blocked pending
+human approval. It does not authorize repository implementation, production data, signal, or UI
+changes, and Demand Layer v1 remains authoritative for its current scope.
