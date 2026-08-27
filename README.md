@@ -76,3 +76,26 @@ git diff --check
 `verify:agent` runs lint, build, the complete ingestion test suite, and downstream verification. It does not run live ingestion or production promotion.
 
 See [AGENTS.md](AGENTS.md) for repository operating rules and [the architecture map](docs/architecture/README.md) for source-of-truth boundaries.
+
+## License and data rights
+
+Original source code and original project documentation are licensed under the
+[MIT License](LICENSE) unless a file states otherwise.
+
+Third-party source documents, issuer and regulatory disclosures, quotations, trademarks, adapted
+source-shape fixtures, and other externally sourced materials are excluded from the MIT License and
+remain subject to their original rights and terms. Structured observations, provenance records, and
+compiled research data are not licensed for redistribution unless explicitly stated otherwise.
+
+See [NOTICE.md](NOTICE.md) for the complete license scope, data-rights boundary, source-material
+treatment, and attribution terms.
+
+## Research-use disclaimer
+
+This project is provided for research, educational, and evidence-tracking purposes only. It does not
+provide investment, financial, legal, tax, accounting, or other professional advice and does not
+recommend buying, selling, or holding any security.
+
+Evidence and derived outputs may be incomplete, delayed, revised, unavailable, or incorrect. Verify
+material conclusions against the linked original source and current document version before relying
+on them.
