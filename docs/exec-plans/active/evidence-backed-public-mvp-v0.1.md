@@ -4,9 +4,9 @@
 **Responsible human:** Jimisu
 **Created:** 2026-08-25
 
-This plan records an approved Checkpoint 2 scope. It does not authorize commits, pushes,
-merges, deployment, live ingestion, canonical promotion, or other production
-operations.
+This plan records approved Checkpoint 2 and Checkpoint 3 implementation scopes. It does not
+authorize commits, pushes, merges, deployment, live ingestion, canonical promotion, or other
+production operations.
 
 ## Outcome
 
@@ -111,16 +111,91 @@ Rollback boundary: no MVP implementation exists; PR #2 remains a separate comple
 Rollback boundary: one UI/README checkpoint that can be reverted without touching ingestion,
 canonical data, providers, or signals.
 
-### Checkpoint 3 — Static deployment and final verification
+### Checkpoint 3 — GitHub Pages deployment and final verification (IMPLEMENTED / PENDING REVIEW AND DEPLOYMENT)
 
-1. Apply the minimal configuration for the human-selected static host, using the existing Vite
-   build output and no server-side runtime.
-2. Verify direct asset loading and the configured base path on the selected host.
-3. Run all verification and production-state comparisons, record screenshots or manual viewport
-   evidence, and obtain separate authorization before commit, push, PR, merge, or deployment.
+**Hosting decision:** GitHub Pages, selected by the responsible human on 2026-08-27.
 
-Rollback boundary: deployment configuration is isolated from the dashboard checkpoint and can be
-removed without changing product semantics.
+- Default project URL: `https://jimisu.github.io/ai-infrastructure-monitor/`
+- GitHub project-site base path: `/ai-infrastructure-monitor/`
+- No custom domain in MVP v0.1.
+
+Implemented hosting scope, based on synchronized `main` commit
+`567fc0a008da1637dec207249fe0d5b1fb32108a`:
+
+1. Update the existing Vite configuration to use `/ai-infrastructure-monitor/` as the project-site
+   base path. Do not hard-code deployment URLs in application components.
+2. Add `.github/workflows/deploy-pages.yml` with this contract:
+   - trigger only through `workflow_dispatch`; pushes to `main` do not trigger deployment;
+   - fail closed unless `github.ref` is exactly `refs/heads/main`; a manual dispatch from any other
+     ref must not deploy;
+   - run `npm ci` followed by `npm run verify:agent`; verification or build failure must prevent
+     deployment;
+   - deploy only the verified `dist` artifact;
+   - limit permissions to `contents: read`, `pages: write`, and `id-token: write`;
+   - use the `github-pages` environment;
+   - use only official GitHub actions pinned to reviewed immutable commit SHAs; and
+   - prevent overlapping production deployments.
+3. Update `README.md` with the public URL, static build-time data boundary, confirmation that
+   deployment runs no live ingestion, and the deployment/rollback boundary.
+4. Update this plan with implementation progress, verification results, deployment evidence, and
+   closeout evidence.
+
+Checkpoint 3 forbidden scope:
+
+- No provider, signal, identity, threshold, scoring, or economic-semantic changes.
+- No canonical-data, source-registry, ingestion, or parser changes.
+- No live ingestion or production promotion.
+- No custom domain, analytics, tracking, backend, API, authentication, or secrets.
+- No Cloudflare integration and no feature-branch production deployment.
+
+Checkpoint 3 acceptance criteria:
+
+- `npm run verify:agent` and `git diff --check` pass; `data/ingestion` remains unchanged and all
+  production canonical SHA-256 values remain unchanged.
+- Built HTML, JavaScript, and CSS assets resolve under `/ai-infrastructure-monitor/`.
+- Merging the hosting PR does not deploy, and ordinary pushes to `main` do not deploy.
+- Deployment occurs only after separate authorization and a manual workflow run from `main`; the job
+  fails closed unless `github.ref` is exactly `refs/heads/main`.
+- Failed `npm ci`, `npm run verify:agent`, or build prevents deployment.
+- The deployed URL returns HTTPS 200, JavaScript and CSS assets return 200, desktop/mobile layouts
+  remain correct, and official source links still work.
+- The deployed commit SHA equals the reviewed `main` SHA. Preserve the workflow actor, run URL,
+  commit SHA, and deployment URL as auditable deployment evidence.
+- Deployment runs no ingestion or canonical promotion.
+
+Checkpoint 3 negative cases:
+
+- Missing `dist`, failed installation, verification, or build prevents deployment.
+- A feature-branch push or non-`main` manual dispatch cannot deploy production.
+- Merging or otherwise pushing to `main` cannot deploy without a separately authorized manual run.
+- A concurrent deployment cannot overwrite a newer deployment.
+- An incorrect base path fails asset verification.
+- A deployment failure leaves the repository and canonical data unchanged.
+
+Rollback boundary:
+
+- Revert the hosting configuration commit through a reviewed PR, or redeploy the last known-good
+  `main` commit.
+- If necessary, disable GitHub Pages in repository Settings.
+- Do not rewrite Git history or alter canonical data during rollback.
+
+Separate authorization remains required for: (1) local commit, (2) push and Draft PR, (3) mark
+Ready, (4) merge, (5) enabling GitHub Pages in repository Settings, (6) first production
+deployment, and (7) final public verification. Checkpoint 3 implementation authorization does not
+authorize any of those actions.
+
+Local implementation verification passed: `npm run verify:agent` passed lint, build, 170/170
+ingestion tests, and all five downstream verifiers; the separately required `npm run build` passed;
+`git diff --check` passed; the `data/ingestion` diff was empty; and all production canonical
+SHA-256 values remained unchanged. Static artifact inspection confirmed that HTML, JavaScript, CSS,
+and favicon paths resolve beneath `/ai-infrastructure-monitor/`. Static workflow inspection
+confirmed a `workflow_dispatch`-only trigger, no `push` trigger, exact `refs/heads/main` gates on
+both jobs, verified-build dependency, minimal permissions, concurrency control, and five official
+actions pinned to immutable commit SHAs. No workflow was run, no Pages setting was enabled, and no
+deployment, live ingestion, or production promotion occurred. Deployment and public closeout
+evidence remain pending; the overall plan remains `IN_PROGRESS`.
+Automatic deployment on pushes to `main` is an optional future improvement that requires separate
+explicit authorization.
 
 ## Acceptance criteria
 
@@ -198,17 +273,15 @@ against the recorded post-PR-#2 main baseline and confirm that no live ingestion
 
 ## Human decisions and approvals
 
-Deployment selection is explicitly deferred to Checkpoint 3. At that checkpoint, choose exactly one
-minimal static host and URL/base-path model (GitHub Pages, Cloudflare Pages, or another explicitly
-named static host). Do not add configuration until the responsible human selects it and authorizes
-any external deployment/account action.
+GitHub Pages was selected for Checkpoint 3 on 2026-08-27, with the default project URL and base path
+recorded above. The responsible human subsequently authorized the recorded Checkpoint 3
+implementation scope; repository-setting changes and deployment remain unauthorized.
 
 Still required:
 
-1. Approval for each implementation commit/push/PR action.
-2. At Checkpoint 3, selection and authorization of the static host and any GitHub/workflow or
-   external-account write.
-3. Separate approval to merge or deploy the MVP.
+1. Separate authorization for local commit, push/Draft PR, mark Ready, and merge.
+2. Separate authorization to enable GitHub Pages in repository Settings.
+3. Separate authorization for the first production deployment and final public verification.
 
 Production canonical promotion and live ingestion remain forbidden and are not implied by any plan
 status.
@@ -251,11 +324,26 @@ status.
   is `COMPLETED`; the overall plan remains `IN_PROGRESS` pending Checkpoint 3 hosting. Company
   filtering and collapsible evidence groups are optional future improvements, not MVP blockers.
 
+- 2026-08-27 — Responsible human selected GitHub Pages for Checkpoint 3, using
+  `https://jimisu.github.io/ai-infrastructure-monitor/` with project base path
+  `/ai-infrastructure-monitor/` and no custom domain. The production deployment model remains
+  manual and separately authorized.
+- 2026-08-27 — Responsible human authorized Checkpoint 3 implementation. On branch
+  `feat/github-pages-deployment`, the Vite project base, manual-only SHA-pinned Pages workflow, and
+  README hosting boundary were implemented from `main` baseline
+  `567fc0a008da1637dec207249fe0d5b1fb32108a`. Full verification passed with 170/170 ingestion tests
+  and all five downstream verifiers; the separate build, workflow/base-path assertions, and
+  `git diff --check` passed; production canonical hashes and `data/ingestion` remained unchanged.
+  Checkpoint 3 is `IMPLEMENTED / PENDING REVIEW AND DEPLOYMENT`; no commit, push, PR, Pages setting,
+  workflow run, deployment, live ingestion, or production promotion occurred.
+
 ## Decision log
 
 - Use the existing production provider/signal/view-model chain; no financial-semantic changes.
 - Keep demo modules in the repository while removing them from the default product composition.
-- Defer deployment configuration until the responsible human chooses the static host.
+- Use GitHub Pages for MVP v0.1 at the default project URL, with no custom domain.
+- Keep MVP v0.1 production deployment manual through an authorized `workflow_dispatch` from `main`;
+  automatic deployment on push is deferred and requires separate explicit authorization.
 - Treat company filtering and collapsible evidence groups as optional follow-ups, not MVP blockers.
 
 ## Closeout result
