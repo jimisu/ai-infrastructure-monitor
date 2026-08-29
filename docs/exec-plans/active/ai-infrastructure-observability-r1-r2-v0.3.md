@@ -3,6 +3,7 @@
 **Status:** `BLOCKED_PENDING_HUMAN_APPROVAL`  
 **Responsible human:** Jimmy W. Su  
 **Created:** 2026-08-27  
+**Updated:** 2026-08-29  
 **Plan scope:** R1 repository/reuse compatibility and R2 research-only dual pilot  
 **R1 authorization:** `NOT_GRANTED`  
 **R2 portfolio-selection authorization:** `NOT_GRANTED`  
@@ -93,11 +94,11 @@ human instead of silently altering either document.
 
 - Repository: `jimisu/ai-infrastructure-monitor`
 - Proposed-plan branch: `docs/ai-infrastructure-observability-roadmap`
-- Remote PR #6 head inspected for this draft:
-  `4b24cdb200c91df731e1f05fdd13453445dc6061`
+- Remote PR #6 head inspected before this correction:
+  `4969a740e636880dfd0f700fa6b4963494009885`
 - Remote `main` at the last fetch:
   `a0732dc8356ac1330b51c2b29c9c37a1e80dd419`
-- PR #6: open, Draft, mergeable, four documentation files changed.
+- PR #6: open, Draft, mergeable, five documentation files changed.
 - Production paths changed by PR #6: none.
 
 The executor must re-fetch and record the actual branch, `main`, worktree, PR, and production baseline
@@ -724,7 +725,7 @@ Claude should identify omissions or contradictions, but Jimmy W. Su must decide:
 1. Approve R1 only? R2 portfolio selection cannot be authorized until the WP3 verdict exists, and the
    R2 pilot cannot be authorized until WP4 and its second-reviewer gate are complete.
 2. Is the R1 maximum two working days accepted?
-3. Is the R2 five-week / 70–110-hour maximum accepted?
+3. Is the R2 maximum of 23 working days within five weeks / 69–98 human hours accepted?
 4. Is the mature maintenance threshold of approximately 2–4 human hours per week accepted?
 5. Is `FUNDED` excluded from confirmed capacity and retained only as a separate state?
 6. Are global monetary totals excluded from the first production proposal?
