@@ -1,11 +1,11 @@
 # AI Infrastructure Observability Ten-Working-Day R1 + Micro-Pilot Plan v0.1
 
-**Status:** `BLOCKED_PENDING_HUMAN_APPROVAL`
+**Status:** `R1_EXECUTED_PENDING_INDEPENDENT_REVIEW`
 **Responsible human:** Jimmy W. Su
 **Created:** 2026-08-29
 **Plan scope:** two-day R1 compatibility research plus a separately gated eight-day micro-pilot
 **Plan-drafting authorization:** `GRANTED_2026-08-29`
-**R1 execution authorization:** `NOT_GRANTED`
+**R1 execution authorization:** `GRANTED_WP0_WP3_ONLY_2026-08-29`
 **Micro-pilot selection authorization:** `NOT_GRANTED`
 **Micro-pilot research authorization:** `NOT_GRANTED`
 **Full R2 authorization:** `NOT_GRANTED`
@@ -239,10 +239,20 @@ Full R2, implementation, production, PR readiness, merge and deployment remain d
 |---|---|---|
 | 2026-08-29 | Ten-day plan drafting authorized | Replace the infeasible 23-day execution proposal without weakening evidence semantics |
 | 2026-08-29 | Documentation checkpoint | Pending verification and delivery to Draft PR #6; execution remains unauthorized |
+| 2026-08-29 | WP0 | Completed | Issue #5 records all R0 and R1-only approvals; baseline `c630a966b5f17ccf538771ad9e402d611ff57e88`, clean worktree, protected path trees recorded |
+| 2026-08-29 | WP1 | Completed | Repository reuse matrix and domain gap analysis characterize acquisition, provenance, identity, coverage, proposed-state and verification contracts against code/tests |
+| 2026-08-29 | WP2 | Completed | Seven named candidates plus the directly underlying IM3 atlas have pinned legal, provenance, semantic and freshness findings; no external data was ingested |
+| 2026-08-29 | WP3 | Completed | Verdict `R1_COMPATIBLE_WITH_REVIEWED_CONSTRAINTS`; protected paths unchanged; independent review and separate WP4M authorization remain required |
 
 ## 13. Closeout result
 
-`NOT_STARTED`
+`R1_COMPATIBLE_WITH_REVIEWED_CONSTRAINTS`
+
+R1 began from PR head `c630a966b5f17ccf538771ad9e402d611ff57e88` and `main`
+`a0732dc8356ac1330b51c2b29c9c37a1e80dd419`. Its five deliverables are under
+`docs/research/ai-infrastructure-observability/pilot/`. No source dossier, case selection, timeline
+aggregation, production/code change or external-data commit was performed. The independent R1 review
+has not yet occurred; WP4M remains unauthorized.
 
 Closeout must record exact baseline/head, artifacts, sources, verification results, protected-state
 comparison, reviewer disagreements, time spent, failed/deferred work and responsible-human next-step
