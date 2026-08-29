@@ -1,9 +1,12 @@
 # WP4M Micro-Pilot Selection Proposal
 
-**Date:** 2026-08-29  
-**Gate:** `WP4M_SELECTION_AUTHORIZED_ONLY`  
+**Date:** 2026-08-29
+
+**Gate:** `WP4M_SELECTION_AUTHORIZED_ONLY`
+
 **Baseline:** Draft PR #6 head `cfe93d557059fc3900b9021dc4dc3834336eceb2`; `main`
-`a0732dc8356ac1330b51c2b29c9c37a1e80dd419`  
+`a0732dc8356ac1330b51c2b29c9c37a1e80dd419`
+
 **Result:** `PROPOSED_PENDING_RESPONSIBLE_HUMAN_APPROVAL`
 
 ## 1. Boundary and method
