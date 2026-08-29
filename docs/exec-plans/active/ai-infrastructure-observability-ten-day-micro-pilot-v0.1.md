@@ -1,13 +1,13 @@
 # AI Infrastructure Observability Ten-Working-Day R1 + Micro-Pilot Plan v0.1
 
-**Status:** `WP6M_COMPLETE_WP7M_AUTHORIZED_BY_EXISTING_RESEARCH_GRANT`
+**Status:** `MICRO_PILOT_COMPLETE_PENDING_RESPONSIBLE_HUMAN_CLOSEOUT_REVIEW`
 **Responsible human:** Jimmy W. Su
 **Created:** 2026-08-29
 **Plan scope:** two-day R1 compatibility research plus a separately gated eight-day micro-pilot
 **Plan-drafting authorization:** `GRANTED_2026-08-29`
 **R1 execution authorization:** `GRANTED_WP0_WP3_ONLY_2026-08-29`
 **Micro-pilot selection authorization:** `GRANTED_WP4M_ONLY_2026-08-29`
-**Micro-pilot research authorization:** `GRANTED_WP5M_WP9M_ONLY_2026-08-29`
+**Micro-pilot research authorization:** `EXECUTED_WP5M_WP9M_ONLY_2026-08-29`
 **Full R2 authorization:** `NOT_GRANTED`
 **Implementation / production / merge / deployment:** `NOT_GRANTED`
 
@@ -251,7 +251,7 @@ Full R2, implementation, production, PR readiness, merge and deployment remain d
 
 ## 13. Closeout result
 
-`R1_COMPATIBLE_WITH_REVIEWED_CONSTRAINTS`
+`MICRO_PILOT_VALUE_DEMONSTRATED`
 
 R1 began from PR head `c630a966b5f17ccf538771ad9e402d611ff57e88` and `main`
 `a0732dc8356ac1330b51c2b29c9c37a1e80dd419`. Its five deliverables are under
@@ -261,3 +261,14 @@ aggregation, production/code change or external-data commit was performed. The i
 Closeout must record exact baseline/head, artifacts, sources, verification results, protected-state
 comparison, reviewer disagreements, time spent, failed/deferred work and responsible-human next-step
 decision.
+
+## 14. Micro-pilot closeout — 2026-08-29
+
+- WP5M–WP9M completed within the authorized research boundary.
+- Two depth cases only; the six-project pool remained discovery-only.
+- xAI contributes a 100,000-GPU commissioned lower-bound; disputed later quantities are excluded.
+- Munich is commissioned and AI-explicit but threshold-unresolved, so it is excluded from the numeric large-project aggregate.
+- Eight priority negative cases passed using fail-closed treatment.
+- No source snapshot, translation, production/code/canonical/signal/UI change, PR readiness, merge or deployment occurred.
+- Exact human effort was not instrumented; elapsed orchestration is not treated as a mature maintenance estimate.
+- Full R2 was not completed. This verdict only supports returning to the responsible human to consider whether full R2 portfolio selection should be authorized.

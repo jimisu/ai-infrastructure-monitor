@@ -49,12 +49,12 @@ These tasks are a GitHub tracking map. Creating an issue does not authorize exec
 - [x] **TM04:** Obtain a second classification review and retain disagreements as explicit conflicts.
   Blind second classification completed 2026-08-29; classifier comparison and material-disagreement
   resolution remain pending before WP7M.
-- [ ] **TM05:** Test at least eight priority negative cases: non-executable announcement, repeated
+- [x] **TM05:** Test at least eight priority negative cases: non-executable announcement, repeated
   announcement, campus/phase duplication, facility-power substitution, unsupported AI share,
   invented date precision, state aggregation and discovery-tracker substitution.
-- [ ] **TM06:** Produce a coverage-bound non-production timeline prototype without a global-total
+- [x] **TM06:** Produce a coverage-bound non-production timeline prototype without a global-total
   claim and compare it with the closest existing tracker.
-- [ ] **TM07:** Measure actual effort and assign exactly one micro-pilot verdict; do not claim R2 pass,
+- [x] **TM07:** Measure actual effort and assign exactly one micro-pilot verdict; do not claim R2 pass,
   mature maintenance cost, implementation readiness or production eligibility.
 
 ## Milestone R2 — Dual research pilot
