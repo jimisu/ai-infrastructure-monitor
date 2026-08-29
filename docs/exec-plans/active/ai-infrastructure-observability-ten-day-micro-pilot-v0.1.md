@@ -7,7 +7,7 @@
 **Plan-drafting authorization:** `GRANTED_2026-08-29`
 **R1 execution authorization:** `GRANTED_WP0_WP3_ONLY_2026-08-29`
 **Micro-pilot selection authorization:** `GRANTED_WP4M_ONLY_2026-08-29`
-**Micro-pilot research authorization:** `NOT_GRANTED`
+**Micro-pilot research authorization:** `GRANTED_WP5M_WP9M_ONLY_2026-08-29`
 **Full R2 authorization:** `NOT_GRANTED`
 **Implementation / production / merge / deployment:** `NOT_GRANTED`
 
@@ -244,6 +244,8 @@ Full R2, implementation, production, PR readiness, merge and deployment remain d
 | 2026-08-29 | WP2 | Completed | Seven named candidates plus the directly underlying IM3 atlas have pinned legal, provenance, semantic and freshness findings; no external data was ingested |
 | 2026-08-29 | WP3 | Completed | Verdict `R1_COMPATIBLE_WITH_REVIEWED_CONSTRAINTS`; protected paths unchanged; separate WP4M authorization remains required |
 | 2026-08-29 | Independent R1 review | Conditional | No BLOCKER/HIGH; R1-only diff check passes; full-PR pre-existing whitespace and unavailable exact human-time instrumentation retained as accepted limitations |
+| 2026-08-29 | WP5M authorization | Granted | Two approved cases, six-project discovery pool, seven-day ceiling, OS disposable boundary, and isolated Agent B as second classifier; full R2 and production remain forbidden |
+| 2026-08-29 | WP5M | Completed | Evidence-only packets for xAI Memphis and Deutsche Telekom Munich; no answer key or final eligibility committed; no source snapshot/translation committed |
 | 2026-08-29 | WP4M | Proposal completed | Two proposed depth cases and six-project discovery-only pool recorded; responsible-human case/pool approval and named second classifier remain required before WP5M |
 
 ## 13. Closeout result
