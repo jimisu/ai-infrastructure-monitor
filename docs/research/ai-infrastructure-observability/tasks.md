@@ -1,6 +1,6 @@
 # AI Infrastructure Observability — Proposed Task Map
 
-**Status:** `R2_PORTFOLIO_SELECTION_PROPOSED_PILOT_NOT_AUTHORIZED`
+**Status:** `FULL_R2_RESEARCH_ONLY_PILOT_AUTHORIZED_IN_PROGRESS`
 **Specification:** [spec.md](./spec.md)
 **Architecture roadmap:** [plan.md](./plan.md)
 
@@ -59,8 +59,33 @@ These tasks are a GitHub tracking map. Creating an issue does not authorize exec
 
 ## Milestone R2 — Dual research pilot
 
-Only R2 portfolio selection has been authorized. Completion of the separately gated R1M micro-pilot
-does not check or satisfy R2 pilot research below, and the portfolio proposal does not authorize it.
+Issue #5 separately authorized the full R2 research-only pilot on 2026-08-29. That grant permits the
+approved research work packages only; it does not authorize implementation, production state,
+signals, UI, PR Ready, merge, or deployment. Partial case completion below does not check a portfolio-
+level task until all required cases and reviews satisfy it.
+
+**Factual progress, 2026-08-29:** A1 completed first-pass evidence dossiers for Stargate UAE,
+Deutsche Telekom Munich, and Osaka Sakai under `pilot/full-r2/`, including source/version locators,
+identity, lifecycle, date precision, attribution, capacity state, conflicts, coverage, closest-tracker
+comparison, access/legal unknowns, and instrumented wall-clock effort. A2 independently completed
+the El Capitan and xAI Colossus depth dossiers. All five first-pass depth dossiers now exist, but
+portfolio seed research, negative-case suite, aggregation, blind second review, maintenance
+simulation, and final R2 verdict remain outstanding.
+
+- [x] **T202-A2:** Register source versions, exact locators, permitted-access results and legal
+  unknowns for El Capitan and xAI Colossus only.
+- [x] **T203-A2:** Resolve stable minimum identities and non-additive component/configuration scopes
+  for those two cases.
+- [x] **T204-A2:** Record lifecycle, milestones, original date precision, AI attribution, capacity
+  bases/states, conflicts, supersession and coverage for those two cases.
+- [x] **T206A-A2:** Compare each A2 case with its closest applicable public/open tracker and record
+  the incremental decision effect.
+- [x] **T211-A2-effort:** Record actual A2 research wall-clock intervals without extrapolating a
+  global maintenance cost.
+
+The separately gated R1M micro-pilot does not check or satisfy R2 pilot research below. Issue #5's
+later full-R2 research-only authorization is the execution authority; the earlier portfolio proposal
+did not grant that authority by itself.
 
 - [x] **T201:** Propose exactly five representative depth cases, including one
   low-English-accessibility case, for responsible-human approval. The 2026-08-29 proposal covers
