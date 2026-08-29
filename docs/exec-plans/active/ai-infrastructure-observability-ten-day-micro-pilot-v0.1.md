@@ -9,6 +9,7 @@
 **Micro-pilot selection authorization:** `GRANTED_WP4M_ONLY_2026-08-29`
 **Micro-pilot research authorization:** `EXECUTED_WP5M_WP9M_ONLY_2026-08-29`
 **Full R2 authorization:** `NOT_GRANTED`
+**Full R2 portfolio-selection authorization:** `GRANTED_WP4_ONLY_2026-08-29`
 **Implementation / production / merge / deployment:** `NOT_GRANTED`
 
 ## 1. Purpose
@@ -248,6 +249,7 @@ Full R2, implementation, production, PR readiness, merge and deployment remain d
 | 2026-08-29 | WP5M | Completed | Evidence-only packets for xAI Memphis and Deutsche Telekom Munich; no answer key or final eligibility committed; no source snapshot/translation committed |
 | 2026-08-29 | WP4M | Completed and approved | Two depth cases and six-project discovery-only pool approved; Agent B named as second classifier; separate WP5M–WP9M research authorization subsequently granted |
 | 2026-08-29 | WP6M blind classification | Completed; comparison pending | Agent B independently classified both committed packets without an answer key; WP7M remains stopped until the two classifier outputs are compared and any material disagreement is resolved |
+| 2026-08-29 | Full R2 WP4 portfolio selection | Proposed pending responsible-human approval | Exactly five depth cases and a 20-project discovery seed were shallow-screened; WP5–WP11, dossiers, classifications and aggregates remain unauthorized |
 
 ## 13. Closeout result
 

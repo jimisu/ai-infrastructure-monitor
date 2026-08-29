@@ -186,3 +186,4 @@ provenance stops work for human review.
 | 2026-08-27 | Join Demand Layer v1 and Track B only in Decision Intelligence | Jimmy W. Su | Preserve existing production semantics and make Track B additive and removable |
 | 2026-08-27 | Use a dual R2 pilot: five depth cases plus 15–25 timeline projects | Jimmy W. Su | Test evidence quality and global aggregation value without claiming complete coverage |
 | 2026-08-29 | Add a ten-working-day R1 + micro-pilot gate before full R2 | Jimmy W. Su | Test two real cases without weakening evidence rules or falsely claiming R2 completion |
+| 2026-08-29 | Authorize full-R2 portfolio selection only | Jimmy W. Su | Permit a five-depth-case and 20-project candidate proposal with shallow coverage/feasibility screening; dossiers, pilot research and aggregation remain gated |

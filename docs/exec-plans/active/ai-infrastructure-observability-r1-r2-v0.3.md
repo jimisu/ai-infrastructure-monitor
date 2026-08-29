@@ -6,7 +6,7 @@
 **Updated:** 2026-08-29  
 **Plan scope:** R1 repository/reuse compatibility and R2 research-only dual pilot  
 **R1 authorization:** `NOT_GRANTED`  
-**R2 portfolio-selection authorization:** `NOT_GRANTED`  
+**R2 portfolio-selection authorization:** `GRANTED_WP4_ONLY_2026-08-29`
 **R2 pilot authorization:** `NOT_GRANTED`  
 **Implementation authorization:** `NOT_GRANTED`  
 **Production-write authorization:** `NOT_GRANTED`  
@@ -18,6 +18,8 @@ This version is retained as the reviewed full R1–R2 plan. On 2026-08-29, Jimmy
 documentation-only scope revision because only ten working days were available. The successor keeps
 the product semantics but replaces the 23-day R2 execution proposal with a non-R2 micro-pilot. This
 status change does not authorize execution, production work, PR readiness, merge, or deployment.
+After that micro-pilot closed, Jimmy W. Su separately authorized WP4 full-R2 portfolio selection
+only. The resulting proposal does not reactivate or authorize WP5–WP11.
 
 ## 1. Purpose
 

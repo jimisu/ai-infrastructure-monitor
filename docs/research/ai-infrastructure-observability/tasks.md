@@ -1,6 +1,6 @@
 # AI Infrastructure Observability — Proposed Task Map
 
-**Status:** `R1_COMPLETED_LATER_STAGES_NOT_AUTHORIZED`
+**Status:** `R2_PORTFOLIO_SELECTION_PROPOSED_PILOT_NOT_AUTHORIZED`
 **Specification:** [spec.md](./spec.md)
 **Architecture roadmap:** [plan.md](./plan.md)
 
@@ -59,10 +59,16 @@ These tasks are a GitHub tracking map. Creating an issue does not authorize exec
 
 ## Milestone R2 — Dual research pilot
 
-R2 remains deferred. Completion of the separately gated R1M micro-pilot does not check or satisfy any
-R2 task below.
+Only R2 portfolio selection has been authorized. Completion of the separately gated R1M micro-pilot
+does not check or satisfy R2 pilot research below, and the portfolio proposal does not authorize it.
 
-- [ ] **T201:** Select five representative cases including one low-English-accessibility case.
+- [x] **T201:** Propose exactly five representative depth cases, including one
+  low-English-accessibility case, for responsible-human approval. The 2026-08-29 proposal covers
+  Middle East, Europe/sovereign, Asia/low-English, U.S. government/scientific and neocloud channels;
+  no dossier or final classification was created.
+- [x] **T201A:** Propose a 20-project cross-region candidate seed with shallow official-source,
+  independent-source, language, access, identity/capacity and feasibility screening. This is a
+  discovery seed, not a verified timeline or aggregate.
 - [ ] **T202:** Build source/version registries and exact audit paths (`EV-001`–`EV-004`).
 - [ ] **T203:** Resolve project/phase identities and cross-party duplicates (`DR-001`, `DR-002`).
 - [ ] **T204:** Build lifecycle, supersession, unit, conflict, attribution, and coverage records.
