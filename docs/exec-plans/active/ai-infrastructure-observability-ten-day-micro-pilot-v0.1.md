@@ -1,12 +1,12 @@
 # AI Infrastructure Observability Ten-Working-Day R1 + Micro-Pilot Plan v0.1
 
-**Status:** `R1_REVIEWED_CONDITIONAL_PENDING_WP4M_DECISION`
+**Status:** `WP4M_PROPOSAL_PENDING_RESPONSIBLE_HUMAN_APPROVAL`
 **Responsible human:** Jimmy W. Su
 **Created:** 2026-08-29
 **Plan scope:** two-day R1 compatibility research plus a separately gated eight-day micro-pilot
 **Plan-drafting authorization:** `GRANTED_2026-08-29`
 **R1 execution authorization:** `GRANTED_WP0_WP3_ONLY_2026-08-29`
-**Micro-pilot selection authorization:** `NOT_GRANTED`
+**Micro-pilot selection authorization:** `GRANTED_WP4M_ONLY_2026-08-29`
 **Micro-pilot research authorization:** `NOT_GRANTED`
 **Full R2 authorization:** `NOT_GRANTED`
 **Implementation / production / merge / deployment:** `NOT_GRANTED`
@@ -244,6 +244,7 @@ Full R2, implementation, production, PR readiness, merge and deployment remain d
 | 2026-08-29 | WP2 | Completed | Seven named candidates plus the directly underlying IM3 atlas have pinned legal, provenance, semantic and freshness findings; no external data was ingested |
 | 2026-08-29 | WP3 | Completed | Verdict `R1_COMPATIBLE_WITH_REVIEWED_CONSTRAINTS`; protected paths unchanged; separate WP4M authorization remains required |
 | 2026-08-29 | Independent R1 review | Conditional | No BLOCKER/HIGH; R1-only diff check passes; full-PR pre-existing whitespace and unavailable exact human-time instrumentation retained as accepted limitations |
+| 2026-08-29 | WP4M | Proposal completed | Two proposed depth cases and six-project discovery-only pool recorded; responsible-human case/pool approval and named second classifier remain required before WP5M |
 
 ## 13. Closeout result
 
@@ -252,7 +253,7 @@ Full R2, implementation, production, PR readiness, merge and deployment remain d
 R1 began from PR head `c630a966b5f17ccf538771ad9e402d611ff57e88` and `main`
 `a0732dc8356ac1330b51c2b29c9c37a1e80dd419`. Its five deliverables are under
 `docs/research/ai-infrastructure-observability/pilot/`. No source dossier, case selection, timeline
-aggregation, production/code change or external-data commit was performed. The independent R1 review returned `CONDITIONAL` with no BLOCKER/HIGH findings. Its two MEDIUM closeout limitations are preserved in the verification report and independent-review artifact. Exact human effort was not instrumented and cannot be reconstructed without invention; this limitation is explicitly accepted. WP4M remains unauthorized.
+aggregation, production/code change or external-data commit was performed. The independent R1 review returned `CONDITIONAL` with no BLOCKER/HIGH findings. Its two MEDIUM closeout limitations are preserved in the verification report and independent-review artifact. Exact human effort was not instrumented and cannot be reconstructed without invention; this limitation is explicitly accepted. WP4M selection was subsequently authorized and produced a proposal only; WP5M remains unauthorized pending the decisions in Section 11.
 
 Closeout must record exact baseline/head, artifacts, sources, verification results, protected-state
 comparison, reviewer disagreements, time spent, failed/deferred work and responsible-human next-step
