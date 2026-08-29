@@ -33,7 +33,8 @@ Protected Git tree objects at WP0:
 | First `npm ci` attempt | Environment failure: the default `/root/.npm` cache path was unavailable after registry tarball retries; no test result was produced. |
 | `npm ci --cache /tmp/ai-monitor-a-npm-cache` | Passed; 30 packages installed from the lockfile using an OS-temporary cache. |
 | `npm run verify:agent` | Passed: oxlint, TypeScript/Vite build, 170/170 ingestion tests and all five downstream verification scripts. |
-| `git diff --check` | Passed at pre-commit delivery verification. |
+| `git diff --check c630a966..fdbb6ab` | Passed for the authorized R1 delta. |
+| `git diff --check a0732dc..fdbb6ab` | Failed on nine pre-existing trailing-whitespace findings in the superseded v0.3 plan; R1 introduced none of them. |
 | `git diff -- data/ingestion src scripts tests` | Empty at WP0 and required to remain empty at delivery. |
 | Protected tree objects | Required to remain identical to the four WP0 objects above. |
 
@@ -47,3 +48,14 @@ External repositories are pinned by commit in the compatibility report. Reposito
 to exact local paths and executable tests. An independent reviewer should re-fetch those refs,
 confirm license/data-license separation, inspect the five R1 artifacts, compare protected paths with
 the baseline, and rerun the completion checks before any WP4M decision.
+
+## Independent review closeout
+
+The independent reviewer returned `CONDITIONAL` with no BLOCKER or HIGH findings. The reviewer independently reran `npm run verify:agent`, confirmed 170/170 ingestion tests and five downstream verifiers, matched all four protected trees, and independently matched all eight external pinned HEADs.
+
+Two MEDIUM closeout limitations are explicitly retained:
+
+1. The R1-only diff check passes, while the complete PR diff check fails on pre-R1 trailing whitespace in the superseded v0.3 plan. No claim of a full-PR diff-check pass is made.
+2. Exact human effort was not instrumented during this AI-agent R1 execution. Wall-clock agent execution completed within the same session and calendar day, but the 8–12 human-hour ceiling cannot be independently reconstructed. The responsible human accepted preserving this limitation rather than inventing a time value.
+
+See [R1-independent-review.md](./R1-independent-review.md). WP4M remains separately gated and unauthorized.

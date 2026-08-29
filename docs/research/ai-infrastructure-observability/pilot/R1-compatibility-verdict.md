@@ -55,3 +55,7 @@ production writes, PR readiness, merge or deployment.
 An independent reviewer who did not produce this verdict must inspect the repository references,
 external compatibility evidence, protected-state comparison and unresolved risks. The responsible
 human may consider WP4M selection only after that review and a separate explicit authorization.
+
+## Independent review result
+
+The mandatory independent review returned `CONDITIONAL` with no BLOCKER or HIGH findings. It independently reproduced the repository verification, protected-tree comparison, and external pinned-ref checks. The review identified two retained MEDIUM closeout limitations: the full PR has pre-existing trailing whitespace outside the R1 delta, and exact human effort was not instrumented. These limitations do not change the R1 compatibility verdict, but they are preserved rather than silently converted into passing evidence. WP4M remains unauthorized pending a separate responsible-human decision.

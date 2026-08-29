@@ -1,6 +1,6 @@
 # AI Infrastructure Observability — Proposed Task Map
 
-**Status:** `PROPOSED_NOT_AUTHORIZED`
+**Status:** `R1_COMPLETED_LATER_STAGES_NOT_AUTHORIZED`
 **Specification:** [spec.md](./spec.md)
 **Architecture roadmap:** [plan.md](./plan.md)
 
@@ -8,37 +8,37 @@ These tasks are a GitHub tracking map. Creating an issue does not authorize exec
 
 ## Milestone R0 — Specification decision
 
-- [ ] **T001:** Review primary user, job to be done, product-value gate (`PR-001`–`PR-005`).
-- [ ] **T001A:** Review the open-source landscape and approve the evidence-ledger differentiation
+- [x] **T001:** Review primary user, job to be done, product-value gate (`PR-001`–`PR-005`).
+- [x] **T001A:** Review the open-source landscape and approve the evidence-ledger differentiation
   boundary (`PR-006`, `PR-007`).
-- [ ] **T001B:** Approve reuse-before-build policy and legal/semantic qualification requirements
+- [x] **T001B:** Approve reuse-before-build policy and legal/semantic qualification requirements
   (`AR-008`).
-- [ ] **T002:** Approve or revise AI-attribution policy (`DR-005`, `EV-008`).
-- [ ] **T003:** Approve provisional Level 2 independence protocol (`EV-005`).
-- [ ] **T004:** Decide `FUNDED`, monetary aggregates, pilot budget, and maintenance budget.
-- [ ] **T005:** Record human approval, rejection, or narrowed pilot scope (`GV-001`, `GV-002`).
+- [x] **T002:** Approve or revise AI-attribution policy (`DR-005`, `EV-008`).
+- [x] **T003:** Approve provisional Level 2 independence protocol (`EV-005`).
+- [x] **T004:** Decide `FUNDED`, monetary aggregates, pilot budget, and maintenance budget.
+- [x] **T005:** Record human approval, rejection, or narrowed pilot scope (`GV-001`, `GV-002`).
 - [x] **T006:** Approve the highest-priority confirmed large-AI-capacity timeline semantics and its
   additive integration boundary with Demand Layer v1 (`PR-008`, `AR-009`, `AR-010`). Documentation
   approval only; R1/R2 execution and implementation remain unauthorized.
 
 ## Milestone R1 — Repository compatibility
 
-- [ ] **T101:** Characterize current source/snapshot/document-version contracts (`EV-002`, `EV-003`).
-- [ ] **T102:** Characterize canonical identity/idempotency/revision behavior (`DR-001`, `DR-009`, `AR-004`).
-- [ ] **T103:** Characterize coverage and proposed-state boundaries (`CV-001`, `AR-003`).
-- [ ] **T104:** Identify qualitative evidence and architecture-invariant gaps (`AR-001`, `AR-007`).
-- [ ] **T105:** Produce compatibility verdict; stop on semantic mismatch (`GV-003`).
-- [ ] **T106:** Evaluate Open Infrastructure Map, Open Supply Hub, GridStatus, PUDL, and applicable
+- [x] **T101:** Characterize current source/snapshot/document-version contracts (`EV-002`, `EV-003`).
+- [x] **T102:** Characterize canonical identity/idempotency/revision behavior (`DR-001`, `DR-009`, `AR-004`).
+- [x] **T103:** Characterize coverage and proposed-state boundaries (`CV-001`, `AR-003`).
+- [x] **T104:** Identify qualitative evidence and architecture-invariant gaps (`AR-001`, `AR-007`).
+- [x] **T105:** Produce compatibility verdict; stop on semantic mismatch (`GV-003`).
+- [x] **T106:** Evaluate Open Infrastructure Map, Open Supply Hub, GridStatus, PUDL, and applicable
   data-center/sovereign-AI trackers for reusable data, schemas, connectors, identity patterns, license,
   attribution, freshness, and provenance compatibility (`PR-006`, `AR-008`).
-- [ ] **T107:** Produce an explicit reuse matrix for acquisition, immutable snapshots, document
+- [x] **T107:** Produce an explicit reuse matrix for acquisition, immutable snapshots, document
   versioning, provenance, coverage, proposed-state isolation, HTTP and verification infrastructure;
   identify why existing numeric `MetricObservation` cannot represent project/phase/tranche semantics
   without changing Demand Layer v1 (`AR-009`, `AR-010`).
 
 ## Milestone R1M — Ten-working-day micro-pilot, separately gated
 
-- [ ] **TM01:** Complete R1 WP0–WP3 within two working days and obtain an independent review before
+- [x] **TM01:** Complete R1 WP0–WP3 within two working days and obtain an independent review before
   micro-pilot case selection.
 - [ ] **TM02:** Select two evidence-testable depth cases and a 5–8-project discovery-only pool; use one
   evidence-rich neocloud/AI-campus case and one sovereign-AI or low-English-accessibility case where
