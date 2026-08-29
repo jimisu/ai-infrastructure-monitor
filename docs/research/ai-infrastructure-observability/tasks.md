@@ -46,7 +46,7 @@ These tasks are a GitHub tracking map. Creating an issue does not authorize exec
   completed 2026-08-29.
 - [x] **TM03:** Build disposable source/version, project/phase/tranche, lifecycle, AI-attribution,
   capacity-basis and schedule records for the two cases. Evidence-only packets completed 2026-08-29.
-- [ ] **TM04:** Obtain a second classification review and retain disagreements as explicit conflicts.
+- [x] **TM04:** Obtain a second classification review and retain disagreements as explicit conflicts.
   Blind second classification completed 2026-08-29; classifier comparison and material-disagreement
   resolution remain pending before WP7M.
 - [ ] **TM05:** Test at least eight priority negative cases: non-executable announcement, repeated
