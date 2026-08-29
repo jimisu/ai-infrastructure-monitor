@@ -36,7 +36,28 @@ These tasks are a GitHub tracking map. Creating an issue does not authorize exec
   identify why existing numeric `MetricObservation` cannot represent project/phase/tranche semantics
   without changing Demand Layer v1 (`AR-009`, `AR-010`).
 
+## Milestone R1M — Ten-working-day micro-pilot, separately gated
+
+- [ ] **TM01:** Complete R1 WP0–WP3 within two working days and obtain an independent review before
+  micro-pilot case selection.
+- [ ] **TM02:** Select two evidence-testable depth cases and a 5–8-project discovery-only pool; use one
+  evidence-rich neocloud/AI-campus case and one sovereign-AI or low-English-accessibility case where
+  feasible.
+- [ ] **TM03:** Build disposable source/version, project/phase/tranche, lifecycle, AI-attribution,
+  capacity-basis and schedule records for the two cases.
+- [ ] **TM04:** Obtain a second classification review and retain disagreements as explicit conflicts.
+- [ ] **TM05:** Test at least eight priority negative cases: non-executable announcement, repeated
+  announcement, campus/phase duplication, facility-power substitution, unsupported AI share,
+  invented date precision, state aggregation and discovery-tracker substitution.
+- [ ] **TM06:** Produce a coverage-bound non-production timeline prototype without a global-total
+  claim and compare it with the closest existing tracker.
+- [ ] **TM07:** Measure actual effort and assign exactly one micro-pilot verdict; do not claim R2 pass,
+  mature maintenance cost, implementation readiness or production eligibility.
+
 ## Milestone R2 — Dual research pilot
+
+R2 remains deferred. Completion of the separately gated R1M micro-pilot does not check or satisfy any
+R2 task below.
 
 - [ ] **T201:** Select five representative cases including one low-English-accessibility case.
 - [ ] **T202:** Build source/version registries and exact audit paths (`EV-001`–`EV-004`).

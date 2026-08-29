@@ -125,6 +125,7 @@ code-level ports, deterministic identities, fixtures, tests, migration, promotio
 |---|---:|---|---|
 | R0 — Positioning and specification decision | up to 1 week | Approved/narrowed product boundary, open-source landscape, reuse policy, evidence policy and issue map | Human approves differentiated research-only scope |
 | R1 — Repository and reuse compatibility | 1–2 days | Reuse matrix for existing acquisition/provenance/coverage/proposed-state/verification contracts, project-store gap analysis, plus external license, schema and connector candidates | No semantic/legal incompatibility or new decision unresolved |
+| R1M — Ten-day micro-pilot | 8 days after R1, separately gated | Two depth cases, a 5–8-project discovery pool, a non-production timeline prototype, selected negative cases and measured research effort | Micro-pilot verdict only; does not satisfy or replace R2 acceptance |
 | R2 — Dual research pilot | 3–5 weeks | Five evidence-ledger depth cases plus a 15–25-project global timeline seed, capacity aggregates, schedule/coverage analysis and maintenance measurement | Track B technical verdict, timeline acceptance and value verdict |
 | R3 — Domain and fixture design | 1–2 weeks | Deterministic identities, schemas, faithful fixtures, negative tests | Separate execution plan approved |
 | R4 — Limited live ingestion | 2–4 weeks | Two or three repeatable Tier-1 paths in disposable state | Verification passes; no production write |
@@ -184,3 +185,4 @@ provenance stops work for human review.
 | 2026-08-27 | Make the confirmed large-AI-capacity timeline the highest-priority Track B output | Jimmy W. Su | Connect capital intent to physically executable and commissioned capacity without converting CapEx into MW |
 | 2026-08-27 | Join Demand Layer v1 and Track B only in Decision Intelligence | Jimmy W. Su | Preserve existing production semantics and make Track B additive and removable |
 | 2026-08-27 | Use a dual R2 pilot: five depth cases plus 15–25 timeline projects | Jimmy W. Su | Test evidence quality and global aggregation value without claiming complete coverage |
+| 2026-08-29 | Add a ten-working-day R1 + micro-pilot gate before full R2 | Jimmy W. Su | Test two real cases without weakening evidence rules or falsely claiming R2 completion |

@@ -369,6 +369,19 @@ Use `AVAILABLE_STRUCTURED`, `AVAILABLE_UNSTRUCTURED`, `PARTIAL`, `DELAYED`, `INA
 
 ## 7. Acceptance and negative cases
 
+### Ten-working-day micro-pilot boundary
+
+A separately authorized ten-working-day program may complete R1 and then test two depth cases with a
+5–8-project discovery pool. It is an early feasibility and incremental-value gate, not the dual R2
+pilot required by `PR-009`. It cannot claim global coverage, R2 completion, mature quarterly
+maintenance, or implementation readiness. All evidence, identity, attribution, unit, time-precision,
+provenance, independent-review, protected-state and fail-closed rules remain unchanged.
+
+The micro-pilot may demonstrate only one material decision improvement and two timeline capabilities
+as directional evidence. A positive micro-pilot result authorizes nothing automatically; Jimmy W. Su
+must separately decide whether to stop, repeat a narrowed research exercise, or authorize the full
+R2 portfolio-selection gate.
+
 Pilot acceptance requires stable identity for at least four of five depth cases, a classified failure mode
 for any unresolved case, credible primary evidence for at least four, auditable deduplication and
 revision behavior, a 15–25-project global timeline seed, explicit unknowns, measured quarterly

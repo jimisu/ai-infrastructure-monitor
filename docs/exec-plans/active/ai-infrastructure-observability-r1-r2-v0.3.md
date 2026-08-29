@@ -1,6 +1,6 @@
 # AI Infrastructure Observability R1–R2 Research Execution Plan v0.3
 
-**Status:** `BLOCKED_PENDING_HUMAN_APPROVAL`  
+**Status:** `SUPERSEDED`
 **Responsible human:** Jimmy W. Su  
 **Created:** 2026-08-27  
 **Updated:** 2026-08-29  
@@ -11,6 +11,13 @@
 **Implementation authorization:** `NOT_GRANTED`  
 **Production-write authorization:** `NOT_GRANTED`  
 **Merge authorization:** `NOT_GRANTED`
+
+**Superseded by:** [AI Infrastructure Observability Ten-Working-Day R1 + Micro-Pilot Plan v0.1](./ai-infrastructure-observability-ten-day-micro-pilot-v0.1.md)
+
+This version is retained as the reviewed full R1–R2 plan. On 2026-08-29, Jimmy W. Su approved a
+documentation-only scope revision because only ten working days were available. The successor keeps
+the product semantics but replaces the 23-day R2 execution proposal with a non-R2 micro-pilot. This
+status change does not authorize execution, production work, PR readiness, merge, or deployment.
 
 ## 1. Purpose
 
