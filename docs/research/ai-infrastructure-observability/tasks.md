@@ -40,13 +40,15 @@ These tasks are a GitHub tracking map. Creating an issue does not authorize exec
 
 - [x] **TM01:** Complete R1 WP0–WP3 within two working days and obtain an independent review before
   micro-pilot case selection.
-- [ ] **TM02:** Propose two evidence-testable depth cases and a 5–8-project discovery-only pool; use one
+- [x] **TM02:** Propose two evidence-testable depth cases and a 5–8-project discovery-only pool; use one
   evidence-rich neocloud/AI-campus case and one sovereign-AI or low-English-accessibility case where
-  feasible. WP4M proposal completed 2026-08-29; responsible-human approval of both cases and the pool
-  remains pending, so this task is not complete.
-- [ ] **TM03:** Build disposable source/version, project/phase/tranche, lifecycle, AI-attribution,
-  capacity-basis and schedule records for the two cases.
+  feasible. WP4M proposal and responsible-human approval of both cases and the six-project pool were
+  completed 2026-08-29.
+- [x] **TM03:** Build disposable source/version, project/phase/tranche, lifecycle, AI-attribution,
+  capacity-basis and schedule records for the two cases. Evidence-only packets completed 2026-08-29.
 - [ ] **TM04:** Obtain a second classification review and retain disagreements as explicit conflicts.
+  Blind second classification completed 2026-08-29; classifier comparison and material-disagreement
+  resolution remain pending before WP7M.
 - [ ] **TM05:** Test at least eight priority negative cases: non-executable announcement, repeated
   announcement, campus/phase duplication, facility-power substitution, unsupported AI share,
   invented date precision, state aggregation and discovery-tracker substitution.

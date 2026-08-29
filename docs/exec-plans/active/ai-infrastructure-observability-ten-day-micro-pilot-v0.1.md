@@ -1,6 +1,6 @@
 # AI Infrastructure Observability Ten-Working-Day R1 + Micro-Pilot Plan v0.1
 
-**Status:** `WP4M_PROPOSAL_PENDING_RESPONSIBLE_HUMAN_APPROVAL`
+**Status:** `WP6M_BLIND_CLASSIFICATION_COMPLETE_PENDING_COMPARISON`
 **Responsible human:** Jimmy W. Su
 **Created:** 2026-08-29
 **Plan scope:** two-day R1 compatibility research plus a separately gated eight-day micro-pilot
@@ -246,7 +246,8 @@ Full R2, implementation, production, PR readiness, merge and deployment remain d
 | 2026-08-29 | Independent R1 review | Conditional | No BLOCKER/HIGH; R1-only diff check passes; full-PR pre-existing whitespace and unavailable exact human-time instrumentation retained as accepted limitations |
 | 2026-08-29 | WP5M authorization | Granted | Two approved cases, six-project discovery pool, seven-day ceiling, OS disposable boundary, and isolated Agent B as second classifier; full R2 and production remain forbidden |
 | 2026-08-29 | WP5M | Completed | Evidence-only packets for xAI Memphis and Deutsche Telekom Munich; no answer key or final eligibility committed; no source snapshot/translation committed |
-| 2026-08-29 | WP4M | Proposal completed | Two proposed depth cases and six-project discovery-only pool recorded; responsible-human case/pool approval and named second classifier remain required before WP5M |
+| 2026-08-29 | WP4M | Completed and approved | Two depth cases and six-project discovery-only pool approved; Agent B named as second classifier; separate WP5M–WP9M research authorization subsequently granted |
+| 2026-08-29 | WP6M blind classification | Completed; comparison pending | Agent B independently classified both committed packets without an answer key; WP7M remains stopped until the two classifier outputs are compared and any material disagreement is resolved |
 
 ## 13. Closeout result
 
@@ -255,7 +256,7 @@ Full R2, implementation, production, PR readiness, merge and deployment remain d
 R1 began from PR head `c630a966b5f17ccf538771ad9e402d611ff57e88` and `main`
 `a0732dc8356ac1330b51c2b29c9c37a1e80dd419`. Its five deliverables are under
 `docs/research/ai-infrastructure-observability/pilot/`. No source dossier, case selection, timeline
-aggregation, production/code change or external-data commit was performed. The independent R1 review returned `CONDITIONAL` with no BLOCKER/HIGH findings. Its two MEDIUM closeout limitations are preserved in the verification report and independent-review artifact. Exact human effort was not instrumented and cannot be reconstructed without invention; this limitation is explicitly accepted. WP4M selection was subsequently authorized and produced a proposal only; WP5M remains unauthorized pending the decisions in Section 11.
+aggregation, production/code change or external-data commit was performed. The independent R1 review returned `CONDITIONAL` with no BLOCKER/HIGH findings. Its two MEDIUM closeout limitations are preserved in the verification report and independent-review artifact. Exact human effort was not instrumented and cannot be reconstructed without invention; this limitation is explicitly accepted. WP4M selection and WP5M–WP9M research were subsequently authorized. WP5M evidence packets and the blind WP6M second classification are complete; WP7M remains stopped pending classifier comparison and resolution of any material disagreement.
 
 Closeout must record exact baseline/head, artifacts, sources, verification results, protected-state
 comparison, reviewer disagreements, time spent, failed/deferred work and responsible-human next-step
