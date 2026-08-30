@@ -112,6 +112,15 @@ an under-construction `VERIFIED_UNQUANTIFIED` row. The retained population is no
 `QUALIFYING_SEED_MINIMUM_MET_15`. No aggregate was started; T208 and T210 remain open, while existing
 negative-case and coverage work may continue.
 
+**Factual progress, 2026-08-30:** The Full R2 negative-case suite executed all 25 required tests in
+specification §7: 21 against observed portfolio conditions and four as bounded adverse
+interpretations where the exact event was absent. All preserved the required fail-closed result at
+the research-representation level; this does not substitute for future R3 executable tests. Coverage
+analysis found 15 retained cross-region rows but material limits: six are North American, Africa and
+South America have zero retained rows, 11 are `VERIFIED_UNQUANTIFIED`, local-language coverage is
+partial, and immutable versions, source independence, and legal-access review remain incomplete. No
+aggregate or final verdict was started.
+
 - [x] **T202-A2:** Register source versions, exact locators, permitted-access results and legal
   unknowns for El Capitan and xAI Colossus only.
 - [x] **T203-A2:** Resolve stable minimum identities and non-additive component/configuration scopes
@@ -140,7 +149,8 @@ did not grant that authority by itself.
 - [ ] **T202:** Build source/version registries and exact audit paths (`EV-001`–`EV-004`).
 - [ ] **T203:** Resolve project/phase identities and cross-party duplicates (`DR-001`, `DR-002`).
 - [ ] **T204:** Build lifecycle, supersession, unit, conflict, attribution, and coverage records.
-- [ ] **T205:** Execute all required negative cases in `spec.md`.
+- [x] **T205:** Execute all required negative cases in `spec.md`. Research-representation suite
+  completed 2026-08-30; future R3 executable fixtures/tests remain separately gated.
 - [ ] **T206:** Compare each result with Demand Layer v1 and headline research (`PR-003`).
 - [ ] **T206A:** Compare each result with the closest applicable open-source tracker and record the
   incremental lifecycle, deduplication, versioning, conflict, or decision value (`PR-007`).
