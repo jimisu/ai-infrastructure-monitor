@@ -89,6 +89,14 @@ ineligible facility/design quantities, and Fluidstack remains an MOU negative ca
 independence review, the remaining seed, aggregation, maintenance simulation, and final verdict remain
 open.
 
+**Factual progress, 2026-08-30:** Portfolio seed registry batch 03 classified candidates 16–20
+(SK–AWS Ulsan, Reliance Jamnagar, HUMAIN/AMD/Cisco, Microsoft/G42/EcoCloud Kenya, and Scala AI City)
+and added Korean, Portuguese, African, and Saudi coverage. No batch-03 quantity is eligible for the
+primary aggregate: Ulsan/Jamnagar capacity bases remain ineligible, HUMAIN site-to-program identity
+is unresolved, Kenya remains MOU plus schedule risk, and Scala lacks binding power/construction.
+All 20 selected candidates now have depth-case or seed-batch first-pass research; consolidation,
+negative cases, aggregation, maintenance simulation, independent review, and final verdict remain open.
+
 - [x] **T202-A2:** Register source versions, exact locators, permitted-access results and legal
   unknowns for El Capitan and xAI Colossus only.
 - [x] **T203-A2:** Resolve stable minimum identities and non-additive component/configuration scopes
