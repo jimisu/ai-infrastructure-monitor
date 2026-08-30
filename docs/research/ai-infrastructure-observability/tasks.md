@@ -81,6 +81,14 @@ ineligible, Lancaster lacks confirmed-build evidence, Hyperion lacks executable 
 and Norway remains contractual/forward-looking. T202–T211 remain open pending the rest of the seed,
 negative cases, aggregation, maintenance simulation, and final verdict.
 
+**Factual progress, 2026-08-30:** Portfolio seed registry batch 02 classified candidates 11–15
+(Nebius Mäntsälä, Isambard-AI, JUPITER, Fluidstack France, and SoftBank Tomakomai) and exercised
+Finnish, Japanese, German, and French discovery paths. JUPITER is the batch's only provisional large
+commissioned numeric candidate; Isambard-AI is below threshold, Nebius and Tomakomai retain
+ineligible facility/design quantities, and Fluidstack remains an MOU negative case. Exact versions,
+independence review, the remaining seed, aggregation, maintenance simulation, and final verdict remain
+open.
+
 - [x] **T202-A2:** Register source versions, exact locators, permitted-access results and legal
   unknowns for El Capitan and xAI Colossus only.
 - [x] **T203-A2:** Resolve stable minimum identities and non-additive component/configuration scopes
