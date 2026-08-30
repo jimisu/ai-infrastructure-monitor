@@ -1,6 +1,6 @@
 # Full R2 portfolio replacement screening v0.1
 
-**Status:** `RESEARCH_ONLY_REPLACEMENT_TARGET_MET_STOPPED_AT_TWO`
+**Status:** `SUPERSEDED_BY_INDEPENDENT_REVIEW_ONE_OF_TWO_QUALIFIES`
 
 **Date:** 2026-08-30
 
@@ -10,15 +10,20 @@
 Do not weaken the 15-project minimum and do not begin aggregation. Existing negative-case and
 coverage work may continue within the authorized research-only boundary.
 
-## Stop rule and result
+## Independent-review correction
 
-Candidates 21 and 22 both satisfy the existing confirmed-build or commissioned-row policy. The
-replacement target was therefore met after two screens. No third or fourth candidate was screened.
+The initial screen stopped after treating candidates 21 and 22 as qualifying. Independent portfolio
+review later found that candidate 22 is a campus-level identity with executable phase/tranche
+unresolved and therefore does not satisfy `DR-001`, `DR-010`, and `DR-013`. Candidate 21 remains a
+provisional system/project-level row with physical topology explicitly unresolved.
 
-`REPLACEMENT_SCREENING_TARGET_MET_2_OF_2`
+`REPLACEMENT_SCREENING_ONE_QUALIFYING_OF_TWO_SCREENED`
 
-This result does not authorize a numeric aggregate, final R2 verdict, implementation, production
-data, signals, UI, PR readiness, merge, or deployment.
+No third or fourth candidate was screened before the review correction. Two authorized screening
+slots remain, but they cannot repair the corrected three-row portfolio shortfall by themselves. A
+new responsible-human decision is required before further screening. This result does not authorize
+a numeric aggregate, final R2 verdict, implementation, production data, signals, UI, PR readiness,
+merge, or deployment.
 
 ## Candidate 21 — AWS Project Rainier
 
@@ -72,8 +77,8 @@ additive project identities.
 | AI attribution | `AI_EXPLICIT` |
 | Identity | `STABLE_CAMPUS / PHASE_AND_TRANCHE_UNRESOLVED` |
 | Capacity | 1 GW campus and 1,383 MW utility/service figures are ineligible capacity bases |
-| Threshold | `VERIFIED_UNQUANTIFIED` |
-| Timeline treatment | Retain an annual-2026 confirmed-build row; no commissioning date or numeric contribution |
+| Threshold | `NOT_YET_QUALIFYING`; campus identity does not resolve an executable phase/tranche |
+| Timeline treatment | Exclude from the qualifying population pending stable confirmed phase identity; no commissioning date or numeric contribution |
 
 The two power figures have different issuers and economic meanings. Neither is treated as AI IT
 load, and they are not reconciled, averaged, or added.
@@ -83,7 +88,7 @@ load, and they are not reconciled, averaged, or added.
 | Candidate | Qualifying row | Numeric state | Reason |
 |---|---|---|---|
 | 21 — AWS Project Rainier | Yes | Model-specific accelerator count | Operational evidence and project-specific Trainium2 quantity exceed the existing threshold |
-| 22 — Stargate Michigan / The Barn | Yes | `VERIFIED_UNQUANTIFIED` | AI-explicit campus has project-specific groundbreaking evidence |
+| 22 — Stargate Michigan / The Barn | No | Campus-level construction evidence | Executable phase/tranche identity remains unresolved |
 
-Exactly two replacement rows qualify. The authorized objective is met without weakening the
-ordinary threshold, admitting planned-only projects, or beginning aggregate construction.
+One of two screened replacement rows qualifies after independent review. No threshold was weakened
+and no aggregate was begun.

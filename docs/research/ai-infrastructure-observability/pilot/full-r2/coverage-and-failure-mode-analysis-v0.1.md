@@ -1,45 +1,47 @@
 # Full R2 coverage and failure-mode analysis v0.1
 
-**Status:** `RESEARCH_ONLY_COVERAGE_CHARACTERIZED_NOT_GLOBAL_COMPLETE`
+**Status:** `RESEARCH_ONLY_COVERAGE_CORRECTED_AFTER_MATERIAL_REVIEW_DISAGREEMENT`
 
 **Date:** 2026-08-30
 
 **Observation cutoff:** 2026-08-30
 
-**Population:** 15 retained confirmed-build or commissioned rows from portfolio consolidation v0.2;
-the seven excluded/held cases remain visible as negative and coverage evidence. Counts below describe
-the selected research portfolio, not market share, capacity share, or a complete global inventory.
+**Population:** independent review accepts at most 12 qualifying confirmed-build or commissioned
+rows. Cases 9, 17, and 22 are removed from the qualifying count pending stable executable
+phase/tranche identity; all ten excluded, held, or disputed cases remain visible as negative and
+coverage evidence. Counts below describe the selected research portfolio, not market share, capacity
+share, or a complete global inventory.
 
 ## Geographic coverage
 
 | Analytical region | Retained rows | Excluded/held cases | Coverage finding |
 |---|---:|---:|---|
-| North America | 6 | 2 | Overrepresented; public English operator, government, and supplier channels are easiest to discover |
+| North America | 4 | 4 | Still English-heavy; Hyperion and Michigan are disputed campus-level rows |
 | Europe | 4 | 2 | German, Finnish, French, EU, and English paths were exercised; depth and source independence remain uneven |
-| Asia | 4 | 0 | Japanese and Korean official paths were exercised; Indian local-language and phase evidence remain partial |
+| Asia | 3 | 1 | Japanese and Korean official paths were exercised; Jamnagar phase identity and Indian local-language evidence remain partial |
 | Middle East | 1 | 1 | UAE qualifies unquantified; Saudi program-to-site identity remains unresolved; Arabic parity is incomplete |
 | Africa | 0 | 1 | Kenya supplies a valuable MOU/schedule-risk negative case but no qualifying row |
 | South America | 0 | 1 | Brazil supplies Portuguese discovery and grid-boundary evidence but no qualifying row |
 
-The 15-row minimum is met, but Africa and South America have zero retained rows and North America
-accounts for six. “Global” can therefore mean only a cross-region, publicly verified known-project
-seed with explicit gaps. It cannot mean complete global capacity or representative sampling.
+The corrected qualifying population is at most 12, below the 15-row minimum. Africa and South America
+have zero retained rows. “Global” can therefore mean only a cross-region research attempt with
+explicit gaps; the required qualifying seed is not established.
 
 ## Lifecycle and capacity coverage
 
 | Dimension | Observed portfolio coverage | Limitation |
 |---|---|---|
 | Commissioned/operational | Munich, Colossus, Abilene first phase, Fairwater Wisconsin, Nebius expansion, JUPITER, and Rainier | Exact first-service dates and immutable versions are uneven; Abilene also contains continuing expansion |
-| Under construction | UAE, Sakai, Hyperion, Tomakomai, Ulsan, Jamnagar, and Michigan | Most rows lack an eligible project-specific AI IT-load or accelerator quantity |
+| Under construction | UAE, Sakai, Tomakomai, and Ulsan qualify; Hyperion, Jamnagar, and Michigan remain disputed | Most rows lack an eligible project-specific AI IT-load or accelerator quantity |
 | Contracted | Stargate Norway | Forward customer/GPU commitments are not installed or commissioned capacity |
 | Schedule risk | Kenya negative case | No qualifying retained row currently supplies an evidence-backed delay/cancellation tranche |
 | Numeric accelerator basis | Munich Blackwell, Colossus Hopper, JUPITER GH200, Rainier Trainium2 | Four distinct model/time semantics; no common equivalent or total is valid |
-| `VERIFIED_UNQUANTIFIED` | 11 of 15 retained rows | Confirms physical progression but cannot support a numeric capacity total |
+| `VERIFIED_UNQUANTIFIED` | 8 of 12 accepted rows | Confirms physical progression but cannot support a numeric capacity total |
 | Below ordinary threshold | El Capitan and Isambard-AI comparators | No human `STRATEGIC_EXCEPTION` was granted |
 
-This mix is adequate to exercise identity, lifecycle, time-precision, and unquantified-state rules.
-It is weak for numeric capacity analysis: only four rows retain an accelerator quantity, and none
-provides a common, additive AI IT-load basis.
+This corrected mix is adequate to exercise identity, lifecycle, time-precision, and
+unquantified-state rules, but it does not meet the qualifying population gate. Only four rows retain
+an accelerator quantity, and none provides a common, additive AI IT-load basis.
 
 ## Language and source-channel coverage
 
@@ -71,8 +73,8 @@ access, redistribution rights, site terms, `robots.txt`, or stable document-vers
 
 ## Coverage-driven failure modes
 
-1. **False completeness:** a 15-row threshold can look global while Africa and South America have no
-   retained row and English-rich North America dominates.
+1. **False completeness:** a provisional 15-row count concealed three campus-level identity failures;
+   Africa and South America still have no retained row.
 2. **False quantification:** 11 unquantified rows can be visually mistaken for zero capacity or be
    assigned estimates to make a chart appear complete.
 3. **False independence:** partner, supplier, government, and operator pages may repeat one launch
@@ -93,7 +95,7 @@ Any later research timeline must keep the following adjacent to the rows:
 
 - scope: selected publicly verified known projects, not complete global capacity;
 - data-as-of and `last_verified_at`;
-- retained-row count and `VERIFIED_UNQUANTIFIED` count;
+- accepted, disputed, and `VERIFIED_UNQUANTIFIED` row counts;
 - region and language gaps, including zero retained rows in Africa and South America;
 - model-specific quantities without cross-model sum;
 - planned upper bounds, schedule-at-risk, and excluded cases separated from confirmed rows; and
@@ -104,7 +106,7 @@ to avoid false precision and false completeness.
 
 ## Result
 
-`CROSS_REGION_RESEARCH_COVERAGE_WITH_MATERIAL_GEOGRAPHIC_LANGUAGE_AND_REPRODUCIBILITY_GAPS`
+`QUALIFYING_COVERAGE_SHORTFALL_WITH_MATERIAL_GEOGRAPHIC_LANGUAGE_AND_REPRODUCIBILITY_GAPS`
 
 Coverage and failure modes are now characterized for the current portfolio. T204, T206, T206A,
 T208–T211, maintenance simulation, independent portfolio review, and the final R2 verdict remain

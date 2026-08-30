@@ -30,13 +30,13 @@ No skipped test is reported as passing.
 | 2 | Political rename or repeated announcement of the same investment | 1 Stargate UAE launch family; 16 Ulsan launch and groundbreaking | Preserve one project and versioned lifecycle events; do not multiply announcements | `PASS_OBSERVED` |
 | 3 | Campus total confused with first-phase or AI-specific capacity | 1 UAE 5 GW/1 GW/200 MW; 9 Hyperion 5 GW; 15 Tomakomai 300/50 MW | Keep campus bounds non-additive and phases unresolved or separate | `PASS_OBSERVED` |
 | 4 | MW, MWac, MWdc, IT load, or utility supply confused | 15 Tomakomai receiving power; 20 Scala grid envelopes; 22 Michigan service load | Exclude power figures unless project-specific AI IT-load basis is explicit | `PASS_OBSERVED` |
-| 5 | Inconsistent local-currency/USD conversion | 20 Scala R$3 billion and USD 500 million announcement values | Preserve each source currency/value as evidence; do not convert, reconcile, or use as capacity | `PASS_OBSERVED` |
+| 5 | Inconsistent local-currency/USD conversion | Mutate 20 Scala's separately reported R$3 billion and USD 500 million values into an unsupported conversion comparison | Preserve each source currency/value as evidence; do not convert, reconcile, or use as capacity | `PASS_BOUNDED_MUTATION` |
 | 6 | Company aggregate CapEx allocated to one project | Mutate Demand Layer v1 issuer CapEx into any Track B project row | Reject the allocation; Track B remains independent and project-specific | `PASS_BOUNDED_MUTATION` |
 | 7 | Customer or sponsor identity substituted for AI attribution | 18 HUMAIN supplier/JV roles and site reports; 10 Norway changing customer | Require project-specific AI wording; party identity cannot bridge unresolved site/phase scope | `PASS_OBSERVED` |
 | 8 | Multiple articles originating from one release | 1 UAE coordinated launch family; 18 AMD/Cisco coordinated JV releases | Treat as one origin family; do not manufacture provisional Level 2 | `PASS_OBSERVED` |
 | 9 | Supplier backlog accepted without counterforce analysis | Mutate a supplier backlog statement into confirmed project demand | Reject it from Track B lifecycle/capacity; incentives, cancellation, double ordering, and non-AI scope remain unresolved | `PASS_BOUNDED_MUTATION` |
 | 10 | Delayed project classified as canceled | 19 Kenya power/payment dispute and continuing talks | Preserve `SCHEDULE_AT_RISK`; do not infer cancellation | `PASS_OBSERVED` |
-| 11 | Same URL serving a revised document | Mutable pages for 5 Colossus, 7 Fairwater, 9 Hyperion, 13 JUPITER, and 15 Tomakomai | Preserve observation/version uncertainty; later wording cannot silently overwrite prior state | `PASS_OBSERVED` with immutable-version capture still open |
+| 11 | Same URL serving a revised document | Mutate a registered mutable URL into a later changed response without a new URL | Preserve observation/version uncertainty; later wording cannot silently overwrite prior state | `PASS_BOUNDED_MUTATION`; an actual two-version same-URL pair remains `NOT_DEMONSTRATED` |
 | 12 | Absence of new evidence treated as deceleration | 8 Lancaster and 20 Scala lack later eligible build evidence | Record unknown/no eligible transition; do not infer demand deceleration, delay, or cancellation | `PASS_OBSERVED` |
 | 13 | English-rich case selection overstating global feasibility | Six retained North American rows; no retained African or South American row | Disclose geographic/language bias and zero qualifying coverage; no complete-global claim | `PASS_OBSERVED` |
 
@@ -44,16 +44,16 @@ No skipped test is reported as passing.
 
 | # | Required negative test | Portfolio input or bounded mutation | Required behavior | Result |
 |---:|---|---|---|---|
-| 14 | Open-source tracker row copied without original-source re-verification | Closest-tracker comparisons for all five depth cases | Use trackers for discovery/comparison only; classifications cite original sources | `PASS_OBSERVED` |
+| 14 | Open-source tracker row copied without original-source re-verification | Mutate a closest-tracker comparison row into factual portfolio evidence | Reject the row; use trackers for discovery/comparison only and require original sources | `PASS_BOUNDED_MUTATION` |
 | 15 | Facility map or initiative directory claimed as differentiated intelligence | TOP500, U.S. Data Center Atlas, and sovereign/facility tracker comparisons | Credit existing discovery value; claim increment only for evidence versioning, identity, lifecycle, conflict, or negative disposition | `PASS_OBSERVED` |
-| 16 | External dataset license, attribution, freshness, or semantic limits ignored | External tracker reuse candidates from R1 and depth comparisons | Keep outside committed factual state until all reuse checks pass | `PASS_OBSERVED` |
+| 16 | External dataset license, attribution, freshness, or semantic limits ignored | Mutate an R1 external reuse candidate into accepted evidence without its recorded limitations | Keep outside committed factual state until all reuse checks pass | `PASS_BOUNDED_MUTATION` |
 | 17 | Visual or record-count improvement mistaken for decision improvement | Mutate the 15-row minimum or a larger list into a value claim | Reject list size as product-value evidence; decision improvements remain separately gated | `PASS_BOUNDED_MUTATION` |
 
 ## Timeline, identity, and capacity-state tests
 
 | # | Required negative test | Portfolio input or bounded mutation | Required behavior | Result |
 |---:|---|---|---|---|
-| 18 | Building completion treated as commissioned AI compute | 3 Sakai construction; 15 Tomakomai construction; 22 Michigan groundbreaking | Retain `UNDER_CONSTRUCTION`; require project-specific operating/service evidence for `COMMISSIONED` | `PASS_OBSERVED` |
+| 18 | Building completion treated as commissioned AI compute | Mutate construction/building-readiness evidence for 3 Sakai or 15 Tomakomai into commissioned AI service | Reject commissioning; require project-specific operating/service evidence | `PASS_BOUNDED_MUTATION` |
 | 19 | Annual or half-year completion narrowed to invented quarter/date | 1 UAE 2026 target; 15 Tomakomai FY2026; 16 Ulsan 2027/2029 | Preserve source precision and leave quarter unallocated | `PASS_OBSERVED` |
 | 20 | Accelerator generations converted to unsupported common equivalent | 2 Blackwell, 5 Hopper, 13 GH200, and 21 Trainium2 | Preserve model/generation and prohibit equivalent-count conversion | `PASS_OBSERVED` |
 | 21 | Planned, installed, commissioned, or at-risk capacity added together | 5 Colossus configurations; 10 Norway commitments; 19 Kenya at-risk proposal | Keep states and versions non-additive | `PASS_OBSERVED` |
@@ -62,8 +62,8 @@ No skipped test is reported as passing.
 | 24 | Utility/facility power substituted for AI IT load | 3 Sakai, 9 Hyperion, 15 Tomakomai, 16 Ulsan, 20 Scala, and 22 Michigan | Exclude facility, receiving, grid, and service power from AI IT-load quantities | `PASS_OBSERVED` |
 | 25 | Canceled phase removed from history or retained in current expected capacity | Mutate a current confirmed row with an evidence-backed cancellation event | Preserve historical row/event but remove canceled quantity from current expected state | `PASS_BOUNDED_MUTATION` |
 
-Specification §7 contains 25 bullet tests. All 25 were executed: 21 against naturally observed
-portfolio conditions and four as bounded adverse interpretations of existing records. No result
+Specification §7 contains 25 bullet tests. All 25 were executed: 16 against naturally observed
+portfolio conditions and nine as bounded adverse interpretations of existing records. No result
 requires lowering the large-project threshold or admitting an excluded quantity.
 
 ## Failure-mode findings

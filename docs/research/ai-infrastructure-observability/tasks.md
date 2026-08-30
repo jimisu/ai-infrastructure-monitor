@@ -110,16 +110,28 @@ or beginning aggregation. Screening stopped after the first two candidates both 
 Project Rainier is an operational, model-specific Trainium2 row and Stargate Michigan / The Barn is
 an under-construction `VERIFIED_UNQUANTIFIED` row. The retained population is now 15 and the result is
 `QUALIFYING_SEED_MINIMUM_MET_15`. No aggregate was started; T208 and T210 remain open, while existing
-negative-case and coverage work may continue.
+negative-case and coverage work may continue. This initial count was subsequently superseded by the
+independent portfolio review recorded below.
 
 **Factual progress, 2026-08-30:** The Full R2 negative-case suite executed all 25 required tests in
-specification §7: 21 against observed portfolio conditions and four as bounded adverse
+specification §7. Independent review corrected the classification to 16 observed portfolio
+conditions and nine bounded adverse
 interpretations where the exact event was absent. All preserved the required fail-closed result at
 the research-representation level; this does not substitute for future R3 executable tests. Coverage
-analysis found 15 retained cross-region rows but material limits: six are North American, Africa and
-South America have zero retained rows, 11 are `VERIFIED_UNQUANTIFIED`, local-language coverage is
+analysis initially described 15 consolidation-designated rows and material limits; the independent
+review below corrects the qualifying population to at most 12. Local-language coverage remains
 partial, and immutable versions, source independence, and legal-access review remain incomplete. No
 aggregate or final verdict was started.
+
+**Factual progress, 2026-08-30:** Mandatory independent portfolio review returned
+`MATERIAL_DISAGREEMENT`. Cases 9 Hyperion, 17 Jamnagar, and 22 Michigan have campus-level identities
+with executable phases/tranches unresolved and cannot remain in the qualifying phase-based timeline.
+The fail-closed population is at most 12, not 15. Two of four replacement-screening slots were used,
+but only Rainier qualifies after review; the two remaining slots cannot close a three-row shortfall.
+Further screening, phase-resolution research, aggregation, and final verdict are stopped pending a
+new responsible-human decision. WP10 tabletop maintenance estimates 19.1–34.2 human hours per
+scheduled quarter, or 21.1–38.2 hours with one representative exception event; T211 remains open
+because no real future-quarter pass occurred.
 
 - [x] **T202-A2:** Register source versions, exact locators, permitted-access results and legal
   unknowns for El Capitan and xAI Colossus only.
@@ -134,6 +146,9 @@ aggregate or final verdict was started.
 - [x] **T204-B2-review:** Independently classify all five depth dossiers, compare disagreements, and
   carry forward the accepted Colossus evidence-level and commissioning-time constraints without
   assigning a portfolio verdict.
+- [x] **T204-B2-portfolio-review:** Independently review the consolidated portfolio, negative suite,
+  and coverage claims. Review completed 2026-08-30 with material disagreement and fail-closed
+  correction from 15 to at most 12 qualifying rows.
 
 The separately gated R1M micro-pilot does not check or satisfy R2 pilot research below. Issue #5's
 later full-R2 research-only authorization is the execution authority; the earlier portfolio proposal
@@ -150,7 +165,8 @@ did not grant that authority by itself.
 - [ ] **T203:** Resolve project/phase identities and cross-party duplicates (`DR-001`, `DR-002`).
 - [ ] **T204:** Build lifecycle, supersession, unit, conflict, attribution, and coverage records.
 - [x] **T205:** Execute all required negative cases in `spec.md`. Research-representation suite
-  completed 2026-08-30; future R3 executable fixtures/tests remain separately gated.
+  completed 2026-08-30 with 16 observed cases and nine bounded mutations after independent review;
+  future R3 executable fixtures/tests remain separately gated.
 - [ ] **T206:** Compare each result with Demand Layer v1 and headline research (`PR-003`).
 - [ ] **T206A:** Compare each result with the closest applicable open-source tracker and record the
   incremental lifecycle, deduplication, versioning, conflict, or decision value (`PR-007`).
