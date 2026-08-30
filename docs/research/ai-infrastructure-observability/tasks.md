@@ -104,6 +104,14 @@ of 15 qualifying projects. Result: `QUALIFYING_SEED_SHORTFALL_13_OF_15_MINIMUM`.
 aggregation and final R2 verdict remain blocked pending a responsible-human decision on qualifying
 replacement candidates or scope-failure closeout; negative-case and coverage work may continue.
 
+**Factual progress, 2026-08-30:** Responsible-human authorization permitted screening at most four
+replacement candidates to add at least two qualifying rows, without weakening the 15-project minimum
+or beginning aggregation. Screening stopped after the first two candidates both qualified: AWS
+Project Rainier is an operational, model-specific Trainium2 row and Stargate Michigan / The Barn is
+an under-construction `VERIFIED_UNQUANTIFIED` row. The retained population is now 15 and the result is
+`QUALIFYING_SEED_MINIMUM_MET_15`. No aggregate was started; T208 and T210 remain open, while existing
+negative-case and coverage work may continue.
+
 - [x] **T202-A2:** Register source versions, exact locators, permitted-access results and legal
   unknowns for El Capitan and xAI Colossus only.
 - [x] **T203-A2:** Resolve stable minimum identities and non-additive component/configuration scopes
