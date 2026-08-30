@@ -21,22 +21,24 @@ Every conclusion links to official evidence and states both:
 The project does not convert facility or utility power into AI IT load, add campus totals to their
 phases, sum different accelerator generations, or treat an announcement as a completed build.
 
-### Get the current answer in five minutes
+### Learn the current answer in five minutes
 
-The current research baseline follows 15 fixed known-project units across North America, Europe,
-Asia, and the Middle East:
+The current research baseline follows 15 deliberately selected public known-project units across
+North America, Europe, Asia, and the Middle East. This is not a representative market sample:
 
 - 7 commissioned or operational;
 - 7 under construction or development; and
 - 1 contracted without supported construction evidence.
 
-The first **AI Build Reality Check** finds strong NVIDIA/CSP/TSMC demand evidence alongside three
-facts that the headline cannot resolve: Michigan's appealed power contracts, Sakai's schedule
-revision, and operational non-NVIDIA Trainium2 capacity at AWS Project Rainier.
+The first **AI Build Reality Check** finds strong NVIDIA vendor visibility, hyperscaler financial
+disclosures, and TSMC evidence alongside three facts that those demand signals cannot resolve:
+Michigan's appealed power contracts, Sakai's schedule revision, and operational non-NVIDIA
+Trainium2 capacity at AWS Project Rainier.
 
 This is a fixed-cohort research baseline, not a complete global capacity estimate and not yet an
 acceleration/deceleration time series. The next two quarterly updates test whether project-level
-evidence adds enough decision value beyond NVIDIA, CSP, and TSMC visibility to justify continuing.
+evidence adds enough decision value beyond NVIDIA vendor visibility, hyperscaler financial
+disclosures, and TSMC evidence to justify continuing.
 
 **Read the current brief:**
 [2026 Q3 AI Build Reality Check](2026-q3-ai-build-reality-check-draft.md)

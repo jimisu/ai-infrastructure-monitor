@@ -6,7 +6,8 @@
 
 **Evidence cutoff:** 2026-08-30
 
-**Coverage:** fixed 15-project known-case cohort; not a complete global inventory
+**Coverage:** 15 deliberately selected public known cases; not a representative sample or a
+complete global inventory
 
 ## Current answer
 
@@ -15,22 +16,22 @@
 - NVIDIA Data Center revenue was USD 89.0B in FY2027 Q2, up 117% year over year.
 - The existing four-hyperscaler CapEx baseline is positive, with positive TSMC historical and
   forward confirmation.
-- Of 15 tracked projects, 7 are operating, 7 are under construction or development, and 1 is
-  contracted without supported construction evidence.
+- Within this deliberately selected, non-representative 15-project cohort, 7 are operating, 7 are
+  under construction or development, and 1 is contracted without supported construction evidence.
 - The project evidence does not establish that global physical buildout is accelerating or
   decelerating; this is the first fixed-cohort baseline.
 
-## What you can decide in five minutes
+## What you can learn in five minutes
 
-The demand evidence supports continued AI infrastructure spending. The project evidence shows that
-real facilities are progressing, while identifying execution facts that the demand headline alone
-cannot reveal:
+NVIDIA vendor visibility, hyperscaler financial disclosures, and TSMC evidence support continued AI
+infrastructure spending. The project evidence shows that real facilities are progressing, while
+identifying execution facts that those financial demand signals alone cannot reveal:
 
 | Project | What the evidence adds | Plain-language status |
 |---|---|---|
 | Michigan / The Barn | Construction has started, but the critical-power contracts are conditionally approved and under active appeal | Building, with an unresolved power-contract risk |
 | Osaka Sakai | The original 2025 operation target was revised to 2026; reported 140/150 MW figures are receiving power, not AI IT load | Building, but later than originally announced |
-| AWS Project Rainier | Nearly 500,000 Trainium2 chips were reported fully operational, providing a non-NVIDIA physical-build observation | Operating with project-specific compute evidence |
+| AWS Project Rainier | Nearly 500,000 Trainium2 chips were reported fully operational, providing project-level, non-NVIDIA deployment evidence beyond financial demand signals | Operating with project-specific compute evidence |
 
 ### Verify the evidence
 
@@ -58,9 +59,9 @@ cannot reveal:
 | JUPITER | Meta–Reliance Jamnagar first phase |  |
 | AWS Project Rainier | Michigan / The Barn power tranche |  |
 
-Eleven of the fifteen projects have a verified identity and lifecycle state but no defensible AI
-compute-capacity figure. Different accelerator generations are never summed, and facility, utility,
-grid, receiving, or campus power is never relabeled as AI IT load.
+For 11 of the 15 projects, public evidence can verify which project it is and how far it has
+progressed, but cannot support a reliable AI compute-capacity number. A site's electricity supply is
+not the same as its AI compute load, and different accelerator generations are not added together.
 
 ## What this quarter can and cannot tell you
 
@@ -75,7 +76,8 @@ grid, receiving, or campus power is never relabeled as AI IT load.
 - whether global physical buildout is accelerating or decelerating;
 - the total global AI compute or power capacity;
 - whether the public known-case cohort represents the wider market; or
-- whether project evidence consistently improves a decision beyond NVIDIA, CSP, and TSMC evidence.
+- whether project evidence consistently improves a conclusion beyond NVIDIA vendor visibility,
+  hyperscaler financial disclosures, and TSMC evidence.
 
 ## What to watch next quarter
 
@@ -85,10 +87,11 @@ delay/scope reduction/cancellation. No new projects are needed for this test.
 
 The next brief must answer one question:
 
-> **Did project-level evidence change or qualify the conclusion available from NVIDIA, CSP, and TSMC
-> evidence alone?**
+> **Did project-level evidence change or qualify the conclusion available from NVIDIA vendor
+> visibility, hyperscaler financial disclosures, and TSMC evidence alone?**
 
-If two quarterly updates only repeat the same headline demand conclusion, stop this project layer.
+If two quarterly updates produce no project evidence that changes or qualifies that financial-demand
+conclusion, stop this project layer. A lifecycle change alone is not enough to justify continuing.
 
 ---
 
