@@ -97,6 +97,13 @@ is unresolved, Kenya remains MOU plus schedule risk, and Scala lacks binding pow
 All 20 selected candidates now have depth-case or seed-batch first-pass research; consolidation,
 negative cases, aggregation, maintenance simulation, independent review, and final verdict remain open.
 
+**Factual progress, 2026-08-30:** Portfolio consolidation retained 13 confirmed-build or commissioned
+timeline rows, including three model-specific numeric candidates, and excluded or held seven cases
+without weakening identity, threshold, or confirmed-build policy. This is below the approved minimum
+of 15 qualifying projects. Result: `QUALIFYING_SEED_SHORTFALL_13_OF_15_MINIMUM`. Portfolio-level
+aggregation and final R2 verdict remain blocked pending a responsible-human decision on qualifying
+replacement candidates or scope-failure closeout; negative-case and coverage work may continue.
+
 - [x] **T202-A2:** Register source versions, exact locators, permitted-access results and legal
   unknowns for El Capitan and xAI Colossus only.
 - [x] **T203-A2:** Resolve stable minimum identities and non-additive component/configuration scopes
