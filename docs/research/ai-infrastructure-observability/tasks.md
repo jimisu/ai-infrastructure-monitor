@@ -68,9 +68,10 @@ level task until all required cases and reviews satisfy it.
 Deutsche Telekom Munich, and Osaka Sakai under `pilot/full-r2/`, including source/version locators,
 identity, lifecycle, date precision, attribution, capacity state, conflicts, coverage, closest-tracker
 comparison, access/legal unknowns, and instrumented wall-clock effort. A2 independently completed
-the El Capitan and xAI Colossus depth dossiers. All five first-pass depth dossiers now exist, but
-portfolio seed research, negative-case suite, aggregation, blind second review, maintenance
-simulation, and final R2 verdict remain outstanding.
+the El Capitan and xAI Colossus depth dossiers. All five first-pass depth dossiers now exist. B2 then
+completed a blind review, and its two medium Colossus disagreements were accepted as fail-closed
+Level-1 and event-time constraints. Portfolio seed research, negative-case suite, aggregation,
+maintenance simulation, and final R2 verdict remain outstanding.
 
 - [x] **T202-A2:** Register source versions, exact locators, permitted-access results and legal
   unknowns for El Capitan and xAI Colossus only.
@@ -82,6 +83,9 @@ simulation, and final R2 verdict remain outstanding.
   the incremental decision effect.
 - [x] **T211-A2-effort:** Record actual A2 research wall-clock intervals without extrapolating a
   global maintenance cost.
+- [x] **T204-B2-review:** Independently classify all five depth dossiers, compare disagreements, and
+  carry forward the accepted Colossus evidence-level and commissioning-time constraints without
+  assigning a portfolio verdict.
 
 The separately gated R1M micro-pilot does not check or satisfy R2 pilot research below. Issue #5's
 later full-R2 research-only authorization is the execution authority; the earlier portfolio proposal
