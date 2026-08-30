@@ -73,6 +73,14 @@ completed a blind review, and its two medium Colossus disagreements were accepte
 Level-1 and event-time constraints. Portfolio seed research, negative-case suite, aggregation,
 maintenance simulation, and final R2 verdict remain outstanding.
 
+**Factual progress, 2026-08-30:** Portfolio seed registry batch 01 classified candidates 6–10
+(Stargate Abilene, Microsoft Fairwater Wisconsin, CoreWeave Lancaster, Meta Hyperion, and Stargate
+Norway) using public official-source locators. It found lifecycle evidence but no capacity eligible
+for the primary numeric aggregate: Abilene and Fairwater are operational but numeric basis remains
+ineligible, Lancaster lacks confirmed-build evidence, Hyperion lacks executable phase/tranche timing,
+and Norway remains contractual/forward-looking. T202–T211 remain open pending the rest of the seed,
+negative cases, aggregation, maintenance simulation, and final verdict.
+
 - [x] **T202-A2:** Register source versions, exact locators, permitted-access results and legal
   unknowns for El Capitan and xAI Colossus only.
 - [x] **T203-A2:** Resolve stable minimum identities and non-additive component/configuration scopes
