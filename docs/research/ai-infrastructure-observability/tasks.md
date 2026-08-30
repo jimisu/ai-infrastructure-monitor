@@ -133,6 +133,15 @@ new responsible-human decision. WP10 tabletop maintenance estimates 19.1–34.2 
 scheduled quarter, or 21.1–38.2 hours with one representative exception event; T211 remains open
 because no real future-quarter pass occurred.
 
+**Factual progress, 2026-08-30:** Jimmy W. Su authorized phase-resolution research only for cases 9,
+17, and 22. Research separated original Project Laidley under LPSC U-37425 from Project Evest and the
+later Hyperion expansion; isolated Meta/Reliance's explicit 168 MW Jamnagar first built-to-suit
+phase; and identified Green Chile's U-21990 conditionally secured critical-power tranche while
+preserving Michigan's active appeal as `SCHEDULE_AT_RISK`. Independent reviewer B2 returned
+`ACCEPT_ALL_THREE` with no BLOCKER/HIGH/MEDIUM findings. All three remain
+`VERIFIED_UNQUANTIFIED`; facility, campus, utility, and contracted-demand MW stay excluded. The
+qualifying population returns to 15. No candidate, threshold, or aggregate was added.
+
 - [x] **T202-A2:** Register source versions, exact locators, permitted-access results and legal
   unknowns for El Capitan and xAI Colossus only.
 - [x] **T203-A2:** Resolve stable minimum identities and non-additive component/configuration scopes
