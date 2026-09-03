@@ -100,8 +100,9 @@ Current verification commands are defined in [`package.json`](../../package.json
 - There is no universal verification-before-promotion transaction. Atomic temporary-file rename in
   the canonical store protects file replacement, but does not make downstream verification a
   prerequisite transaction for every production write.
-- `npm run ingest:all` can run against production paths when `--dry-run` is absent. The monitoring
-  workflow uses dry-run, but ingestion as a whole is not dry-run-only.
+- Aggregate ingestion is dry-run by default, including when no flag is supplied. Only the explicit
+  `--promote` flag selects production paths, and that flag does not replace separate human promotion
+  authorization. Unknown, duplicate, or conflicting mode flags fail before ingestion starts.
 - Issuer logical-key and observation-ID implementations retain compatibility differences and are not
   fully unified behind one identity implementation.
 - There is no generic qualitative canonical store/provider boundary.

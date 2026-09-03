@@ -104,6 +104,16 @@ git diff --check
 
 `verify:agent` runs lint, build, the complete ingestion test suite, and downstream verification. It does not run live ingestion or production promotion.
 
+Aggregate ingestion is dry-run by default:
+
+```bash
+npm run ingest:all
+```
+
+The explicit `--dry-run` flag remains supported. Only `npm run ingest:all -- --promote` selects the
+production canonical path, and that command still requires separate human promotion authorization;
+the flag is not authorization by itself.
+
 See [AGENTS.md](AGENTS.md) for repository operating rules and [the architecture map](docs/architecture/README.md) for source-of-truth boundaries.
 
 ## License and data rights
