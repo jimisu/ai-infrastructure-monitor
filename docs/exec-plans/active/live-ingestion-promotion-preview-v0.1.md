@@ -2,7 +2,7 @@
 
 ## Plan metadata
 
-- Status: `READY_FOR_CHECKPOINT_REVIEW`
+- Status: `BLOCKED_PENDING_HUMAN_APPROVAL`
 - Responsible human: `jimisu` (repository owner and requesting human)
 - Approval: on 2026-09-04, the responsible human authorized drafting this plan and executing WP1-WP3.
 - On 2026-09-04, the responsible human separately authorized committing and normally pushing only
@@ -15,6 +15,8 @@
   commit and normal push containing exactly this plan and the reviewed live-preview report.
   This authorization does not include PR creation or update, WP4-WP5, production promotion,
   merge, deployment, further live ingestion, or deletion of the disposable evidence root.
+- On 2026-09-04, the responsible human separately authorized one commit and normal push containing
+  only this plan's checkpoint-state consistency correction. No other action was authorized.
 
 ## Objective
 
@@ -187,8 +189,8 @@ Resolved:
 
 Blocked:
 
-- WP2-WP3 review and documentation closeout are complete. A separate human decision is required
-  before any checkpoint delivery or production-promotion work.
+- WP2-WP3 review and documentation checkpoint delivery are complete. A separate human decision is
+  required before any production-promotion work.
 
 ## Progress log
 
@@ -219,6 +221,10 @@ Blocked:
 - 2026-09-04: The responsible human authorized a single documentation-only commit and normal push
   of this plan and the reviewed report to `origin/ops/live-ingestion-preview-20260904`. No other
   file or execution scope was authorized.
+- 2026-09-04: The documentation-only checkpoint was committed and normally pushed as `ecf9406`.
+  The responsible human then separately authorized one commit and normal push for this plan-only
+  consistency correction. No other commit, push, PR, production, merge, or deployment action is
+  authorized.
 
 ## Decision log
 
@@ -231,8 +237,10 @@ Blocked:
 
 ## Closeout result
 
-`READY_FOR_CHECKPOINT_REVIEW`: WP1-WP3 are complete and healthy. The reviewed disposable preview
+`BLOCKED_PENDING_HUMAN_APPROVAL`: WP1-WP3 are complete and healthy. The reviewed disposable preview
 contains 72 new facts, 0 revisions, and 31 provenance reassertions; baseline and proposed-state
-verification both passed, and production observation hashes are unchanged. WP4-WP5, production
-promotion, commit, push, PR creation or update, merge, and deployment remain unstarted and
-unauthorized. The disposable evidence root is retained for human review.
+verification both passed, and production observation hashes are unchanged. The documentation-only
+checkpoint was committed and normally pushed as `ecf9406`. WP4-WP5, production promotion, any
+further commit or push beyond the separately authorized plan-only consistency correction, PR
+creation or update, merge, and deployment remain unstarted and unauthorized. The disposable evidence
+root is retained for human review.
