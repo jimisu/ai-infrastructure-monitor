@@ -10,6 +10,10 @@ Every conclusion links to official evidence and states what the source supports 
 prove. The project does not convert facility or utility power into AI IT load, add campus totals to
 their phases, sum different accelerator generations, or treat an announcement as a completed build.
 
+[Open the live dashboard](https://jimisu.github.io/ai-infrastructure-monitor/)
+
+![AI Infrastructure Monitor production dashboard showing the evidence-backed demand aggregate, coverage, and publication date](docs/assets/ai-infrastructure-monitor-production-2026-09-04.jpg)
+
 ### Learn the current answer in five minutes
 
 The 2026 Q3 research baseline follows 15 deliberately selected public known-project units. This is
