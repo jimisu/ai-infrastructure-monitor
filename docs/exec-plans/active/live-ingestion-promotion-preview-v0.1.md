@@ -17,6 +17,14 @@
   merge, deployment, further live ingestion, or deletion of the disposable evidence root.
 - On 2026-09-04, the responsible human separately authorized one commit and normal push containing
   only this plan's checkpoint-state consistency correction. No other action was authorized.
+- On 2026-09-04, after the existing `--promote` path was found to reacquire live evidence, the
+  responsible human authorized revising this plan and implementing and testing a fail-closed
+  transaction that promotes an exact reviewed disposable state. This implementation stage may not
+  modify production or perform any commit, push, PR, merge, or deployment action.
+- On 2026-09-04, after WP4A verification completed, the responsible human separately authorized one
+  checkpoint commit and normal push containing exactly this plan, `package.json`, the reviewed-state
+  promotion implementation, and its tests. This authorization does not include prepare/apply against
+  the retained disposable state, production promotion, PR creation or update, merge, or deployment.
 
 ## Objective
 
@@ -74,18 +82,29 @@ WP1-WP3 may:
 Ignored acquisition artifacts under the temporary directory are diagnostic evidence only. They are
 not production state and are not authorized for commit or promotion.
 
+WP4A implementation may additionally modify only:
+
+- this plan;
+- `package.json`;
+- a new reviewed-state promotion implementation under `scripts/ingestion/`; and
+- its tests under `tests/ingestion/`.
+
+The implementation must default to read-only preparation, require explicit paths and expected hashes,
+and be exercised only against test-created temporary roots during this stage.
+
 ## Forbidden scope
 
 - Do not invoke `npm run ingest:all -- --promote` against the repository.
 - Do not write under production `data/ingestion/observations`, `raw`, or `manifests`.
 - Do not change parsers, source registries, schemas, identities, provenance rules, providers,
-  signals, thresholds, scoring, UI, workflows, or deployment.
+  signals, thresholds, scoring, UI, workflows, or deployment. The only code exception is the
+  separately authorized reviewed-state promotion transaction and its tests.
 - Do not infer or supply a personal contact email for `SEC_USER_AGENT`.
 - Do not bypass a failed source, replace an unavailable official document, carry a fact forward, or
   relabel `MISSING` as `NOT_DISCLOSED`.
 - Do not open or update a PR, merge, deploy, run live ingestion, or promote production canonical
-  data. The only delivery exception is the separately authorized commit and normal push of this plan
-  file.
+  data. Delivery exceptions are limited to the documentation checkpoints already recorded and the
+  separately authorized four-file WP4A checkpoint commit and normal push.
 - Do not start WP4-WP5 from a healthy preview alone.
 
 ## Rollback-safe work packages
@@ -126,10 +145,35 @@ unchanged throughout.
 
 Rollback boundary: report-only repository changes; no production mutation.
 
-### WP4 — Production promotion (not authorized)
+### WP4A — Exact reviewed-state promotion transaction (implementation authorized)
+
+1. Prepare a deterministic promotion bundle before any write. It must bind the reviewed report,
+   ingestion run report, complete disposable file inventory, production baseline observation hashes,
+   and exact per-file delta.
+2. Validate every disposable snapshot manifest against its raw-content path, byte length, and
+   SHA-256; reject unsafe paths, unexpected files, missing raw content, and malformed manifests.
+3. Reject any non-observation destination collision whose bytes differ. Treat a canonical observation
+   replacement as eligible only when its current production hash exactly matches the reviewed
+   baseline and the proposed document preserves all baseline record identities.
+4. Require a caller-supplied expected promotion-bundle SHA-256 before apply. Recompute the complete
+   bundle and abort on any source, report, baseline, inventory, or delta drift.
+   CLI preparation must also receive the five reviewed production baseline hashes from an external
+   JSON file whose own caller-supplied SHA-256 is verified; it must never derive the expected
+   baseline from current production state.
+5. Before production replacement, materialize the complete proposed root in a sibling staging
+   directory, write the exact delta outside production, verify the staged proposed state, and create
+   a sibling rollback snapshot. Swap roots only after all preconditions pass and restore rollback on
+   apply or post-apply verification failure.
+6. Provide no implicit production path and no live acquisition behavior. Test prepare, rejection,
+   apply, and rollback only with temporary roots.
+
+Rollback boundary: implementation and tests only in this stage; production remains byte-for-byte
+unchanged and the retained reviewed root is not accessed or deleted.
+
+### WP4B — Production promotion (not authorized in this implementation stage)
 
 - Re-establish main and canonical hashes immediately before promotion.
-- Promote only the exact reviewed delta using the existing explicit production path.
+- Promote only the exact reviewed delta through the reviewed-state transaction.
 - Abort if live evidence differs from the approved preview.
 
 ### WP5 — Post-promotion verification and delivery (not authorized)
@@ -150,6 +194,17 @@ Rollback boundary: report-only repository changes; no production mutation.
 - Any missing SEC identification, source failure, invalid provenance, parser ambiguity, or failed
   downstream check blocks promotion.
 - The report explicitly ends at the human approval gate; WP4-WP5 remain unstarted.
+
+### WP4A
+
+- Preparation performs no production write and emits a deterministic bundle plus exact delta.
+- Apply cannot start without exact reviewed-report, run-report, bundle, source-inventory, and
+  production-baseline hashes.
+- Manifest/raw mismatch, path traversal, unexpected file, missing baseline record, destination
+  collision, verification failure, or any post-prepare drift fails closed.
+- A rollback snapshot exists before the production root is replaced, and simulated post-apply
+  verification failure restores the original bytes.
+- Tests operate only on task-specific temporary roots; repository `data/ingestion` remains unchanged.
 
 ## Negative cases
 
@@ -186,11 +241,13 @@ Resolved:
 - WP1-WP3 are approved for execution.
 - Only disposable live acquisition is allowed.
 - The actual production delta requires a new human decision after review.
+- WP4A transaction design, implementation, and temporary-root testing are approved.
 
 Blocked:
 
-- WP2-WP3 review and documentation checkpoint delivery are complete. A separate human decision is
-  required before any production-promotion work.
+- WP2-WP3 review and documentation checkpoint delivery and WP4A implementation/testing are
+  complete. WP4A checkpoint delivery is authorized. A separate human decision remains required
+  before any use against the retained reviewed state or WP4B production promotion.
 
 ## Progress log
 
@@ -225,6 +282,26 @@ Blocked:
   The responsible human then separately authorized one commit and normal push for this plan-only
   consistency correction. No other commit, push, PR, production, merge, or deployment action is
   authorized.
+- 2026-09-04: Production promotion stopped before any write because the only existing aggregate
+  `--promote` path performs a new live acquisition and Work Mode cannot access the retained reviewed
+  root. The responsible human then authorized WP4A implementation and testing only; production and
+  delivery remain unauthorized.
+- 2026-09-04: WP4A implemented a two-step `prepare`/`apply` transaction. Preparation verifies
+  caller-pinned review-report, run-report, and external production-baseline-hash file hashes;
+  validates the complete disposable inventory and manifest/raw relationships; rejects unexpected
+  observations, non-LIVE backing for new records, removed or mutated baseline records, and file
+  collisions; and emits a deterministic bundle with the exact per-file delta before any production
+  write. Apply requires the externally approved bundle hash, stages and verifies the complete
+  proposed root, creates and verifies a rollback snapshot, rechecks all inputs immediately before
+  replacement, and restores the original root on simulated post-apply verification failure.
+- 2026-09-04: The 11 focused transaction tests passed. `npm run verify:agent` passed lint, build,
+  all 187 ingestion tests, and all five downstream verifiers. `git diff --check` passed. The
+  repository production ingestion diff remained empty and all five production observation hashes
+  remained exactly equal to the recorded baseline. The retained reviewed disposable root was not
+  accessed because it is available only in the user's VS Code host environment.
+- 2026-09-04: The responsible human authorized one checkpoint commit and normal push containing
+  exactly the four WP4A files. Prepare/apply against the retained disposable state, production
+  promotion, PR activity, merge, and deployment remain unauthorized.
 
 ## Decision log
 
@@ -241,6 +318,7 @@ Blocked:
 contains 72 new facts, 0 revisions, and 31 provenance reassertions; baseline and proposed-state
 verification both passed, and production observation hashes are unchanged. The documentation-only
 checkpoint was committed and normally pushed as `ecf9406`. WP4-WP5, production promotion, any
-further commit or push beyond the separately authorized plan-only consistency correction, PR
-creation or update, merge, and deployment remain unstarted and unauthorized. The disposable evidence
-root is retained for human review.
+prepare/apply against the retained state, PR creation or update, merge, and deployment remain
+unstarted and unauthorized. The disposable evidence root is retained for human review. WP4A
+implementation and temporary-root testing are complete, and its exact four-file checkpoint delivery
+is authorized; WP4B production application is not authorized in this stage.

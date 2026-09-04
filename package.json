@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "ingest:all": "node scripts/ingestion/ingest-all.mjs",
+    "ingest:promote-reviewed": "node scripts/ingestion/reviewed-state-promotion.mjs",
     "verify:ingest:orchestration": "node --test tests/ingestion/ingestionOrchestrator.test.mjs",
     "ingest:tsm": "node scripts/ingestion/ingest-tsm.mjs",
     "verify:ingest:tsm": "node --test tests/ingestion/tsmMonthlyIngestion.test.mjs tests/ingestion/tsmSecIngestion.test.mjs && node scripts/ingestion/verify-tsm-downstream.mjs",
