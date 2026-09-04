@@ -2,7 +2,7 @@
 
 ## Plan metadata
 
-- Status: `IN_PROGRESS`
+- Status: `READY_FOR_FINAL_COMMIT`
 - Responsible human: `jimisu` (repository owner and requesting human)
 - Direction authorized: on 2026-09-03, the responsible human selected recommendations 2 and 3:
   make aggregate ingestion dry-run by default, then review only the fixed 15-case cohort next quarter.
@@ -216,6 +216,24 @@ perform live ingestion or production promotion.
 - 2026-09-03: Production observation hashes after tests exactly match the five pre-implementation
   hashes. WP3 and plan closeout remain pending a successful `npm run verify:agent` in an environment
   with locked dependencies available.
+- 2026-09-04: Verification resumed at remote checkpoint
+  `1c5818449d1623d0be7911d50603a1e2dff6e1cb`. The branch was already up to date at `0/0` against
+  `origin/docs/ai-infrastructure-observability-roadmap`, and the worktree was clean before
+  verification. `npm ci` installed the locked dependencies successfully with zero reported
+  vulnerabilities. `npm run verify:agent` passed lint, build, all 176 ingestion tests, and all five
+  downstream verifiers. `git diff --check` passed.
+- 2026-09-04: Production observation files remained byte-identical to both the pre-implementation
+  commit `0248102bc5076cfb21996717fea60316a023ef50` and the verified checkpoint. Recorded SHA-256 values:
+  `amzn-ppe-purchases.json` `8d0a8f40d25957d2db191a0ee47cfa852b98e04f050edd77335d0b7e23ce5e5e`;
+  `goog-annual-capex-guidance.json` `72125f9adcc86d34ed54574152be64bb12d4adfde4f5c41c98906119439664ae`;
+  `meta-annual-capex-guidance.json` `870b8c3275f94100fa0b831fad2b8c5b36961559bb822a46fcd0a0c010ff63dc`;
+  `msft-management-total-capex.json` `3e356ae3ca2d86781212f503af132cda698520297527d202e22e21d2d914c564`;
+  and `tsm-monthly.json` `6d255d2ce7f3d0a944ee2b9e793d907e295b8a2c06270cbda500979c8fb3e898`.
+  WP1-WP3 are complete and ready for the separately authorized final commit. WP4-WP5 remain
+  unauthorized and unstarted.
+- 2026-09-04: Responsible human authorized committing this WP1-WP3 closeout record and pushing it
+  normally to `origin/docs/ai-infrastructure-observability-roadmap` for Draft PR #6. WP4-WP5,
+  merge, deployment, live ingestion, and production promotion remain unauthorized.
 
 ## Decision log
 
@@ -226,6 +244,8 @@ perform live ingestion or production promotion.
 
 ## Closeout result
 
-`IN_PROGRESS`: WP1-WP2 complete; WP3 implementation and documentation complete but mandatory full
-verification is blocked by unavailable dependencies. No production data changed. WP4-WP5 remain
-unauthorized and unstarted. Commit and push remain unauthorized.
+`READY_FOR_FINAL_COMMIT`: WP1-WP3 implementation, documentation, and mandatory verification are
+complete at checkpoint `1c5818449d1623d0be7911d50603a1e2dff6e1cb`. No production data changed;
+all five observation-file hashes match the pre-implementation baseline. WP4-WP5 remain unauthorized
+and unstarted. Commit and normal push of this closeout record are authorized; merge and deployment
+remain unauthorized.
