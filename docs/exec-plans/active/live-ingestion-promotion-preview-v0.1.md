@@ -2,12 +2,19 @@
 
 ## Plan metadata
 
-- Status: `BLOCKED_PENDING_HUMAN_APPROVAL`
+- Status: `READY_FOR_CHECKPOINT_REVIEW`
 - Responsible human: `jimisu` (repository owner and requesting human)
 - Approval: on 2026-09-04, the responsible human authorized drafting this plan and executing WP1-WP3.
 - On 2026-09-04, the responsible human separately authorized committing and normally pushing only
   this plan checkpoint. Production promotion, WP4-WP5, PR creation or update, deployment, live
   ingestion, and every non-plan modification remain unauthorized.
+- On 2026-09-04, the responsible human supplied a task-scoped SEC contact and explicitly authorized
+  resuming WP2-WP3 live acquisition only into disposable state. WP4-WP5 and all delivery or
+  production actions remain unauthorized.
+- On 2026-09-04, the responsible human separately authorized one documentation-only checkpoint
+  commit and normal push containing exactly this plan and the reviewed live-preview report.
+  This authorization does not include PR creation or update, WP4-WP5, production promotion,
+  merge, deployment, further live ingestion, or deletion of the disposable evidence root.
 
 ## Objective
 
@@ -180,9 +187,8 @@ Resolved:
 
 Blocked:
 
-- A valid task-scoped `SEC_USER_AGENT` is not available in this environment. The responsible human
-  must arrange it through a secure environment configuration or run the existing GitHub Actions
-  `Ingestion Monitor` with its configured secret and provide the resulting report/artifact.
+- WP2-WP3 review and documentation closeout are complete. A separate human decision is required
+  before any checkpoint delivery or production-promotion work.
 
 ## Progress log
 
@@ -199,6 +205,20 @@ Blocked:
 - 2026-09-04: Responsible human authorized a plan-only checkpoint commit and normal push. Live
   ingestion, production promotion, all non-plan modifications, PR creation or update, merge, and
   deployment remain unauthorized.
+- 2026-09-04: The responsible human supplied the task-scoped SEC contact and authorized WP2-WP3.
+  All live writes were confined to `/tmp/ai-infra-live-preview-state-sl9wD5dy`; all five issuer
+  pipelines succeeded, with the expected GOOG frozen-source warning.
+- 2026-09-04: WP3 found 72 new facts, 0 revisions, and 31 provenance reassertions. Baseline and
+  disposable proposed-state verification both passed. A record-level closeout then verified all
+  103 added records against their logical, observation, and record identities and against official
+  evidence URLs, source versions/accessions, LIVE manifests, and raw snapshot hashes.
+- 2026-09-04: The 68 TSMC historical facts were confirmed as 34 consecutive paired monthly facts
+  from 2023-03 through 2025-12, not boundary, parser, source-version, or identity drift. Production
+  hashes and diff remained unchanged. The exact review is recorded in
+  [`../../research/ingestion-promotion/2026-09-04-live-preview.md`](../../research/ingestion-promotion/2026-09-04-live-preview.md).
+- 2026-09-04: The responsible human authorized a single documentation-only commit and normal push
+  of this plan and the reviewed report to `origin/ops/live-ingestion-preview-20260904`. No other
+  file or execution scope was authorized.
 
 ## Decision log
 
@@ -211,8 +231,8 @@ Blocked:
 
 ## Closeout result
 
-`BLOCKED_PENDING_HUMAN_APPROVAL`: WP1 is complete and healthy. WP2-WP3 are blocked before the first
-live request because `SEC_USER_AGENT` is unavailable, so no proposed-delta report exists yet. WP4-WP5,
-production promotion, live ingestion, PR creation or update, merge, and deployment are unstarted and
-unauthorized. This plan-only checkpoint is authorized for commit and normal push; it does not expand
-the execution scope.
+`READY_FOR_CHECKPOINT_REVIEW`: WP1-WP3 are complete and healthy. The reviewed disposable preview
+contains 72 new facts, 0 revisions, and 31 provenance reassertions; baseline and proposed-state
+verification both passed, and production observation hashes are unchanged. WP4-WP5, production
+promotion, commit, push, PR creation or update, merge, and deployment remain unstarted and
+unauthorized. The disposable evidence root is retained for human review.
