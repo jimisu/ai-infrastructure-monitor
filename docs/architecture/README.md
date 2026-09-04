@@ -100,8 +100,9 @@ Current verification commands are defined in [`package.json`](../../package.json
 - There is no universal verification-before-promotion transaction. Atomic temporary-file rename in
   the canonical store protects file replacement, but does not make downstream verification a
   prerequisite transaction for every production write.
-- `npm run ingest:all` can run against production paths when `--dry-run` is absent. The monitoring
-  workflow uses dry-run, but ingestion as a whole is not dry-run-only.
+- Aggregate ingestion is dry-run by default, including when no flag is supplied. Only the explicit
+  `--promote` flag selects production paths, and that flag does not replace separate human promotion
+  authorization. Unknown, duplicate, or conflicting mode flags fail before ingestion starts.
 - Issuer logical-key and observation-ID implementations retain compatibility differences and are not
   fully unified behind one identity implementation.
 - There is no generic qualitative canonical store/provider boundary.
@@ -112,3 +113,11 @@ Current verification commands are defined in [`package.json`](../../package.json
 The [Vertiv Physical Build Commitment v0.1 specification](../research/vertiv-physical-build-commitment-v0.1.md)
 is research and proposed implementation design only. Vertiv Phase 2 is not implemented, approval is
 pending, and no Vertiv production data or signal integration is authorized.
+
+## Proposed AI infrastructure observability expansion
+
+The research-only [AI Infrastructure Observability specification](../research/ai-infrastructure-observability/spec.md)
+and [C4 architecture roadmap](../research/ai-infrastructure-observability/plan.md) propose an additive
+physical-project evidence layer for sovereign AI and neocloud demand. The proposal is blocked pending
+human approval. It does not authorize repository implementation, production data, signal, or UI
+changes, and Demand Layer v1 remains authoritative for its current scope.

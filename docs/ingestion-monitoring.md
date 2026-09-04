@@ -8,6 +8,10 @@ The monitor always executes:
 npm run ingest:all -- --dry-run
 ```
 
+Aggregate ingestion is also dry-run when no flag is supplied. The workflow retains the explicit flag
+to make its non-mutating intent visible. Only `--promote` selects production paths; supplying that
+flag is not a substitute for separate human promotion authorization.
+
 It collects, parses, validates, and plans promotions against disposable copies of the canonical stores. It does not promote production observations, commit files, push branches, create pull requests, or merge changes. A Git guard fails the workflow if any tracked file under `data/ingestion/observations` changes.
 
 ## Required repository configuration

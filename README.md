@@ -1,6 +1,39 @@
 # AI Infrastructure Monitor
 
-AI Infrastructure Monitor is an evidence-backed dashboard for answering one question quickly: is AI infrastructure demand accelerating, stable, or weakening?
+## NVIDIA shows chip demand. We check whether the infrastructure can actually get built.
+
+When NVIDIA and hyperscalers report strong AI demand, AI Infrastructure Monitor verifies which
+major AI infrastructure projects are contracted, have critical power, are under construction, or
+are operating—and which face evidence-backed execution risk.
+
+Every conclusion links to official evidence and states what the source supports and what it cannot
+prove. The project does not convert facility or utility power into AI IT load, add campus totals to
+their phases, sum different accelerator generations, or treat an announcement as a completed build.
+
+[Open the live dashboard](https://jimisu.github.io/ai-infrastructure-monitor/)
+
+![AI Infrastructure Monitor production dashboard showing the evidence-backed demand aggregate, coverage, and publication date](docs/assets/ai-infrastructure-monitor-production-2026-09-04.jpg)
+
+### Learn the current answer in five minutes
+
+The 2026 Q3 research baseline follows 15 deliberately selected public known-project units. This is
+not a representative market sample: 7 are commissioned or operational, 7 are under construction or
+development, and 1 is contracted without supported construction evidence. It finds strong NVIDIA
+vendor visibility, hyperscaler financial disclosures, and TSMC evidence while surfacing facts those
+demand signals cannot resolve, including Michigan's appealed power contracts, Sakai's schedule
+revision, and operational non-NVIDIA Trainium2 capacity at AWS Project Rainier.
+
+This is not a complete global capacity estimate and not yet an acceleration/deceleration time
+series. The next two quarterly updates test whether project-level evidence adds enough decision
+value beyond NVIDIA vendor visibility, hyperscaler financial disclosures, and TSMC evidence to
+justify continuing.
+
+[Read the 2026 Q3 AI Build Reality Check](docs/research/ai-infrastructure-observability/productization/2026-q3-ai-build-reality-check-draft.md).
+
+## Current production dashboard
+
+The current dashboard answers a narrower question: is the monitored demand evidence accelerating,
+stable, or weakening?
 
 The default experience combines existing production signal outputs across the demand-to-supply chain:
 
@@ -74,6 +107,16 @@ git diff --check
 ```
 
 `verify:agent` runs lint, build, the complete ingestion test suite, and downstream verification. It does not run live ingestion or production promotion.
+
+Aggregate ingestion is dry-run by default:
+
+```bash
+npm run ingest:all
+```
+
+The explicit `--dry-run` flag remains supported. Only `npm run ingest:all -- --promote` selects the
+production canonical path, and that command still requires separate human promotion authorization;
+the flag is not authorization by itself.
 
 See [AGENTS.md](AGENTS.md) for repository operating rules and [the architecture map](docs/architecture/README.md) for source-of-truth boundaries.
 
