@@ -1,124 +1,71 @@
 # AI Infrastructure Monitor
 
-## NVIDIA shows chip demand. We check whether the infrastructure can actually get built.
+NVIDIA and hyperscalers show demand. This project checks official filings
+and a fixed public-project cohort to see whether infrastructure is actually
+being built — without treating total CapEx as AI CapEx.
 
-When NVIDIA and hyperscalers report strong AI demand, AI Infrastructure Monitor verifies which
-major AI infrastructure projects are contracted, have critical power, are under construction, or
-are operating—and which face evidence-backed execution risk.
+**Live:** [Open the dashboard](https://jimisu.github.io/ai-infrastructure-monitor/)
 
-Every conclusion links to official evidence and states what the source supports and what it cannot
-prove. The project does not convert facility or utility power into AI IT load, add campus totals to
-their phases, sum different accelerator generations, or treat an announcement as a completed build.
+**Snapshot:** [latest.json](https://jimisu.github.io/ai-infrastructure-monitor/latest.json)
 
-[Open the live dashboard](https://jimisu.github.io/ai-infrastructure-monitor/)
+Not investment advice. Issuer CapEx is not AI-only CapEx.
 
-![AI Infrastructure Monitor production dashboard showing the evidence-backed demand aggregate, coverage, and publication date](docs/assets/ai-infrastructure-monitor-production-2026-09-04.jpg)
+![dashboard screenshot](docs/assets/ai-infrastructure-monitor-production-2026-09-04.jpg)
 
-### Learn the current answer in five minutes
+*Production screenshot captured September 4, 2026; it predates the v1.0 presentation updates.*
 
-The 2026 Q3 research baseline follows 15 deliberately selected public known-project units. This is
-not a representative market sample: 7 are commissioned or operational, 7 are under construction or
-development, and 1 is contracted without supported construction evidence. It finds strong NVIDIA
-vendor visibility, hyperscaler financial disclosures, and TSMC evidence while surfacing facts those
-demand signals cannot resolve, including Michigan's appealed power contracts, Sakai's schedule
-revision, and operational non-NVIDIA Trainium2 capacity at AWS Project Rainier.
+## Current board
 
-This is not a complete global capacity estimate and not yet an acceleration/deceleration time
-series. The next two quarterly updates test whether project-level evidence adds enough decision
-value beyond NVIDIA vendor visibility, hyperscaler financial disclosures, and TSMC evidence to
-justify continuing.
+- Status: see the live page / `latest.json` for `ACCELERATING`, `STABLE`, `WEAKENING`, or `INCOMPLETE`.
+- Evidence: META, MSFT, GOOG, AMZN official CapEx or PPE + TSMC revenue/outlook.
+- Data is static at build time and may include explicitly retained manual facts.
+- The board describes monitored financial-demand signals; the Q3 cohort does not establish a global buildout rate.
 
-[Read the 2026 Q3 AI Build Reality Check](docs/research/ai-infrastructure-observability/productization/2026-q3-ai-build-reality-check-draft.md).
+## This quarter
 
-## Current production dashboard
+[2026 Q3 AI Build Reality Check](docs/research/ai-infrastructure-observability/productization/2026-q3-ai-build-reality-check-draft.md):
 
-The current dashboard answers a narrower question: is the monitored demand evidence accelerating,
-stable, or weakening?
+> Demand is strong. Physical execution is real but uneven.
 
-The default experience combines existing production signal outputs across the demand-to-supply chain:
+Coverage: 15 deliberately selected public known cases, not a representative market sample.
+At the August 30, 2026 evidence cutoff, 7 were operating, 7 were under construction or
+development, and 1 was contracted without supported construction evidence. The dashboard
+summarizes Michigan, Sakai, and Rainier with their source links and limitations.
 
-```text
-hyperscaler capital intent (META, MSFT, GOOG, AMZN)
-                         +
-TSMC historical revenue momentum and forward outlook
-                         ↓
-AI infrastructure demand confirmation
-```
-
-## What the dashboard shows
-
-- The current cross-company direction, alignment, and confidence.
-- Hyperscaler CapEx breadth and the status of META, MSFT, GOOG, and AMZN.
-- TSMC three-month revenue momentum and forward revenue outlook.
-- Periods, publication and retrieval timestamps, observation identifiers, and links to registered official sources.
-- An explicit incomplete state when required verified evidence is unavailable.
-
-The dashboard does not claim that all issuer CapEx is AI CapEx. It provides factual monitoring, not investment advice.
-
-## Data boundary
-
-The UI consumes existing validated provider and signal-engine outputs; it does not calculate financial signals in React.
-
-Promoted ingested canonical observations live under `data/ingestion/`. Production inputs may also include explicitly retained manual factual observations under `src/data/`, composed through validated providers. The browser receives a static build-time dataset: opening the dashboard does not run live ingestion.
-
-Research, fixtures, candidate observations, quarantine output, and raw snapshots are not production dashboard inputs.
-
-## Local development
-
-Requirements: Node.js and npm.
+## Run locally
 
 ```bash
-npm ci
-npm run dev
+npm ci && npm run dev
+npm run verify:agent
 ```
 
-Vite prints the local development URL. To create and preview the static build:
+`verify:agent` runs lint, build, presentation tests, ingestion tests, and five downstream verifiers.
+It does not run live ingestion or promote production data.
 
 ```bash
 npm run build
 npm run preview
 ```
 
-The deployable static output is written to `dist/`. The public MVP is configured for GitHub Pages at
-<https://jimisu.github.io/ai-infrastructure-monitor/> using the project base path
-`/ai-infrastructure-monitor/`.
+Each build generates `public/latest.json` and `dist/latest.json` from the same module-scope
+snapshot used by the UI. Run `npm run build` before `npm run dev` after changing approved input
+code or data so the development snapshot is refreshed. `asOf` is the latest selected evidence
+publication date, not the build time. `confidence` preserves the hyperscaler aggregate's existing
+confidence; it is not a new confidence score for the board or project cohort.
 
-### GitHub Pages deployment
+Pages deployment remains manual (`workflow_dispatch` on `main`); pushing or merging does not deploy.
 
-Deployment is intentionally manual in MVP v0.1. The pinned GitHub Pages workflow can be started only
-through `workflow_dispatch`; its deployment jobs fail closed unless the selected ref is exactly
-`refs/heads/main`. Merging or pushing to `main` does not deploy automatically.
+## What this is not
 
-The workflow installs locked dependencies, runs `npm run verify:agent`, builds `dist/`, and uploads
-only that verified static artifact. Deployment does not run live ingestion or production canonical
-promotion, and the published dashboard contains the same static build-time data described above.
+Investment advice, a global capacity estimate, or AI-only CapEx. Facility and utility power are
+not AI IT load. Different accelerator generations and campus/phase scopes are not added together.
 
-Rollback is isolated from product and data semantics: revert the hosting configuration through a
-reviewed PR or manually redeploy a last known-good `main` commit. If necessary, disable GitHub Pages
-in repository Settings. Do not rewrite Git history or alter canonical data during rollback.
+## Maintainers
 
-## Verification
-
-Run the unified production-non-mutating verification before reporting general code changes complete:
-
-```bash
-npm run verify:agent
-git diff --check
-```
-
-`verify:agent` runs lint, build, the complete ingestion test suite, and downstream verification. It does not run live ingestion or production promotion.
-
-Aggregate ingestion is dry-run by default:
-
-```bash
-npm run ingest:all
-```
-
-The explicit `--dry-run` flag remains supported. Only `npm run ingest:all -- --promote` selects the
-production canonical path, and that command still requires separate human promotion authorization;
-the flag is not authorization by itself.
-
-See [AGENTS.md](AGENTS.md) for repository operating rules and [the architecture map](docs/architecture/README.md) for source-of-truth boundaries.
+- [Agent rules](AGENTS.md)
+- [Architecture map](docs/architecture/README.md)
+- [Research index](docs/research/ai-infrastructure-observability/README.md)
+- [Contributing](CONTRIBUTING.md)
 
 ## License and data rights
 
