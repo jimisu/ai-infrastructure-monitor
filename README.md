@@ -10,9 +10,9 @@ being built — without treating total CapEx as AI CapEx.
 
 Not investment advice. Issuer CapEx is not AI-only CapEx.
 
-![dashboard screenshot](docs/assets/ai-infrastructure-monitor-production-2026-09-04.jpg)
+![dashboard screenshot](docs/assets/ai-infrastructure-monitor-production-2026-09-05.jpg)
 
-*Production screenshot captured September 4, 2026; it predates the v1.0 presentation updates.*
+*Production screenshot captured September 5, 2026, after the v1.0 presentation deployment.*
 
 ## Current board
 
