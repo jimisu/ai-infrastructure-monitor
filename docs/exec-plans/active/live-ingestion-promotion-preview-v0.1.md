@@ -25,6 +25,14 @@
   checkpoint commit and normal push containing exactly this plan, `package.json`, the reviewed-state
   promotion implementation, and its tests. This authorization does not include prepare/apply against
   the retained disposable state, production promotion, PR creation or update, merge, or deployment.
+- On 2026-09-05, after an approved apply failed post-promotion verification and automatically
+  restored production, the responsible human approved WP4C plan revision, implementation, and tests
+  to replace fixed migration-parity assertions with expandable production invariants and to make
+  staged verification execute the same production contract as post-apply verification. This does
+  not authorize another prepare/apply, production data changes, commit, push, PR, merge, or deployment.
+- On 2026-09-05, after WP4C verification completed, the responsible human separately authorized one
+  checkpoint commit and normal push containing exactly the seven WP4C plan, implementation, and test
+  files. This does not authorize prepare/apply, production changes, PR activity, merge, or deployment.
 
 ## Objective
 
@@ -92,13 +100,19 @@ WP4A implementation may additionally modify only:
 The implementation must default to read-only preparation, require explicit paths and expected hashes,
 and be exercised only against test-created temporary roots during this stage.
 
+WP4C may additionally modify only the TSMC and Amazon ingestion verification modules, the production
+downstream verifier mode selection, the reviewed-state staging-verification call, this plan, and
+their directly related ingestion tests. Providers, signal engines, thresholds, identities, schemas,
+and production canonical data remain frozen.
+
 ## Forbidden scope
 
 - Do not invoke `npm run ingest:all -- --promote` against the repository.
 - Do not write under production `data/ingestion/observations`, `raw`, or `manifests`.
 - Do not change parsers, source registries, schemas, identities, provenance rules, providers,
-  signals, thresholds, scoring, UI, workflows, or deployment. The only code exception is the
-  separately authorized reviewed-state promotion transaction and its tests.
+  signals, thresholds, scoring, UI, workflows, or deployment. Code exceptions are limited to the
+  separately authorized reviewed-state promotion transaction, WP4C verification-contract repair,
+  and their directly related tests.
 - Do not infer or supply a personal contact email for `SEC_USER_AGENT`.
 - Do not bypass a failed source, replace an unavailable official document, carry a fact forward, or
   relabel `MISSING` as `NOT_DISCLOSED`.
@@ -176,6 +190,22 @@ unchanged and the retained reviewed root is not accessed or deleted.
 - Promote only the exact reviewed delta through the reviewed-state transaction.
 - Abort if live evidence differs from the approved preview.
 
+### WP4C — Expandable production verification contract (implementation authorized)
+
+1. Preserve legacy manual facts as an overlap-parity floor without requiring production to contain
+   exactly the original TSMC 12 observations or Amazon 2 observations.
+2. Require canonical uniqueness, complete metric/comparator pairs, compatible definitions and units,
+   official provenance, deterministic derivation, and no manual/ingested double counting.
+3. Verify that TSMC signals select the latest six consecutive monthly YoY observations and Amazon
+   signals select the latest complete same-quarter TTM comparison.
+4. Add a production-contract canonical-root mode and make reviewed-state staging use that exact
+   contract before any root exchange. Keep the lighter proposed-state health check separate.
+5. Reproduce the reviewed TSMC July expansion and Amazon Q2 expansion in disposable tests, including
+   rejection cases and a transaction test proving an invalid production contract blocks replacement.
+
+Rollback boundary: code, tests, and plan only. Do not access the retained disposable state, prepare
+or apply a bundle, or modify production canonical data.
+
 ### WP5 — Post-promotion verification and delivery (not authorized)
 
 - Run full verification, compare canonical hashes and reviewed facts, and record rollback evidence.
@@ -205,6 +235,15 @@ unchanged and the retained reviewed root is not accessed or deleted.
 - A rollback snapshot exists before the production root is replaced, and simulated post-apply
   verification failure restores the original bytes.
 - Tests operate only on task-specific temporary roots; repository `data/ingestion` remains unchanged.
+
+### WP4C
+
+- Existing baseline and reviewed TSMC/Amazon expansions both pass the same production contract.
+- Fixed migration-parity checks remain covered as overlap assertions rather than dataset-size caps.
+- Incomplete TSMC pairs, duplicate facts, incomplete Amazon comparators, and canonical-root escape
+  continue to fail closed.
+- Reviewed-state staging invokes the production contract, not only the proposed-state health check.
+- Full repository verification passes while production canonical hashes remain unchanged.
 
 ## Negative cases
 
@@ -242,12 +281,13 @@ Resolved:
 - Only disposable live acquisition is allowed.
 - The actual production delta requires a new human decision after review.
 - WP4A transaction design, implementation, and temporary-root testing are approved.
+- WP4C verification-contract repair and tests are approved without production or delivery authority.
 
 Blocked:
 
-- WP2-WP3 review and documentation checkpoint delivery and WP4A implementation/testing are
-  complete. WP4A checkpoint delivery is authorized. A separate human decision remains required
-  before any use against the retained reviewed state or WP4B production promotion.
+- WP2-WP3, WP4A, and WP4C are complete. The first WP4B apply failed closed and restored production
+  because the post-apply verifier retained fixed migration-parity counts. Any new prepare/apply or
+  delivery action requires a separate human decision after review of the WP4C result.
 
 ## Progress log
 
@@ -302,6 +342,27 @@ Blocked:
 - 2026-09-04: The responsible human authorized one checkpoint commit and normal push containing
   exactly the four WP4A files. Prepare/apply against the retained disposable state, production
   promotion, PR activity, merge, and deployment remain unauthorized.
+- 2026-09-05: Apply of approved bundle `2e10dc6f1cebe5a12b25945b5c090c3735b0801e1f9dd9cf87052888caa771b1`
+  passed staged proposed-state verification, exchanged the root, then failed the TSMC production
+  verifier's fixed 12-observation assertion. The transaction automatically restored the complete
+  49-file baseline; all five canonical hashes matched, and no retry occurred.
+- 2026-09-05: Review confirmed the first assertion was not the only blocker: later TSMC assertions
+  require exact manual parity and fixed June-2026 signals, while Amazon similarly requires exactly
+  two Q1 observations despite the reviewed Q2 pair. Staging used the lighter proposed-state contract,
+  not the production contract used after exchange. The responsible human approved WP4C implementation
+  and tests only. Baseline `npm run verify:agent` passed all 187 tests and five downstream verifiers.
+- 2026-09-05: WP4C replaced fixed dataset-size and exact manual-signal parity with legacy overlap
+  floors, canonical uniqueness and composition checks, deterministic signal derivation, latest-six-
+  month TSMC trend selection, and latest same-quarter Amazon TTM comparison. The downstream verifier
+  can now run the full production contract against an explicit canonical root, and reviewed-state
+  staging uses that contract before any root replacement. Focused tests passed 20/20. Full
+  `npm run verify:agent` passed lint, build, all 190 ingestion tests, and all five downstream
+  verifiers. `git diff --check` passed; `data/ingestion` remained unchanged and all five production
+  canonical hashes still matched the recorded baseline. No retained disposable artifact was
+  accessed, and no prepare, apply, commit, push, PR, merge, or deployment action occurred.
+- 2026-09-05: The responsible human authorized one checkpoint commit and normal push containing
+  exactly the seven verified WP4C files. New prepare/apply, production changes, PR activity, merge,
+  and deployment remain unauthorized.
 
 ## Decision log
 
@@ -314,11 +375,13 @@ Blocked:
 
 ## Closeout result
 
-`BLOCKED_PENDING_HUMAN_APPROVAL`: WP1-WP3 are complete and healthy. The reviewed disposable preview
+`BLOCKED_PENDING_HUMAN_APPROVAL`: WP1-WP3, WP4A, and WP4C are complete. The reviewed disposable preview
 contains 72 new facts, 0 revisions, and 31 provenance reassertions; baseline and proposed-state
 verification both passed, and production observation hashes are unchanged. The documentation-only
-checkpoint was committed and normally pushed as `ecf9406`. WP4-WP5, production promotion, any
-prepare/apply against the retained state, PR creation or update, merge, and deployment remain
-unstarted and unauthorized. The disposable evidence root is retained for human review. WP4A
-implementation and temporary-root testing are complete, and its exact four-file checkpoint delivery
-is authorized; WP4B production application is not authorized in this stage.
+checkpoint was committed and normally pushed as `ecf9406`. A new prepare/apply against the retained
+state, WP5, production promotion, PR creation or update, merge, and deployment remain unauthorized.
+The disposable evidence root is retained for human review. WP4A
+implementation and temporary-root testing are complete, and its exact four-file checkpoint was
+delivered. The first approved WP4B apply failed closed at post-verification and restored the original
+production bytes. WP4C verification-contract repair and tests are complete; another prepare/apply
+and all delivery actions remain blocked on separate human approval.

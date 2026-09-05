@@ -4,7 +4,7 @@ import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import test from 'node:test'
-import { applyReviewedStatePromotion, prepareReviewedStatePromotion, runReviewedStatePromotionCli } from '../../scripts/ingestion/reviewed-state-promotion.mjs'
+import { applyReviewedStatePromotion, prepareReviewedStatePromotion, productionContractArgs, runReviewedStatePromotionCli } from '../../scripts/ingestion/reviewed-state-promotion.mjs'
 
 const observationFiles = [
   'amzn-ppe-purchases.json',
@@ -247,6 +247,25 @@ test('post-apply verification failure restores the complete original production 
   assert.equal(await lstatSafe(path.join(state.productionRoot, state.rawRelativePath)), false)
 })
 
+test('staged production-contract failure blocks root replacement', async () => {
+  const state = await fixture()
+  const bundlePath = path.join(state.sandbox, 'bundle.json')
+  const rollbackRoot = path.join(state.sandbox, 'rollback')
+  const prepared = await prepare(state, bundlePath)
+  let postVerificationRan = false
+  await assert.rejects(applyReviewedStatePromotion({
+    bundlePath,
+    expectedBundleSha256: prepared.bundleSha256,
+    rollbackRoot,
+    deltaOutputPath: path.join(state.sandbox, 'delta.json'),
+    verifyStaged: async () => { throw Object.assign(new Error('invalid production contract'), { code: 'PRODUCTION_CONTRACT_FAILED' }) },
+    verifyProduction: async () => { postVerificationRan = true },
+  }), (error) => error.code === 'PRODUCTION_CONTRACT_FAILED')
+  assert.equal(postVerificationRan, false)
+  assert.equal(await lstatSafe(rollbackRoot), false)
+  for (const [relativePath, expected] of Object.entries(state.expectedProductionHashes)) assert.equal(sha256(await readFile(path.join(state.productionRoot, relativePath))), expected)
+})
+
 test('source or production drift after prepare blocks apply before replacement', async () => {
   const sourceDrift = await fixture()
   const sourceBundle = path.join(sourceDrift.sandbox, 'bundle.json')
@@ -278,6 +297,10 @@ test('source or production drift after prepare blocks apply before replacement',
 test('CLI has no implicit command or production path', async () => {
   await assert.rejects(runReviewedStatePromotionCli([], '/workspace/project'), (error) => error.code === 'PROMOTION_USAGE_ERROR')
   await assert.rejects(runReviewedStatePromotionCli(['prepare'], '/workspace/project'), (error) => error.code === 'PROMOTION_USAGE_ERROR')
+})
+
+test('staging uses the same production contract as post-apply verification', () => {
+  assert.deepEqual(productionContractArgs('/tmp/staging-root'), ['--canonical-root', '/tmp/staging-root/observations'])
 })
 
 async function lstatSafe(target) {

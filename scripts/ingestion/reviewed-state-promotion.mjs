@@ -370,6 +370,10 @@ function runVerifier(args, cwd) {
   })
 }
 
+export function productionContractArgs(stagingRoot) {
+  return ['--canonical-root', path.join(stagingRoot, 'observations')]
+}
+
 function assertCliProductionRoot(productionRoot, cwd) {
   const expected = path.resolve(cwd, 'data', 'ingestion')
   if (path.resolve(productionRoot) !== expected) fail('CLI_PRODUCTION_ROOT_MISMATCH', 'CLI production root must be the current repository data/ingestion path', { expected, actual: path.resolve(productionRoot) })
@@ -404,7 +408,7 @@ export async function runReviewedStatePromotionCli(args = process.argv.slice(2),
     expectedBundleSha256: required(options, '--expected-bundle-sha256'),
     rollbackRoot: required(options, '--rollback-root'),
     deltaOutputPath: required(options, '--delta-out'),
-    verifyStaged: (stagingRoot) => runVerifier(['--proposed', '--canonical-root', path.join(stagingRoot, 'observations')], cwd),
+    verifyStaged: (stagingRoot) => runVerifier(productionContractArgs(stagingRoot), cwd),
     verifyProduction: () => runVerifier([], cwd),
   })
   process.stdout.write(`${JSON.stringify({ status: 'PROMOTED_AND_VERIFIED', bundleSha256: result.bundleSha256, rollbackRoot: result.rollbackRoot, exactDeltaFiles: result.exactDelta.length }, null, 2)}\n`)
