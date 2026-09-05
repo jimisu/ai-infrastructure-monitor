@@ -1487,3 +1487,30 @@ body,
     grid-template-columns: 1fr;
   }
 }
+
+/* Public board and fixed-cohort research summary */
+.header-content { gap: 1rem; flex-wrap: wrap; }
+.board-explanation { margin-top: 0.75rem; line-height: 1.6; max-width: 80ch; }
+.snapshot-link, .build-reality-check a { color: #93c5fd; text-underline-offset: 3px; }
+.snapshot-link { display: inline-block; margin-top: 0.75rem; }
+.board-status-accelerating { color: #86efac; border-color: #86efac; }
+.board-status-weakening { color: #fca5a5; border-color: #fca5a5; }
+.board-status-stable { color: #fde68a; border-color: #fde68a; }
+.board-status-incomplete { color: #cbd5e1; border-color: #cbd5e1; }
+.build-reality-check { background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: 12px; padding: 2rem; line-height: 1.65; }
+.build-reality-check h2 { margin: 0.5rem 0 1rem; font-size: 1.6rem; }
+.build-verdict { font-size: 1.15rem; font-weight: 600; margin-bottom: 0.5rem; }
+.build-counts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 1.5rem 0; }
+.build-counts div { border-left: 2px solid var(--accent-blue); padding-left: 1rem; }
+.build-counts dt { color: var(--text-secondary); }
+.build-counts dd { font-size: 2rem; font-weight: 600; }
+.build-case { display: grid; grid-template-columns: minmax(12rem, 1fr) 2fr; gap: 1.5rem; padding: 1.5rem 0; border-top: 1px solid var(--border-color); }
+.build-case strong { display: block; color: #cbd5e1; font-size: 0.85rem; margin-top: 0.25rem; }
+.build-case ul { margin: 0.5rem 0 0 1.25rem; }
+.build-case-list { margin-bottom: 1rem; }
+@media (max-width: 640px) {
+  .build-reality-check { padding: 1.25rem; }
+  .build-counts, .build-case { grid-template-columns: 1fr; }
+  .build-case { gap: 0.5rem; }
+  .header .title { font-size: 1.3rem; overflow-wrap: anywhere; }
+}

@@ -1,12 +1,26 @@
 import type { RealIntelligenceViewModel } from '../presentation/realIntelligenceViewModel'
 
-interface Props { intelligence: RealIntelligenceViewModel | null }
+import type { toLatestSnapshot } from '../presentation/latestSnapshot'
+import type { toDemandStatus } from '../presentation/demandStatus'
 
-export function RealIntelligence({ intelligence }: Props) {
+interface Props {
+  intelligence: RealIntelligenceViewModel | null
+  board: ReturnType<typeof toDemandStatus>
+  snapshot: ReturnType<typeof toLatestSnapshot>
+}
+
+export function RealIntelligence({ intelligence, board, snapshot }: Props) {
   if (!intelligence) return (
     <div className="real-intelligence-card unavailable">
-      <div className="real-intelligence-header"><div><span className="real-label">REAL INTELLIGENCE</span><h2>AI INFRASTRUCTURE DEMAND</h2></div><span className="evidence-badge unavailable-badge">INCOMPLETE</span></div>
-      <p className="unavailable-message">UNAVAILABLE — verified demand and supply confirmation evidence is incomplete.</p>
+      <div className="real-intelligence-header"><div><span className="real-label">REAL INTELLIGENCE</span><h2>AI INFRASTRUCTURE DEMAND</h2></div><span className="evidence-badge unavailable-badge">{board.status}</span></div>
+      <p className="unavailable-message">{board.explanation}</p>
+      <p>The detailed positive-confirmation view is unavailable. Available input directions are shown below.</p>
+      <dl className="interpretation-facts">
+        {Object.entries(snapshot.hyperscalers).map(([ticker, direction]) => <div key={ticker}><dt>{ticker}</dt><dd>{direction}</dd></div>)}
+        <div><dt>TSMC three-month trend</dt><dd>{snapshot.tsm.trend3m}</dd></div>
+        <div><dt>TSMC outlook</dt><dd>{snapshot.tsm.outlook}</dd></div>
+      </dl>
+      <div className="real-sources"><span>Official evidence documents</span>{snapshot.sources.map((source) => <a key={source.url} href={source.url} target="_blank" rel="noreferrer">{source.name}</a>)}</div>
     </div>
   )
 

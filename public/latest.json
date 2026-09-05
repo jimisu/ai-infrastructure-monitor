@@ -1,0 +1,94 @@
+{
+  "asOf": "2026-07-30T00:00:00.000Z",
+  "status": "ACCELERATING",
+  "confidence": "HIGH",
+  "hyperscalers": {
+    "META": "POSITIVE",
+    "MSFT": "POSITIVE",
+    "GOOG": "POSITIVE",
+    "AMZN": "POSITIVE"
+  },
+  "tsm": {
+    "trend3m": "ACCELERATING",
+    "outlook": "POSITIVE"
+  },
+  "sources": [
+    {
+      "name": "META 2026 Q1 CapEx Guidance",
+      "url": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026028526/meta-20260331.htm"
+    },
+    {
+      "name": "META 2026 Q2 CapEx Guidance",
+      "url": "https://www.sec.gov/Archives/edgar/data/1326801/000162828026050705/meta-20260630.htm"
+    },
+    {
+      "name": "Microsoft FY2025 Q2 Earnings Conference Call",
+      "url": "https://www.microsoft.com/en-us/investor/events/fy-2025/earnings-fy-2025-q2"
+    },
+    {
+      "name": "Microsoft FY2025 Q3 Earnings Conference Call",
+      "url": "https://www.microsoft.com/en-us/investor/events/fy-2025/earnings-fy-2025-q3"
+    },
+    {
+      "name": "Microsoft FY2026 Q2 Earnings Conference Call",
+      "url": "https://www.microsoft.com/en-us/investor/events/fy-2026/earnings-fy-2026-q2"
+    },
+    {
+      "name": "Microsoft FY2026 Q3 Earnings Conference Call",
+      "url": "https://www.microsoft.com/en-us/investor/events/fy-2026/earnings-fy-2026-q3"
+    },
+    {
+      "name": "Alphabet 2025 Q2 Earnings Call",
+      "url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204425000056/googexhibit991q22025.htm"
+    },
+    {
+      "name": "Alphabet 2025 Q3 Earnings Call",
+      "url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204425000087/googexhibit991q32025.htm"
+    },
+    {
+      "name": "Alphabet 2025 Q4 Earnings Call",
+      "url": "https://www.sec.gov/Archives/edgar/data/1652044/000165204426000012/googexhibit991q42025.htm"
+    },
+    {
+      "name": "Alphabet 2025 Q4 Earnings Call",
+      "url": "https://abc.xyz/investor/events/event-details/2026/2025-Q4-Earnings-Call-2026-Dr_C033hS6/default.aspx"
+    },
+    {
+      "name": "Amazon Q4 2025 and Full-Year Results",
+      "url": "https://ir.aboutamazon.com/news-release/news-release-details/2026/Amazon-com-Announces-Fourth-Quarter-Results/"
+    },
+    {
+      "name": "Amazon Q1 2026 Results",
+      "url": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000014/amzn-20260331.htm"
+    },
+    {
+      "name": "TSMC Quarterly Results Q2 2026",
+      "url": "https://investor.tsmc.com/english/quarterly-results/2026/q2"
+    },
+    {
+      "name": "TSMC Monthly Revenue",
+      "url": "https://www.sec.gov/Archives/edgar/data/1046179/000104617926000015/tsm-revenue20260210.htm"
+    },
+    {
+      "name": "TSMC Monthly Revenue",
+      "url": "https://www.sec.gov/Archives/edgar/data/1046179/000104617926000031/tsm-revenue20260310.htm"
+    },
+    {
+      "name": "TSMC Monthly Revenue",
+      "url": "https://www.sec.gov/Archives/edgar/data/1046179/000104617926000136/tsm-revenue20260410.htm"
+    },
+    {
+      "name": "TSMC Monthly Revenue",
+      "url": "https://www.sec.gov/Archives/edgar/data/1046179/000104617926000213/tsm-revenue20260508.htm"
+    },
+    {
+      "name": "TSMC Monthly Revenue",
+      "url": "https://www.sec.gov/Archives/edgar/data/1046179/000104617926000367/tsm-revenue20260610.htm"
+    },
+    {
+      "name": "TSMC Monthly Revenue",
+      "url": "https://www.sec.gov/Archives/edgar/data/1046179/000104617926000447/tsm-revenue20260713.htm"
+    }
+  ],
+  "disclaimer": "Not investment advice. Issuer CapEx is not AI-only CapEx."
+}
