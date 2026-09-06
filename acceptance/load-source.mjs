@@ -9,12 +9,20 @@ const jsxOptions = {
   jsx: ts.JsxEmit.React,
 }
 
+async function acceptanceModuleDir() {
+  const dir = path.resolve('tmp/acceptance-modules')
+  await mkdir(dir, { recursive: true })
+  return dir
+}
+
 export async function loadPresentation(name) {
   const source = await readFile(new URL(`../src/presentation/${name}.ts`, import.meta.url), 'utf8')
   const { outputText } = ts.transpileModule(source, {
     compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2023 },
   })
-  return import(`data:text/javascript;base64,${Buffer.from(outputText).toString('base64')}`)
+  const file = path.join(await acceptanceModuleDir(), `presentation-${name}.mjs`)
+  await writeFile(file, outputText)
+  return import(pathToFileURL(file).href)
 }
 
 async function transpileJsx(source) {
@@ -22,8 +30,7 @@ async function transpileJsx(source) {
 }
 
 export async function loadHeader() {
-  const dir = path.resolve('tmp/acceptance-modules')
-  await mkdir(dir, { recursive: true })
+  const dir = await acceptanceModuleDir()
   const lastVerifiedSource = await readFile(new URL('../src/components/LastVerified.tsx', import.meta.url), 'utf8')
   await writeFile(
     path.join(dir, 'LastVerified.mjs'),
@@ -35,10 +42,4 @@ export async function loadHeader() {
   const headerFile = path.join(dir, 'Header.mjs')
   await writeFile(headerFile, `import React from 'react'\n${headerJs}`)
   return import(pathToFileURL(headerFile).href)
-}
-
-export function lastVerifiedMarkup(html) {
-  const match = html.match(/<p class="last-verified"[^>]*>[\s\S]*?<\/p>/)
-  if (!match) throw new Error('summary page does not contain a last-verified element')
-  return match[0]
 }

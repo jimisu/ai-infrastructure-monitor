@@ -1,12 +1,12 @@
 import { readFile } from 'node:fs/promises'
 import { spawn } from 'node:child_process'
-import { createElement } from 'react'
-import { renderToStaticMarkup } from 'react-dom/server'
-import { lastVerifiedMarkup, loadHeader, loadPresentation } from './load-source.mjs'
-
-const decoyEvidence = [
-  { publishedAt: '1999-12-31T23:59:59.000Z', retrievedAt: '2000-01-01T00:00:00.000Z' },
-]
+import { loadHeader, loadPresentation } from './load-source.mjs'
+import {
+  decoyEvidence,
+  includesDecoyEvidenceDates,
+  lastVerifiedMarkup,
+  renderSummaryPage,
+} from './summary-page.mjs'
 
 function exampleValue(example, name) {
   if (!Object.hasOwn(example, name)) throw new Error(`missing example value ${name}`)
@@ -40,12 +40,7 @@ const handlers = [
         verificationMetadata: world.verificationMetadata,
         evidenceObservations: decoyEvidence,
       })
-      const html = renderToStaticMarkup(createElement(Header, {
-        asOf: decoyEvidence[0].publishedAt,
-        status: 'ACCELERATING',
-        explanation: 'fixture',
-        lastVerified: display,
-      }))
+      const html = renderSummaryPage(Header, display)
       world.page = {
         display,
         html,
@@ -77,8 +72,7 @@ const handlers = [
   {
     pattern: /^evidence publication and retrieval dates are not timestamp sources$/,
     run(world) {
-      const verified = world.page?.lastVerifiedHtml ?? ''
-      if (verified.includes('1999-12-31') || verified.includes('2000-01-01')) {
+      if (includesDecoyEvidenceDates(world.page?.lastVerifiedHtml ?? '')) {
         fail('evidence publication or retrieval dates were used as the timestamp source')
       }
     },
