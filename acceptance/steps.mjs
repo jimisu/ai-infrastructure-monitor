@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises'
 import { spawn } from 'node:child_process'
 import { createElement } from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-import { loadLastVerifiedComponent, loadPresentation } from './load-source.mjs'
+import { lastVerifiedMarkup, loadHeader, loadPresentation } from './load-source.mjs'
 
 const decoyEvidence = [
   { publishedAt: '1999-12-31T23:59:59.000Z', retrievedAt: '2000-01-01T00:00:00.000Z' },
@@ -35,14 +35,21 @@ const handlers = [
     async run(world) {
       if (!world.renderFromViewModel) fail('summary page must be rendered from the presentation view model')
       const { toLastVerifiedDisplay } = await loadPresentation('lastVerified')
-      const { LastVerified } = await loadLastVerifiedComponent()
+      const { Header } = await loadHeader()
       const display = toLastVerifiedDisplay({
         verificationMetadata: world.verificationMetadata,
         evidenceObservations: decoyEvidence,
       })
+      const html = renderToStaticMarkup(createElement(Header, {
+        asOf: decoyEvidence[0].publishedAt,
+        status: 'ACCELERATING',
+        explanation: 'fixture',
+        lastVerified: display,
+      }))
       world.page = {
         display,
-        html: renderToStaticMarkup(createElement(LastVerified, { lastVerified: display })),
+        html,
+        lastVerifiedHtml: lastVerifiedMarkup(html),
       }
     },
   },
@@ -50,8 +57,9 @@ const handlers = [
     pattern: /^the page displays "Last verified" as <([A-Za-z0-9_]+)>$/,
     run(world, example, [name]) {
       const expected = exampleValue(example, name)
-      if (!world.page?.html.includes('Last verified')) fail('summary page does not display Last verified')
-      if (!world.page.html.includes(expected)) fail(`summary page display ${world.page.display.displayValue} != ${expected}`)
+      if (!world.page?.html.includes('AI INFRASTRUCTURE MONITOR')) fail('summary page was not opened')
+      if (!world.page?.lastVerifiedHtml.includes('Last verified')) fail('summary page does not display Last verified')
+      if (!world.page.lastVerifiedHtml.includes(expected)) fail(`summary page display ${world.page.display.displayValue} != ${expected}`)
     },
   },
   {
@@ -61,7 +69,7 @@ const handlers = [
       if (world.page?.display.displayStatus !== expected) {
         fail(`timestamp display status ${world.page?.display.displayStatus} != ${expected}`)
       }
-      if (!world.page.html.includes(`data-timestamp-status="${expected}"`)) {
+      if (!world.page.lastVerifiedHtml.includes(`data-timestamp-status="${expected}"`)) {
         fail('timestamp display status is not visible on the summary page')
       }
     },
@@ -69,8 +77,8 @@ const handlers = [
   {
     pattern: /^evidence publication and retrieval dates are not timestamp sources$/,
     run(world) {
-      const html = world.page?.html ?? ''
-      if (html.includes('1999-12-31') || html.includes('2000-01-01')) {
+      const verified = world.page?.lastVerifiedHtml ?? ''
+      if (verified.includes('1999-12-31') || verified.includes('2000-01-01')) {
         fail('evidence publication or retrieval dates were used as the timestamp source')
       }
     },
@@ -96,8 +104,8 @@ const handlers = [
     pattern: /^the last verified timestamp behavior is implemented$/,
     async run(world) {
       world.toLastVerifiedDisplay = (await loadPresentation('lastVerified')).toLastVerifiedDisplay
-      world.LastVerified = (await loadLastVerifiedComponent()).LastVerified
-      if (typeof world.toLastVerifiedDisplay !== 'function' || typeof world.LastVerified !== 'function') {
+      world.Header = (await loadHeader()).Header
+      if (typeof world.toLastVerifiedDisplay !== 'function' || typeof world.Header !== 'function') {
         fail('last verified timestamp behavior is not implemented')
       }
     },
