@@ -18,7 +18,12 @@ export function forAll(name, { times = 100, seed = 1, gen }, property) {
   test(name, () => {
     const random = mulberry32(seed)
     for (let i = 0; i < times; i++) {
-      property(gen(random, i), i)
+      try {
+        property(gen(random, i), i)
+      } catch (error) {
+        const detail = error instanceof Error ? error.message : String(error)
+        throw new Error(`${name} failed at example ${i}: ${detail}`)
+      }
     }
   })
 }
