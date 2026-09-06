@@ -77,6 +77,12 @@ body,
   margin: 0;
 }
 
+.last-verified {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: 0.35rem 0 0;
+}
+
 /* Dashboard Layout */
 .dashboard {
   flex: 1;

@@ -9,8 +9,10 @@ import { MSFT_PRODUCTION_CAPEX_OBSERVATIONS } from './data/msftCapexObservationP
 import { getSourcesByTicker } from './data/sources'
 import { TSM_PRODUCTION_OBSERVATIONS } from './data/tsmMonthlyObservationProvider'
 import { toDemandStatus } from './presentation/demandStatus'
+import { toLastVerifiedDisplay } from './presentation/lastVerified'
 import { toLatestSnapshot } from './presentation/latestSnapshot'
 import { createRealIntelligenceViewModel } from './presentation/realIntelligenceViewModel'
+import { readVerificationMetadata } from './presentation/verificationMetadata'
 import { deriveCurrentHyperscalerCapexTrend } from './signals/hyperscalerCapexBreadthEngine'
 import { deriveHyperscalerTsmConfirmation } from './signals/hyperscalerTsmConfirmationEngine'
 import { deriveTsmSignalsWithTrendConfirmation } from './signals/tsmSignalInterpreter'
@@ -73,11 +75,15 @@ export const latestSnapshot = toLatestSnapshot({
     return source ? [{ name: source.name, url: observation.sourceUrl }] : []
   }).filter((source, index, sources) => sources.findIndex((candidate) => candidate.url === source.url) === index),
 })
+const lastVerified = toLastVerifiedDisplay({
+  verificationMetadata: readVerificationMetadata(),
+  evidenceObservations: productionEvidenceObservations,
+})
 
 function App() {
   return (
     <div className="app-container">
-      <Header asOf={latestSnapshot.asOf} status={latestSnapshot.status} explanation={demandBoard.explanation} />
+      <Header asOf={latestSnapshot.asOf} status={latestSnapshot.status} explanation={demandBoard.explanation} lastVerified={lastVerified} />
 
       <main className="dashboard">
         <section className="real-intelligence-section">

@@ -11,6 +11,10 @@ node_modules
 dist
 dist-ssr
 *.local
+tmp/
+build/acceptance/
+build/acceptance-mutation/
+acceptance/generated/
 
 # Editor directories and files
 .vscode/*
