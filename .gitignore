@@ -22,11 +22,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-# SwarmForge operator tooling (not part of the project)
-swarm
-close-swarm
-swarmforge/
-
-# Babashka installer script (environment tooling, not project code)
-install
