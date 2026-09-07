@@ -20,24 +20,34 @@ export function BuildRealityCheck({ screen }: Props) {
         {screen.groups.map((group) => (
           <section className="cohort-group" key={group.id} aria-labelledby={`cohort-${group.id}`}>
             <h3 id={`cohort-${group.id}`}>{group.label} <span>{group.cases.length}</span></h3>
-            <ul className="cohort-table">
-              {group.cases.map((item) => (
-                <li className="cohort-row" key={item.name}>
-                  <div className="cohort-name">
-                    <strong>{item.name}</strong>
-                    <small>{item.status}</small>
-                  </div>
-                  <p>{item.detail}</p>
-                  <ul className="cohort-sources">
-                    {item.sources.map((source) => (
-                      <li key={source.url}>
-                        <a href={source.url} target="_blank" rel="noreferrer">{source.name}</a>
-                      </li>
-                    ))}
-                  </ul>
-                </li>
-              ))}
-            </ul>
+            <table className="cohort-table">
+              <thead>
+                <tr>
+                  <th scope="col">Case</th>
+                  <th scope="col">Source</th>
+                </tr>
+              </thead>
+              <tbody>
+                {group.cases.map((item) => (
+                  <tr key={item.name}>
+                    <th scope="row">
+                      <strong>{item.name}</strong>
+                      <small>{item.status}</small>
+                      <p>{item.detail}</p>
+                    </th>
+                    <td>
+                      <ul className="cohort-sources">
+                        {item.sources.map((source) => (
+                          <li key={source.url}>
+                            <a href={source.url} target="_blank" rel="noreferrer">{source.name}</a>
+                          </li>
+                        ))}
+                      </ul>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </section>
         ))}
       </div>

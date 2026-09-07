@@ -59,6 +59,7 @@ test('first screen groups cases without dropping names or source links', () => {
   assert.equal(screen.groups[0].cases[0].name, 'Operating A')
   assert.equal(screen.groups[1].cases[0].name, 'Building A')
   assert.equal(screen.groups[2].cases[0].name, 'Contracted A')
+  assert.deepEqual(screen.unassigned, [])
   for (const group of screen.groups) {
     for (const item of group.cases) {
       assert.ok(item.sources.length > 0)
@@ -68,6 +69,23 @@ test('first screen groups cases without dropping names or source links', () => {
     }
   }
   assert.equal(screen.countsMatch, true)
+})
+
+test('an unknown group is not recategorized into operating, building, or contracted', () => {
+  const screen = toFirstScreen({
+    ...sampleScreen,
+    counts: { operating: 0, building: 0, contracted: 0 },
+    cases: [{
+      name: 'Announced only',
+      group: 'announced',
+      status: 'Announced',
+      detail: 'No eligible construction evidence.',
+      sources: [{ name: 'Announcement', url: 'https://example.test/announced' }],
+    }],
+  })
+  assert.deepEqual(screen.groups.map((group) => group.cases.map((item) => item.name)), [[], [], []])
+  assert.equal(screen.unassigned[0].name, 'Announced only')
+  assert.equal(screen.countsMatch, false)
 })
 
 test('Q3 dashboard copy lists all 15 cases in the published 7/7/1 groups with a source link each', () => {

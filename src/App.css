@@ -1568,47 +1568,63 @@ body,
   font-family: 'Courier New', monospace;
 }
 .cohort-table {
-  display: grid;
-  gap: 0.75rem;
-  list-style: none;
+  border-collapse: collapse;
+  width: 100%;
 }
-.cohort-row {
+.cohort-table th,
+.cohort-table td {
   border-top: 1px solid rgba(71, 85, 105, 0.45);
   min-width: 0;
-  padding-top: 0.7rem;
+  padding: 0.45rem 0.2rem;
+  text-align: left;
+  vertical-align: top;
 }
-.cohort-name {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
+.cohort-table thead th {
+  color: var(--text-muted);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
 }
-.cohort-name strong {
-  color: var(--text-primary);
+.cohort-table tbody th {
+  width: 58%;
+}
+.cohort-table tbody th strong,
+.cohort-table tbody th small {
+  display: block;
   overflow-wrap: anywhere;
 }
-.cohort-name small {
-  color: #cbd5e1;
-  font-size: 0.75rem;
+.cohort-table tbody th strong {
+  color: var(--text-primary);
+  font-size: 0.88rem;
 }
-.cohort-row p {
+.cohort-table tbody th small,
+.cohort-table tbody th p {
+  display: block;
+  font-weight: 500;
+  margin-top: 0.15rem;
+}
+.cohort-table tbody th small {
+  color: #cbd5e1;
+  font-size: 0.72rem;
+}
+.cohort-table tbody th p {
   color: var(--text-secondary);
-  font-size: 0.8rem;
-  line-height: 1.45;
-  margin-top: 0.35rem;
+  font-size: 0.72rem;
+  line-height: 1.35;
 }
 .cohort-sources {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem 0.75rem;
+  flex-direction: column;
+  gap: 0.2rem;
   list-style: none;
-  margin: 0.4rem 0 0;
+  margin: 0;
 }
 .cohort-sources a {
-  font-size: 0.78rem;
+  font-size: 0.74rem;
   overflow-wrap: anywhere;
 }
 @media (max-width: 900px) {
-  .build-counts,
   .cohort-groups {
     grid-template-columns: 1fr;
   }
@@ -1618,24 +1634,40 @@ body,
   }
 
   .scan-fact:first-child {
-    grid-column: 1 / -1;
+    display: none;
   }
 }
 @media (max-width: 640px) {
   .header { padding: 1rem; }
   .title { margin: 0; }
   .build-reality-check { padding: 1rem; }
-  .build-reality-check h2 { font-size: 1.25rem; margin: 0.35rem 0 0.6rem; }
-  .build-counts { margin: 0.75rem 0; gap: 0.6rem; }
-  .build-counts dd { font-size: 1.4rem; }
+  .build-reality-check h2 { font-size: 1.2rem; margin: 0.3rem 0 0.45rem; }
+  .build-counts { grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0.6rem 0; gap: 0.4rem; }
+  .build-counts div { padding-left: 0.5rem; }
+  .build-counts dt { font-size: 0.68rem; }
+  .build-counts dd { font-size: 1.25rem; }
   .header .title { font-size: 1.15rem; letter-spacing: 0.8px; overflow-wrap: anywhere; }
   .layer-badge { max-width: 100%; overflow-wrap: anywhere; }
   .scan-facts { gap: 0.5rem; margin-top: 0.65rem; }
   .scan-fact { padding: 0.5rem 0.6rem; }
   .scan-fact dd { font-size: 0.92rem; }
   .header-disclaimer { font-size: 0.88rem; margin-top: 0.55rem; }
-  .board-explanation { font-size: 0.85rem; margin-top: 0.5rem; }
-  .snapshot-link { margin-top: 0.5rem; }
+  .board-explanation { font-size: 0.82rem; margin-top: 0.45rem; }
+  .snapshot-link { margin-top: 0.45rem; }
+  .cohort-group { padding: 0.65rem; }
+  .cohort-table tbody th,
+  .cohort-table td {
+    display: block;
+    width: 100%;
+    border-top: none;
+    padding: 0.15rem 0;
+  }
+  .cohort-table tbody tr {
+    display: block;
+    border-top: 1px solid rgba(71, 85, 105, 0.45);
+    padding: 0.4rem 0;
+  }
+  .cohort-table thead { display: none; }
   .scan-fact dd,
   .header-disclaimer,
   .subtitle {

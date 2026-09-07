@@ -2,7 +2,7 @@ export type CohortGroupId = 'operating' | 'building' | 'contracted'
 
 export interface FirstScreenCase {
   name: string
-  group: CohortGroupId
+  group: string
   status: string
   detail: string
   sources: { name: string; url: string }[]
@@ -24,12 +24,15 @@ const GROUP_ORDER: { id: CohortGroupId; label: string }[] = [
   { id: 'contracted', label: 'Contracted without construction evidence' },
 ]
 
+const GROUP_IDS: Set<string> = new Set(GROUP_ORDER.map((group) => group.id))
+
 export function toFirstScreen(inputs: FirstScreenInputs) {
   const groups = GROUP_ORDER.map(({ id, label }) => ({
     id,
     label,
     cases: inputs.cases.filter((item) => item.group === id),
   }))
+  const unassigned = inputs.cases.filter((item) => !GROUP_IDS.has(item.group))
   return {
     status: inputs.status,
     asOf: inputs.asOf,
@@ -37,8 +40,10 @@ export function toFirstScreen(inputs: FirstScreenInputs) {
     disclaimer: inputs.disclaimer,
     snapshotHref: inputs.snapshotHref,
     groups,
+    unassigned,
     countsMatch:
-      groups[0].cases.length === inputs.counts.operating
+      unassigned.length === 0
+      && groups[0].cases.length === inputs.counts.operating
       && groups[1].cases.length === inputs.counts.building
       && groups[2].cases.length === inputs.counts.contracted,
   }
