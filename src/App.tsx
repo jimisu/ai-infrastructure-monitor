@@ -2,6 +2,7 @@ import './App.css'
 import { BuildRealityCheck } from './components/BuildRealityCheck'
 import { Header } from './components/Header'
 import { RealIntelligence } from './components/RealIntelligence'
+import { q3BuildRealityCheck } from './data/q3BuildRealityCheck'
 import { AMZN_PRODUCTION_CAPEX_OBSERVATIONS } from './data/amznPpeObservationProvider'
 import { GOOG_PRODUCTION_CAPEX_OBSERVATIONS } from './data/googCapexGuidanceObservationProvider'
 import { META_PRODUCTION_CAPEX_OBSERVATIONS } from './data/metaGuidanceObservationProvider'
@@ -9,6 +10,7 @@ import { MSFT_PRODUCTION_CAPEX_OBSERVATIONS } from './data/msftCapexObservationP
 import { getSourcesByTicker } from './data/sources'
 import { TSM_PRODUCTION_OBSERVATIONS } from './data/tsmMonthlyObservationProvider'
 import { toDemandStatus } from './presentation/demandStatus'
+import { toFirstScreen } from './presentation/firstScreen'
 import { toLatestSnapshot } from './presentation/latestSnapshot'
 import { createRealIntelligenceViewModel } from './presentation/realIntelligenceViewModel'
 import { deriveCurrentHyperscalerCapexTrend } from './signals/hyperscalerCapexBreadthEngine'
@@ -74,16 +76,26 @@ export const latestSnapshot = toLatestSnapshot({
   }).filter((source, index, sources) => sources.findIndex((candidate) => candidate.url === source.url) === index),
 })
 
+const firstScreen = toFirstScreen({
+  status: latestSnapshot.status,
+  asOf: latestSnapshot.asOf,
+  evidenceCutoff: q3BuildRealityCheck.evidenceCutoff,
+  disclaimer: latestSnapshot.disclaimer,
+  snapshotHref: `${import.meta.env.BASE_URL}latest.json`,
+  counts: q3BuildRealityCheck.counts,
+  cases: q3BuildRealityCheck.cases,
+})
+
 function App() {
   return (
     <div className="app-container">
-      <Header asOf={latestSnapshot.asOf} status={latestSnapshot.status} explanation={demandBoard.explanation} />
+      <Header screen={firstScreen} explanation={demandBoard.explanation} />
 
       <main className="dashboard">
+        <BuildRealityCheck screen={firstScreen} />
         <section className="real-intelligence-section">
           <RealIntelligence intelligence={realIntelligence} board={demandBoard} snapshot={latestSnapshot} />
         </section>
-        <BuildRealityCheck />
       </main>
 
       <footer className="footer">
