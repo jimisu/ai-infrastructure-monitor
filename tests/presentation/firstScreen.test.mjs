@@ -88,6 +88,30 @@ test('an unknown group is not recategorized into operating, building, or contrac
   assert.equal(screen.countsMatch, false)
 })
 
+test('first screen surfaces evidence cutoff distinct from the as-of date', () => {
+  const screen = toFirstScreen(sampleScreen)
+  assert.notEqual(screen.asOf, screen.evidenceCutoff)
+  assert.equal(screen.asOf, '2026-07-30T00:00:00.000Z')
+  assert.equal(screen.evidenceCutoff, '2026-08-30')
+})
+
+test('first screen fails closed, carrying UNAVAILABLE status and date without inventing facts', () => {
+  const screen = toFirstScreen({
+    ...sampleScreen,
+    status: 'UNAVAILABLE',
+    asOf: 'UNAVAILABLE',
+    counts: { operating: 0, building: 0, contracted: 0 },
+    cases: [],
+  })
+  assert.equal(screen.status, 'UNAVAILABLE')
+  assert.equal(screen.asOf, 'UNAVAILABLE')
+  assert.equal(screen.evidenceCutoff, '2026-08-30')
+  assert.match(screen.disclaimer, /Not investment advice/)
+  assert.deepEqual(screen.groups.map((group) => group.cases), [[], [], []])
+  assert.equal(screen.unassigned.length, 0)
+  assert.equal(screen.countsMatch, true)
+})
+
 test('Q3 dashboard copy lists all 15 cases in the published 7/7/1 groups with a source link each', () => {
   assert.equal(q3BuildRealityCheck.evidenceCutoff, '2026-08-30')
   assert.equal(q3BuildRealityCheck.cases.length, 15)
