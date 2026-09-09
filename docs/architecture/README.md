@@ -63,6 +63,14 @@ Providers and downstream verification are under [`src/data/`](../../src/data/) a
   [`verify-production-downstream.mjs`](../../scripts/ingestion/verify-production-downstream.mjs) runs
   committed production verification or redirects supported canonical imports to a disposable root
   using [`canonical-root-resolver.mjs`](../../scripts/ingestion/canonical-root-resolver.mjs).
+  `--canonical-root` applies to both proposed-state verification and production-contract staging.
+- **Reviewed-state promotion:**
+  [`reviewed-state-transaction.mjs`](../../scripts/ingestion/reviewed-state-transaction.mjs) is the
+  testable prepare/apply transaction. [`reviewed-state-promotion.mjs`](../../scripts/ingestion/reviewed-state-promotion.mjs)
+  is the CLI adapter around it. The transaction binds caller-supplied review and run report hashes,
+  verifies production baseline hashes, stages a complete proposed root, runs the production contract
+  against staging, and exchanges the production root only after those checks pass. Production apply
+  remains separately authorized and is not invoked by `ingest:all`.
 
 ## Directory ownership
 
@@ -76,7 +84,7 @@ Providers and downstream verification are under [`src/data/`](../../src/data/) a
 | [`src/signals/`](../../src/signals/) | Deterministic company, aggregate, and cross-company derivation plus regression verification. |
 | [`src/types/`](../../src/types/) | Numeric observations, CapEx contracts, sources, and signal types. |
 | [`tests/fixtures/ingestion/`](../../tests/fixtures/ingestion/) | Source-shape fixtures used by ingestion tests; fixtures are not production evidence. |
-| [`tests/ingestion/`](../../tests/ingestion/) | Parser, identity, provenance, coverage, orchestration, monitoring, and proposed-state tests. |
+| [`tests/ingestion/`](../../tests/ingestion/) | Parser, identity, provenance, coverage, orchestration, monitoring, proposed-state, and reviewed-state promotion tests. |
 | [`docs/research/`](../research/) | Reviewed research and proposed contracts; not implementation authorization. |
 
 ## Executable safeguards
@@ -88,18 +96,19 @@ Providers and downstream verification are under [`src/data/`](../../src/data/) a
 | Deterministic signal IDs with injectable generation time | [`derivedSignalIdentity.ts`](../../src/signals/derivedSignalIdentity.ts), [`signalIntegrityVerification.ts`](../../src/signals/signalIntegrityVerification.ts), and the stable-ID assertion in [`metaGuidanceIngestionVerification.ts`](../../src/ingestion/metaGuidanceIngestionVerification.ts), executed by [`verify-meta-guidance-downstream.mjs`](../../scripts/ingestion/verify-meta-guidance-downstream.mjs) in `npm run verify:ingestion` |
 | Economic definition/period compatibility | [`companyCapexSignalEngine.ts`](../../src/signals/companyCapexSignalEngine.ts), issuer ingestion and signal verification files |
 | Separate baseline and disposable proposed verification | [`productionIngestionVerification.ts`](../../src/ingestion/productionIngestionVerification.ts), [`proposedStateIngestionVerification.ts`](../../src/ingestion/proposedStateIngestionVerification.ts), [`proposedStateResolver.test.mjs`](../../tests/ingestion/proposedStateResolver.test.mjs) |
+| Reviewed-state prepare/apply transaction | [`reviewed-state-transaction.mjs`](../../scripts/ingestion/reviewed-state-transaction.mjs), [`reviewed-state-promotion.mjs`](../../scripts/ingestion/reviewed-state-promotion.mjs), [`reviewedStatePromotion.test.mjs`](../../tests/ingestion/reviewedStatePromotion.test.mjs) |
 | Dry-run production-state isolation | [`ingestion-orchestrator.mjs`](../../scripts/ingestion/ingestion-orchestrator.mjs), [`ingestionOrchestrator.test.mjs`](../../tests/ingestion/ingestionOrchestrator.test.mjs) |
 | Coverage kept separate from ingestion health | [`coverage-contract.mjs`](../../scripts/ingestion/coverage-contract.mjs), [`coverageContract.test.mjs`](../../tests/ingestion/coverageContract.test.mjs) |
-| Unified agent verification | [`npm run verify:agent`](../../package.json) composes `npm run lint`, `npm run build`, and `npm run verify:ingestion`. It is production-non-mutating, but may write ignored build output and disposable temporary test files. |
+| Unified agent verification | [`npm run verify:agent`](../../package.json) composes `npm run lint`, `npm run build`, presentation tests, reviewed-state property tests, and `npm run verify:ingestion`. It is production-non-mutating, but may write ignored build output and disposable temporary test files. |
 
 Current verification commands are defined in [`package.json`](../../package.json). Use
 `npm run verify:agent` for the broad composed check and issuer-specific commands for narrower feedback.
 
 ## Known gaps
 
-- There is no universal verification-before-promotion transaction. Atomic temporary-file rename in
-  the canonical store protects file replacement, but does not make downstream verification a
-  prerequisite transaction for every production write.
+- Reviewed-state promotion is an explicit CLI transaction, not a prerequisite for every production
+  write. Atomic temporary-file rename in the canonical store still protects individual file
+  replacement. `ingest:all --promote` does not invoke reviewed-state prepare/apply.
 - Aggregate ingestion is dry-run by default, including when no flag is supplied. Only the explicit
   `--promote` flag selects production paths, and that flag does not replace separate human promotion
   authorization. Unknown, duplicate, or conflicting mode flags fail before ingestion starts.
