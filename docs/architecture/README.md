@@ -69,8 +69,11 @@ Providers and downstream verification are under [`src/data/`](../../src/data/) a
   testable prepare/apply transaction. [`reviewed-state-promotion.mjs`](../../scripts/ingestion/reviewed-state-promotion.mjs)
   is the CLI adapter around it. The transaction binds caller-supplied review and run report hashes,
   verifies production baseline hashes, stages a complete proposed root, runs the production contract
-  against staging, and exchanges the production root only after those checks pass. Production apply
-  remains separately authorized and is not invoked by `ingest:all`.
+  against staging, and exchanges the production root only after those checks pass. Existing source and
+  production roots are compared and persisted by filesystem real path. Rollback and delta outputs that
+  do not yet exist are canonicalized through the real path of the nearest existing parent so symlink
+  aliases cannot write through a lexical path into another protected root. Production apply remains
+  separately authorized and is not invoked by `ingest:all`.
 
 ## Directory ownership
 

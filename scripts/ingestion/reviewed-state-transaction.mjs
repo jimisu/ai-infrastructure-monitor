@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto'
-import { access, cp, mkdir, mkdtemp, readFile, readdir, rename, rm, stat, writeFile } from 'node:fs/promises'
+import { access, cp, mkdir, mkdtemp, readFile, readdir, realpath, rename, rm, stat, writeFile } from 'node:fs/promises'
 import path from 'node:path'
 const OBSERVATION_FILES = Object.freeze([
   'amzn-ppe-purchases.json',
@@ -32,6 +32,35 @@ export function assertSha256(value, label) {
 export function explicitPath(value, label) {
   if (!value || typeof value !== 'string') fail('MISSING_PATH', `${label} must be supplied explicitly`)
   return path.resolve(value)
+}
+
+async function canonicalExistingPath(value, label) {
+  const resolved = explicitPath(value, label)
+  try {
+    return await realpath(resolved)
+  } catch (error) {
+    if (error.code === 'ENOENT') fail('MISSING_PATH', `${label} must exist`, { path: resolved })
+    throw error
+  }
+}
+
+async function canonicalOutputPath(value, label) {
+  const resolved = explicitPath(value, label)
+  const missing = []
+  let current = resolved
+  while (true) {
+    try {
+      await access(current)
+      const realCurrent = await realpath(current)
+      return missing.length === 0 ? realCurrent : path.join(realCurrent, ...missing.reverse())
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error
+      const parent = path.dirname(current)
+      if (parent === current) fail('MISSING_PATH', `${label} has no existing parent`, { path: resolved })
+      missing.push(path.basename(current))
+      current = parent
+    }
+  }
 }
 
 export function safeRelative(value, label) {
@@ -245,8 +274,8 @@ export async function prepareReviewedStatePromotion({
   expectedProductionHashes,
   bundleOutputPath,
 } = {}) {
-  const source = explicitPath(sourceRoot, 'Source root')
-  const production = explicitPath(productionRoot, 'Production root')
+  const source = await canonicalExistingPath(sourceRoot, 'Source root')
+  const production = await canonicalExistingPath(productionRoot, 'Production root')
   const review = explicitPath(reviewReportPath, 'Review report')
   assertSeparatedRoots(source, production)
   assertSha256(expectedReviewReportSha256, 'Expected review report hash')
@@ -362,10 +391,10 @@ export async function applyReviewedStatePromotion({
   if (digest(bundleBytes) !== expectedBundleSha256) fail('BUNDLE_HASH_MISMATCH', 'Promotion bundle SHA-256 changed')
   const bundle = await readJson(bundleTarget, 'Promotion bundle')
   if (bundle.schemaVersion !== 1) fail('BUNDLE_SCHEMA', 'Unsupported promotion bundle schema')
-  const rollback = explicitPath(rollbackRoot, 'Rollback root')
-  const deltaOutput = explicitPath(deltaOutputPath, 'Delta output')
-  const source = path.resolve(bundle.sourceRoot)
-  const production = path.resolve(bundle.productionRoot)
+  const rollback = await canonicalOutputPath(rollbackRoot, 'Rollback root')
+  const deltaOutput = await canonicalOutputPath(deltaOutputPath, 'Delta output')
+  const source = await canonicalExistingPath(bundle.sourceRoot, 'Source root')
+  const production = await canonicalExistingPath(bundle.productionRoot, 'Production root')
   assertSeparatedRoots(source, production)
   assertApplyOutputPaths(source, production, rollback, deltaOutput)
   if (await exists(rollback) || await exists(deltaOutput)) fail('OUTPUT_ALREADY_EXISTS', 'Rollback and delta outputs must not already exist')

@@ -1,4 +1,5 @@
 import { spawn } from 'node:child_process'
+import { realpath } from 'node:fs/promises'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 import {
@@ -61,16 +62,24 @@ function runVerifier(args, cwd) {
   })
 }
 
-function assertCliProductionRoot(productionRoot, cwd) {
-  const expected = path.resolve(cwd, 'data', 'ingestion')
-  if (path.resolve(productionRoot) !== expected) fail('CLI_PRODUCTION_ROOT_MISMATCH', 'CLI production root must be the current repository data/ingestion path', { expected, actual: path.resolve(productionRoot) })
+async function assertCliProductionRoot(productionRoot, cwd) {
+  const expected = await realpath(path.resolve(cwd, 'data', 'ingestion'))
+  const resolved = path.resolve(productionRoot)
+  let actual
+  try {
+    actual = await realpath(resolved)
+  } catch (error) {
+    if (error.code === 'ENOENT') fail('CLI_PRODUCTION_ROOT_MISMATCH', 'CLI production root must be the current repository data/ingestion path', { expected, actual: resolved })
+    throw error
+  }
+  if (actual !== expected) fail('CLI_PRODUCTION_ROOT_MISMATCH', 'CLI production root must be the current repository data/ingestion path', { expected, actual })
 }
 
 export async function runReviewedStatePromotionCli(args = process.argv.slice(2), cwd = process.cwd()) {
   const { command, options } = parseArguments(args)
   if (command === 'prepare') {
     const productionRoot = path.resolve(required(options, '--production-root'))
-    assertCliProductionRoot(productionRoot, cwd)
+    await assertCliProductionRoot(productionRoot, cwd)
     const result = await prepareReviewedStatePromotion({
       sourceRoot: required(options, '--source-root'),
       productionRoot,
@@ -89,7 +98,7 @@ export async function runReviewedStatePromotionCli(args = process.argv.slice(2),
   }
   const bundlePath = required(options, '--bundle')
   const bundle = await readJson(path.resolve(bundlePath), 'Promotion bundle')
-  assertCliProductionRoot(bundle.productionRoot, cwd)
+  await assertCliProductionRoot(bundle.productionRoot, cwd)
   const result = await applyReviewedStatePromotion({
     bundlePath,
     expectedBundleSha256: required(options, '--expected-bundle-sha256'),
