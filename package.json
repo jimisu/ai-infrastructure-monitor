@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "ingest:all": "node scripts/ingestion/ingest-all.mjs",
+    "ingest:promote-reviewed": "node scripts/ingestion/reviewed-state-promotion.mjs",
     "verify:ingest:orchestration": "node --test tests/ingestion/ingestionOrchestrator.test.mjs",
     "ingest:tsm": "node scripts/ingestion/ingest-tsm.mjs",
     "verify:ingest:tsm": "node --test tests/ingestion/tsmMonthlyIngestion.test.mjs tests/ingestion/tsmSecIngestion.test.mjs && node scripts/ingestion/verify-tsm-downstream.mjs",
@@ -15,7 +16,8 @@
     "ingest:amzn-ppe": "node scripts/ingestion/ingest-amzn-ppe.mjs",
     "verify:ingest:amzn-ppe": "npm run verify:ingest:tsm && node --test tests/ingestion/amznPpeIngestion.test.mjs && node scripts/ingestion/verify-amzn-ppe-downstream.mjs",
     "verify:ingestion": "node --test tests/ingestion/*.test.mjs && node scripts/ingestion/verify-tsm-downstream.mjs && node scripts/ingestion/verify-amzn-ppe-downstream.mjs && node scripts/ingestion/verify-meta-guidance-downstream.mjs && node scripts/ingestion/verify-goog-guidance-downstream.mjs && node scripts/ingestion/verify-msft-capex-downstream.mjs",
-    "verify:agent": "npm run lint && npm run build && node --test tests/presentation/*.test.mjs && npm run verify:ingestion",
+    "verify:properties": "node --test tests/properties/*.test.mjs",
+    "verify:agent": "npm run lint && npm run build && node --test tests/presentation/*.test.mjs && npm run verify:properties && npm run verify:ingestion",
     "ingest:meta-guidance": "node scripts/ingestion/ingest-meta-guidance.mjs",
     "verify:ingest:meta-guidance": "node --test tests/ingestion/metaGuidanceIngestion.test.mjs && node scripts/ingestion/verify-meta-guidance-downstream.mjs",
     "ingest:goog-guidance": "node scripts/ingestion/ingest-goog-guidance.mjs",
