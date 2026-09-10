@@ -19,6 +19,13 @@ approval, WP1-WP5 are authorized on a new local branch from current `origin/main
 does not authorize history rewriting of existing branches, push, PR, merge, deployment, live
 ingestion, production prepare/apply, or canonical promotion.
 
+After the later 2026-09-10 symlink-boundary amendment, the responsible human authorized WP6
+implementation and the normal post-role delivery path for this existing branch and Draft PR #12:
+after Specifier, Coder, Refactorer, and Architect pass the required local checks, the resulting
+descendant commit may be pushed to the existing remote branch and the existing Draft PR description
+may be updated. Force push, a new PR, marking the PR ready, merge, deployment, live ingestion,
+production prepare/apply, and canonical promotion remain forbidden.
+
 ## Current Baseline Checkpoint
 
 - Date checked: 2026-09-10.
@@ -70,6 +77,10 @@ Local `main` contains these 13 commits above latest `origin/main`:
 - Replay only reviewed-state promotion behavior and its direct support files.
 - Preserve fail-closed behavior, immutable provenance boundaries, deterministic bundle identity,
   deterministic observation/record/signal IDs, staging verification, rollback, and transaction tests.
+- Harden reviewed-state promotion path validation so existing source and production roots are
+  compared by canonical real paths, output destinations are checked through their existing canonical
+  parent paths before creation, and symlink aliases cannot cause rollback, delta, source, or
+  production operations to write through an apparently safe lexical path into another protected root.
 - Keep the current combined local `main` recoverable through the backup branch named above.
 - Keep `data/ingestion` unchanged.
 
@@ -79,10 +90,13 @@ Local `main` contains these 13 commits above latest `origin/main`:
   unless a reviewed-state promotion dependency is proven and recorded as a human decision.
 - No history rewriting of existing branches.
 - No deletion or modification of `close-swarm`, `swarm`, `swarmforge/`, or untracked task files.
-- No push, PR, merge, deployment, live ingestion, production prepare/apply, `npm run ingest:all --
-  --promote`, canonical promotion, or `data/ingestion` modification.
+- No push or PR update before all configured roles pass; no force push, new PR, marking PR ready,
+  merge, deployment, live ingestion, production prepare/apply, `npm run ingest:all -- --promote`,
+  canonical promotion, or `data/ingestion` modification.
 - No schema, logical identity, observation ID, record ID, signal ID, provenance, evidence eligibility,
   financial metric definition, signal semantic, threshold, confidence, or scoring change.
+- No broader path-policy redesign beyond symlink-safe enforcement for reviewed-state promotion
+  transaction inputs and output destinations.
 - Stop if clean isolation requires semantic redesign or production data changes.
 
 ## Authorized Future Paths
@@ -160,6 +174,41 @@ has no diff.
 Rollback boundary: stop without push, PR, merge, production prepare/apply, or canonical promotion if
 verification fails or production data changes.
 
+### WP6 - Harden symlink boundary validation
+
+Approved amendment on 2026-09-10: close reviewed-state promotion path-safety gaps caused by lexical
+`path.resolve` checks when a caller supplies a symlinked root or a symlinked output parent.
+
+Behavioral contract:
+
+- `prepareReviewedStatePromotion` and `applyReviewedStatePromotion` must canonicalize existing
+  source and production roots to their filesystem real paths before root-overlap comparison and before
+  persisting those roots into a promotion bundle.
+- Output destinations whose final path must not already exist, including rollback root and delta
+  output path, must be canonicalized by resolving the nearest existing parent real path and appending
+  only the non-existing suffix.
+- Source and production roots that are disjoint lexically but overlap through a symlink alias must fail
+  closed with the existing coded `OVERLAPPING_ROOTS` error.
+- Rollback or delta output destinations that appear outside source or production lexically but resolve
+  through a symlinked parent inside source or production must fail closed with the existing coded
+  `UNSAFE_OUTPUT_PATH` error.
+- Ordinary non-overlapping temporary source, production, rollback, delta, bundle, review, and run
+  paths must remain valid.
+- The fix must not modify production canonical data, live ingestion behavior, production
+  prepare/apply authorization, metric semantics, signal semantics, identity, provenance, thresholds,
+  scoring, or evidence eligibility.
+
+Required tests:
+
+- A source-root symlink alias that targets production is rejected as overlapping production.
+- A delta-output parent symlink that resolves inside production is rejected.
+- A rollback-root parent symlink that resolves inside production is rejected.
+- Ordinary non-overlapping temporary paths still prepare and apply successfully.
+
+Rollback boundary: revert only the symlink-boundary transaction changes and their tests if this
+requires scope outside the approved files or changes reviewed-state promotion semantics beyond
+path-safety enforcement.
+
 ## Acceptance Criteria
 
 - New delivery branch starts from latest `origin/main`, not current combined `main`.
@@ -172,9 +221,11 @@ verification fails or production data changes.
 - `git diff --exit-code -- data/ingestion` passes.
 - Production observation aggregate hash before and after packaging is unchanged.
 - Reviewed-state transaction tests and property tests pass.
+- Symlink-boundary tests reject source/production aliases and output parents resolving into protected
+  roots while preserving ordinary non-overlapping temporary paths.
 - Presentation tests remain part of `verify:agent`.
-- No live ingestion, production prepare/apply, canonical promotion, push, PR, merge, deployment, or
-  history rewrite occurs.
+- No live ingestion, production prepare/apply, canonical promotion, force push, new PR, marking PR
+  ready, merge, deployment, or history rewrite occurs.
 
 ## Requirement Traceability
 
@@ -189,7 +240,8 @@ verification fails or production data changes.
 | Confirm `data/ingestion` remains unchanged | Completed: `git diff --exit-code -- data/ingestion` passed and aggregate observation hash remained `c39f861d496cb38e2cdeba980f4595773c02d83903640793bbcf0deef580fec5`. |
 | Stop if isolation requires semantic redesign or production data changes | `Forbidden Scope`, `Acceptance Criteria`, and `Unresolved Decisions` make semantic redesign, protected-domain changes, and production-data changes stop conditions. |
 | Limit this turn to read-only inspection, plan creation, and backup branch creation | This commit adds only this DRAFT execution plan. No implementation file or production data file is modified. |
-| Do not push, PR, merge, deploy, run live ingestion, production prepare/apply, or canonical promotion | No such command was run; future work packages repeat these as forbidden operations. |
+| Do not push, PR, merge, deploy, run live ingestion, production prepare/apply, or canonical promotion | No such command was run during clean-branch packaging. The symlink-boundary amendment authorizes only a normal push to the existing branch and existing Draft PR #12 description update after all roles pass; force push, new PR, ready-for-review, merge, deploy, live ingestion, production prepare/apply, and canonical promotion remain forbidden. |
+| Harden reviewed-state promotion against symlinked boundary aliases | WP6 requires canonical real-path checks for existing roots and safe canonicalization for not-yet-existing output destinations, with negative tests for source-root aliases and output parent aliases into production. |
 
 ## Required Negative Cases
 
@@ -216,6 +268,10 @@ verification fails or production data changes.
 - Duplicate TSMC monthly fact.
 - Incomplete Amazon same-quarter TTM pair.
 - CLI missing explicit command or production path.
+- Source-root symlink alias overlapping production.
+- Delta-output parent symlink resolving into production.
+- Rollback-root parent symlink resolving into production.
+- Ordinary non-overlapping temporary output paths remain valid.
 
 ## Verification Commands
 
@@ -297,6 +353,15 @@ The clean branch must record the same aggregate hash before and after packaging,
   unchanged.
 - 2026-09-10: Drafted this clean-branch packaging plan and added requirement-to-evidence
   traceability during handoff retry audit. No implementation files or production data were modified.
+- 2026-09-10: Operator approved the narrow symlink-boundary hardening amendment for reviewed-state
+  promotion. Added WP6 and acceptance criteria requiring canonical real-path root comparison, safe
+  canonicalization for not-yet-existing outputs through existing parents, existing coded Error values,
+  and negative coverage for symlink aliases into protected roots.
+- 2026-09-10: Retry audit found the earlier clean-branch push/PR prohibition conflicted with the new
+  operator-approved post-role delivery path. Clarified that after all configured roles pass, the
+  descendant commit may be pushed to the existing remote branch and existing Draft PR #12 may be
+  updated; force push, new PR, marking ready, merge, deployment, live ingestion, production
+  prepare/apply, and canonical promotion remain forbidden.
 
 ## Decision Log
 
@@ -311,10 +376,15 @@ The clean branch must record the same aggregate hash before and after packaging,
   reviewed-state property tests; this does not justify importing verified-timestamp properties.
 - 2026-09-10: Exclude acceptance runtime and `features/verified-timestamp.feature` because reviewed
   promotion has no proven runtime dependency on verified-timestamp acceptance behavior.
+- 2026-09-10: Do not add Gherkin acceptance files for this amendment because the approved file list is
+  limited to the reviewed-state transaction, its tests, the active plan, and architecture notes if
+  verified behavior changes.
+- 2026-09-10: Treat the existing Draft PR #12 update as delivery metadata, not production promotion;
+  the project still requires the configured role chain and local verification before any push.
 
 ## Closeout Placeholder
 
-To be completed after human approval and clean-branch packaging. Record final branch, commits, files
-changed, verification output, production hash comparison, production/provenance impact, deferred work,
-and final outcome. Do not mark this plan `COMPLETED` until the clean branch exists, acceptance criteria
-pass, and the responsible human approves closeout.
+To be completed after the configured role chain and symlink-boundary amendment implementation. Record
+final branch, commits, files changed, verification output, production hash comparison,
+production/provenance impact, deferred work, existing PR #12 update status, and final outcome. Do not
+mark this plan `COMPLETED` until the clean branch exists and acceptance criteria pass.
