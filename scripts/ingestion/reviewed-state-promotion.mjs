@@ -1,10 +1,10 @@
 import { spawn } from 'node:child_process'
-import { realpath } from 'node:fs/promises'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 import {
   applyReviewedStatePromotion,
   assertSha256,
+  canonicalExistingPath,
   explicitPath,
   fail,
   hashFile,
@@ -17,6 +17,8 @@ export {
   applyReviewedStatePromotion,
   assertSeparatedRoots,
   assertSha256,
+  canonicalExistingPath,
+  canonicalOutputPath,
   digest,
   explicitPath,
   hashFile,
@@ -63,13 +65,12 @@ function runVerifier(args, cwd) {
 }
 
 async function assertCliProductionRoot(productionRoot, cwd) {
-  const expected = await realpath(path.resolve(cwd, 'data', 'ingestion'))
-  const resolved = path.resolve(productionRoot)
+  const expected = await canonicalExistingPath(path.resolve(cwd, 'data', 'ingestion'), 'Repository production root')
   let actual
   try {
-    actual = await realpath(resolved)
+    actual = await canonicalExistingPath(productionRoot, 'CLI production root')
   } catch (error) {
-    if (error.code === 'ENOENT') fail('CLI_PRODUCTION_ROOT_MISMATCH', 'CLI production root must be the current repository data/ingestion path', { expected, actual: resolved })
+    if (error.code === 'MISSING_PATH') fail('CLI_PRODUCTION_ROOT_MISMATCH', 'CLI production root must be the current repository data/ingestion path', { expected, actual: explicitPath(productionRoot, 'CLI production root') })
     throw error
   }
   if (actual !== expected) fail('CLI_PRODUCTION_ROOT_MISMATCH', 'CLI production root must be the current repository data/ingestion path', { expected, actual })

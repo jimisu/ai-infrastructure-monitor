@@ -1,8 +1,11 @@
 import assert from 'node:assert/strict'
-import { mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises'
+import { mkdir, mkdtemp, readFile, realpath, symlink, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import {
+  applyReviewedStatePromotion,
+  canonicalExistingPath,
+  canonicalOutputPath,
   digest,
   isWithin,
   prepareReviewedStatePromotion,
@@ -129,6 +132,7 @@ async function promotionFixture() {
     return [relativePath, digest(await readFile(path.join(productionRoot, relativePath)))]
   })))
   return {
+    sandbox,
     sourceRoot,
     productionRoot,
     reviewReportPath,
@@ -136,6 +140,19 @@ async function promotionFixture() {
     runReportRelativePath,
     expectedRunReportSha256: digest(await readFile(path.join(sourceRoot, runReportRelativePath))),
     expectedProductionHashes,
+  }
+}
+
+const noop = async () => {}
+
+function applyArgs(prepared, bundlePath, rollbackRoot, deltaOutputPath) {
+  return {
+    bundlePath,
+    expectedBundleSha256: prepared.bundleSha256,
+    rollbackRoot,
+    deltaOutputPath,
+    verifyStaged: noop,
+    verifyProduction: noop,
   }
 }
 
@@ -227,4 +244,108 @@ forAll('prepare bundle hash is idempotent and key-order invariant', {
   const partitioned = [...first.bundle.exactDelta, ...first.bundle.unchanged].map((item) => item.path).sort()
   assert.deepEqual(partitioned, sourcePaths)
   assert.equal(first.bundle.exactDelta.length + first.bundle.unchanged.length, first.bundle.sourceInventory.length)
+})
+
+forAll('canonicalExistingPath of a symlink alias equals the target real path', {
+  times: 12,
+  seed: 29,
+  gen: async (random) => {
+    const sandbox = await mkdtemp(path.join(os.tmpdir(), 'canonical-existing-'))
+    const target = path.join(sandbox, `target-${intBetween(random, 1, 50)}`)
+    await mkdir(target)
+    const alias = path.join(sandbox, `alias-${intBetween(random, 1, 50)}`)
+    await symlink(target, alias)
+    return { alias, target }
+  },
+}, async ({ alias, target }) => {
+  assert.equal(await canonicalExistingPath(alias, 'alias'), await realpath(target))
+})
+
+forAll('canonicalOutputPath joins missing segments onto the real parent', {
+  times: 12,
+  seed: 31,
+  gen: async (random) => {
+    const sandbox = await mkdtemp(path.join(os.tmpdir(), 'canonical-output-'))
+    const realParent = path.join(sandbox, `real-${intBetween(random, 1, 50)}`)
+    await mkdir(realParent)
+    const parentAlias = path.join(sandbox, `parent-${intBetween(random, 1, 50)}`)
+    await symlink(realParent, parentAlias)
+    const segments = Array.from({ length: intBetween(random, 1, 3) }, () => `seg-${intBetween(random, 1, 20)}`)
+    return { parentAlias, realParent, segments }
+  },
+}, async ({ parentAlias, realParent, segments }) => {
+  const canonical = await canonicalOutputPath(path.join(parentAlias, ...segments), 'output')
+  assert.equal(canonical, path.join(await realpath(realParent), ...segments))
+})
+
+forAll('prepare rejects a root alias that resolves onto the other root', {
+  times: 8,
+  seed: 37,
+  gen: async (random) => ({
+    state: await promotionFixture(),
+    aliasSource: random() < 0.5,
+    aliasName: `overlap-${intBetween(random, 1, 200)}`,
+  }),
+}, async ({ state, aliasSource, aliasName }) => {
+  const alias = path.join(state.sandbox, aliasName)
+  if (aliasSource) {
+    await symlink(state.productionRoot, alias)
+    await assert.rejects(prepareReviewedStatePromotion({ ...state, sourceRoot: alias }), (error) => error.code === 'OVERLAPPING_ROOTS')
+  } else {
+    await symlink(state.sourceRoot, alias)
+    await assert.rejects(prepareReviewedStatePromotion({ ...state, productionRoot: alias }), (error) => error.code === 'OVERLAPPING_ROOTS')
+  }
+})
+
+forAll('apply rejects an output whose parent aliases a protected root', {
+  times: 8,
+  seed: 41,
+  gen: async (random) => ({
+    state: await promotionFixture(),
+    intoProduction: random() < 0.5,
+    aliasDelta: random() < 0.5,
+    aliasName: `out-parent-${intBetween(random, 1, 200)}`,
+  }),
+}, async ({ state, intoProduction, aliasDelta, aliasName }) => {
+  const bundlePath = path.join(state.sandbox, 'bundle.json')
+  const prepared = await prepareReviewedStatePromotion({ ...state, bundleOutputPath: bundlePath })
+  const aliasParent = path.join(state.sandbox, aliasName)
+  await symlink(intoProduction ? state.productionRoot : state.sourceRoot, aliasParent)
+  const rollbackRoot = aliasDelta ? path.join(state.sandbox, 'rollback') : path.join(aliasParent, 'rollback')
+  const deltaOutputPath = aliasDelta ? path.join(aliasParent, 'delta.json') : path.join(state.sandbox, 'delta.json')
+  await assert.rejects(
+    applyReviewedStatePromotion(applyArgs(prepared, bundlePath, rollbackRoot, deltaOutputPath)),
+    (error) => error.code === 'UNSAFE_OUTPUT_PATH',
+  )
+})
+
+forAll('disjoint root aliases persist real paths and nested outputs still apply', {
+  times: 6,
+  seed: 43,
+  gen: async (random) => ({
+    state: await promotionFixture(),
+    nest: `out-${intBetween(random, 1, 50)}/n${intBetween(random, 1, 20)}`,
+  }),
+}, async ({ state, nest }) => {
+  const sourceAlias = path.join(state.sandbox, 'reviewed-alias')
+  const productionAlias = path.join(state.sandbox, 'production-alias')
+  await symlink(state.sourceRoot, sourceAlias)
+  await symlink(state.productionRoot, productionAlias)
+  const prepared = await prepareReviewedStatePromotion({
+    ...state,
+    sourceRoot: sourceAlias,
+    productionRoot: productionAlias,
+    bundleOutputPath: path.join(state.sandbox, nest, 'bundle.json'),
+  })
+  assert.equal(prepared.bundle.sourceRoot, await realpath(state.sourceRoot))
+  assert.equal(prepared.bundle.productionRoot, await realpath(state.productionRoot))
+  const result = await applyReviewedStatePromotion(applyArgs(
+    prepared,
+    path.join(state.sandbox, nest, 'bundle.json'),
+    path.join(state.sandbox, nest, 'rollback'),
+    path.join(state.sandbox, nest, 'delta.json'),
+  ))
+  assert.equal(result.bundleSha256, prepared.bundleSha256)
+  assert.equal(isWithin(prepared.bundle.productionRoot, result.rollbackRoot), false)
+  assert.equal(isWithin(prepared.bundle.sourceRoot, result.deltaOutputPath), false)
 })

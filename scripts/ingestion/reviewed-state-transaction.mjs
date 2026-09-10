@@ -34,7 +34,11 @@ export function explicitPath(value, label) {
   return path.resolve(value)
 }
 
-async function canonicalExistingPath(value, label) {
+export async function exists(target) {
+  try { await access(target); return true } catch (error) { if (error.code === 'ENOENT') return false; throw error }
+}
+
+export async function canonicalExistingPath(value, label) {
   const resolved = explicitPath(value, label)
   try {
     return await realpath(resolved)
@@ -44,23 +48,20 @@ async function canonicalExistingPath(value, label) {
   }
 }
 
-async function canonicalOutputPath(value, label) {
-  const resolved = explicitPath(value, label)
+async function joinOntoExistingAncestor(resolved, label) {
   const missing = []
   let current = resolved
-  while (true) {
-    try {
-      await access(current)
-      const realCurrent = await realpath(current)
-      return missing.length === 0 ? realCurrent : path.join(realCurrent, ...[...missing].reverse())
-    } catch (error) {
-      if (error.code !== 'ENOENT') throw error
-      const parent = path.dirname(current)
-      if (parent === current) fail('MISSING_PATH', `${label} has no existing parent`, { path: resolved })
-      missing.push(path.basename(current))
-      current = parent
-    }
+  while (!await exists(current)) {
+    const parent = path.dirname(current)
+    if (parent === current) fail('MISSING_PATH', `${label} has no existing parent`, { path: resolved })
+    missing.push(path.basename(current))
+    current = parent
   }
+  return path.join(await realpath(current), ...missing.reverse())
+}
+
+export async function canonicalOutputPath(value, label) {
+  return joinOntoExistingAncestor(explicitPath(value, label), label)
 }
 
 export function safeRelative(value, label) {
@@ -82,10 +83,6 @@ export function assertSeparatedRoots(sourceRoot, productionRoot) {
   if (sourceRoot === productionRoot || isWithin(sourceRoot, productionRoot) || isWithin(productionRoot, sourceRoot)) {
     fail('OVERLAPPING_ROOTS', 'Source and production roots must be disjoint')
   }
-}
-
-export async function exists(target) {
-  try { await access(target); return true } catch (error) { if (error.code === 'ENOENT') return false; throw error }
 }
 
 export async function hashFile(target) {

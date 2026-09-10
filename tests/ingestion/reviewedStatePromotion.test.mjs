@@ -115,6 +115,23 @@ async function prepare(state, bundleOutputPath) {
   })
 }
 
+async function lstatSafe(target) {
+  try { await readFile(target); return true } catch (error) { if (error.code === 'ENOENT') return false; throw error }
+}
+
+const noop = async () => {}
+
+function applyArgs(prepared, bundlePath, rollbackRoot, deltaOutputPath, verifiers = {}) {
+  return {
+    bundlePath,
+    expectedBundleSha256: prepared.bundleSha256,
+    rollbackRoot,
+    deltaOutputPath,
+    verifyStaged: verifiers.verifyStaged ?? noop,
+    verifyProduction: verifiers.verifyProduction ?? noop,
+  }
+}
+
 test('prepare emits an exact deterministic delta without changing production', async () => {
   const state = await fixture()
   const before = state.expectedProductionHashes
@@ -394,14 +411,12 @@ test('apply rejects rollback and delta outputs inside source or production', asy
   const state = await fixture()
   const bundlePath = path.join(state.sandbox, 'bundle.json')
   const prepared = await prepare(state, bundlePath)
-  await assert.rejects(applyReviewedStatePromotion({
+  await assert.rejects(applyReviewedStatePromotion(applyArgs(
+    prepared,
     bundlePath,
-    expectedBundleSha256: prepared.bundleSha256,
-    rollbackRoot: path.join(state.productionRoot, 'rollback'),
-    deltaOutputPath: path.join(state.sandbox, 'delta.json'),
-    verifyStaged: async () => {},
-    verifyProduction: async () => {},
-  }), (error) => error.code === 'UNSAFE_OUTPUT_PATH')
+    path.join(state.productionRoot, 'rollback'),
+    path.join(state.sandbox, 'delta.json'),
+  )), (error) => error.code === 'UNSAFE_OUTPUT_PATH')
 })
 
 test('prepare rejects a source-root symlink alias that overlaps production', async () => {
@@ -420,14 +435,12 @@ test('apply rejects a delta-output parent symlink that resolves inside productio
   const prepared = await prepare(state, bundlePath)
   const aliasParent = path.join(state.sandbox, 'delta-parent')
   await symlink(state.productionRoot, aliasParent)
-  await assert.rejects(applyReviewedStatePromotion({
+  await assert.rejects(applyReviewedStatePromotion(applyArgs(
+    prepared,
     bundlePath,
-    expectedBundleSha256: prepared.bundleSha256,
-    rollbackRoot: path.join(state.sandbox, 'rollback'),
-    deltaOutputPath: path.join(aliasParent, 'delta.json'),
-    verifyStaged: async () => {},
-    verifyProduction: async () => {},
-  }), (error) => error.code === 'UNSAFE_OUTPUT_PATH')
+    path.join(state.sandbox, 'rollback'),
+    path.join(aliasParent, 'delta.json'),
+  )), (error) => error.code === 'UNSAFE_OUTPUT_PATH')
 })
 
 test('apply rejects a rollback-root parent symlink that resolves inside production', async () => {
@@ -436,14 +449,12 @@ test('apply rejects a rollback-root parent symlink that resolves inside producti
   const prepared = await prepare(state, bundlePath)
   const aliasParent = path.join(state.sandbox, 'rollback-parent')
   await symlink(state.productionRoot, aliasParent)
-  await assert.rejects(applyReviewedStatePromotion({
+  await assert.rejects(applyReviewedStatePromotion(applyArgs(
+    prepared,
     bundlePath,
-    expectedBundleSha256: prepared.bundleSha256,
-    rollbackRoot: path.join(aliasParent, 'rollback'),
-    deltaOutputPath: path.join(state.sandbox, 'delta.json'),
-    verifyStaged: async () => {},
-    verifyProduction: async () => {},
-  }), (error) => error.code === 'UNSAFE_OUTPUT_PATH')
+    path.join(aliasParent, 'rollback'),
+    path.join(state.sandbox, 'delta.json'),
+  )), (error) => error.code === 'UNSAFE_OUTPUT_PATH')
 })
 
 test('prepare rejects a production-root symlink alias that overlaps source', async () => {
@@ -462,22 +473,18 @@ test('apply rejects output parent symlinks that resolve inside source', async ()
   const prepared = await prepare(state, bundlePath)
   const aliasParent = path.join(state.sandbox, 'source-out-parent')
   await symlink(state.sourceRoot, aliasParent)
-  await assert.rejects(applyReviewedStatePromotion({
+  await assert.rejects(applyReviewedStatePromotion(applyArgs(
+    prepared,
     bundlePath,
-    expectedBundleSha256: prepared.bundleSha256,
-    rollbackRoot: path.join(state.sandbox, 'rollback'),
-    deltaOutputPath: path.join(aliasParent, 'delta.json'),
-    verifyStaged: async () => {},
-    verifyProduction: async () => {},
-  }), (error) => error.code === 'UNSAFE_OUTPUT_PATH')
-  await assert.rejects(applyReviewedStatePromotion({
+    path.join(state.sandbox, 'rollback'),
+    path.join(aliasParent, 'delta.json'),
+  )), (error) => error.code === 'UNSAFE_OUTPUT_PATH')
+  await assert.rejects(applyReviewedStatePromotion(applyArgs(
+    prepared,
     bundlePath,
-    expectedBundleSha256: prepared.bundleSha256,
-    rollbackRoot: path.join(aliasParent, 'rollback'),
-    deltaOutputPath: path.join(state.sandbox, 'delta.json'),
-    verifyStaged: async () => {},
-    verifyProduction: async () => {},
-  }), (error) => error.code === 'UNSAFE_OUTPUT_PATH')
+    path.join(aliasParent, 'rollback'),
+    path.join(state.sandbox, 'delta.json'),
+  )), (error) => error.code === 'UNSAFE_OUTPUT_PATH')
 })
 
 test('disjoint source and production symlink aliases persist real paths', async () => {
@@ -495,27 +502,35 @@ test('disjoint source and production symlink aliases persist real paths', async 
   assert.equal(prepared.bundle.productionRoot, await realpath(state.productionRoot))
 })
 
+test('apply rejects rollback and delta outputs that already exist', async () => {
+  const state = await fixture()
+  const bundlePath = path.join(state.sandbox, 'bundle.json')
+  const prepared = await prepare(state, bundlePath)
+  const rollbackRoot = path.join(state.sandbox, 'rollback')
+  await mkdir(rollbackRoot)
+  await assert.rejects(applyReviewedStatePromotion(applyArgs(
+    prepared,
+    bundlePath,
+    rollbackRoot,
+    path.join(state.sandbox, 'delta.json'),
+  )), (error) => error.code === 'OUTPUT_ALREADY_EXISTS')
+})
+
 test('ordinary non-overlapping temporary paths still prepare and apply', async () => {
   const state = await fixture()
   const bundlePath = path.join(state.sandbox, 'outputs', 'nested', 'bundle.json')
   const prepared = await prepare(state, bundlePath)
   assert.equal(prepared.bundle.sourceRoot, await realpath(state.sourceRoot))
   assert.equal(prepared.bundle.productionRoot, await realpath(state.productionRoot))
-  const result = await applyReviewedStatePromotion({
+  const result = await applyReviewedStatePromotion(applyArgs(
+    prepared,
     bundlePath,
-    expectedBundleSha256: prepared.bundleSha256,
-    rollbackRoot: path.join(state.sandbox, 'outputs', 'nested', 'rollback'),
-    deltaOutputPath: path.join(state.sandbox, 'outputs', 'nested', 'delta.json'),
-    verifyStaged: async () => {},
-    verifyProduction: async () => {},
-  })
+    path.join(state.sandbox, 'outputs', 'nested', 'rollback'),
+    path.join(state.sandbox, 'outputs', 'nested', 'delta.json'),
+  ))
   assert.equal(result.bundleSha256, prepared.bundleSha256)
   assert.equal(
     sha256(await readFile(path.join(state.productionRoot, 'observations', 'tsm-monthly.json'))),
     sha256(await readFile(path.join(state.sourceRoot, 'observations', 'tsm-monthly.json'))),
   )
 })
-
-async function lstatSafe(target) {
-  try { await readFile(target); return true } catch (error) { if (error.code === 'ENOENT') return false; throw error }
-}
