@@ -446,6 +446,55 @@ test('apply rejects a rollback-root parent symlink that resolves inside producti
   }), (error) => error.code === 'UNSAFE_OUTPUT_PATH')
 })
 
+test('prepare rejects a production-root symlink alias that overlaps source', async () => {
+  const state = await fixture()
+  const alias = path.join(state.sandbox, 'production-alias')
+  await symlink(state.sourceRoot, alias)
+  await assert.rejects(prepareReviewedStatePromotion({
+    ...state,
+    productionRoot: alias,
+  }), (error) => error.code === 'OVERLAPPING_ROOTS')
+})
+
+test('apply rejects output parent symlinks that resolve inside source', async () => {
+  const state = await fixture()
+  const bundlePath = path.join(state.sandbox, 'bundle.json')
+  const prepared = await prepare(state, bundlePath)
+  const aliasParent = path.join(state.sandbox, 'source-out-parent')
+  await symlink(state.sourceRoot, aliasParent)
+  await assert.rejects(applyReviewedStatePromotion({
+    bundlePath,
+    expectedBundleSha256: prepared.bundleSha256,
+    rollbackRoot: path.join(state.sandbox, 'rollback'),
+    deltaOutputPath: path.join(aliasParent, 'delta.json'),
+    verifyStaged: async () => {},
+    verifyProduction: async () => {},
+  }), (error) => error.code === 'UNSAFE_OUTPUT_PATH')
+  await assert.rejects(applyReviewedStatePromotion({
+    bundlePath,
+    expectedBundleSha256: prepared.bundleSha256,
+    rollbackRoot: path.join(aliasParent, 'rollback'),
+    deltaOutputPath: path.join(state.sandbox, 'delta.json'),
+    verifyStaged: async () => {},
+    verifyProduction: async () => {},
+  }), (error) => error.code === 'UNSAFE_OUTPUT_PATH')
+})
+
+test('disjoint source and production symlink aliases persist real paths', async () => {
+  const state = await fixture()
+  const sourceAlias = path.join(state.sandbox, 'reviewed-alias')
+  const productionAlias = path.join(state.sandbox, 'production-alias')
+  await symlink(state.sourceRoot, sourceAlias)
+  await symlink(state.productionRoot, productionAlias)
+  const prepared = await prepareReviewedStatePromotion({
+    ...state,
+    sourceRoot: sourceAlias,
+    productionRoot: productionAlias,
+  })
+  assert.equal(prepared.bundle.sourceRoot, await realpath(state.sourceRoot))
+  assert.equal(prepared.bundle.productionRoot, await realpath(state.productionRoot))
+})
+
 test('ordinary non-overlapping temporary paths still prepare and apply', async () => {
   const state = await fixture()
   const bundlePath = path.join(state.sandbox, 'outputs', 'nested', 'bundle.json')

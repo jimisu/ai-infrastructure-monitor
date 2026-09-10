@@ -52,7 +52,7 @@ async function canonicalOutputPath(value, label) {
     try {
       await access(current)
       const realCurrent = await realpath(current)
-      return missing.length === 0 ? realCurrent : path.join(realCurrent, ...missing.reverse())
+      return missing.length === 0 ? realCurrent : path.join(realCurrent, ...[...missing].reverse())
     } catch (error) {
       if (error.code !== 'ENOENT') throw error
       const parent = path.dirname(current)
