@@ -34,10 +34,6 @@ export function explicitPath(value, label) {
   return path.resolve(value)
 }
 
-export async function exists(target) {
-  try { await access(target); return true } catch (error) { if (error.code === 'ENOENT') return false; throw error }
-}
-
 export async function canonicalExistingPath(value, label) {
   const resolved = explicitPath(value, label)
   try {
@@ -51,13 +47,17 @@ export async function canonicalExistingPath(value, label) {
 async function joinOntoExistingAncestor(resolved, label) {
   const missing = []
   let current = resolved
-  while (!await exists(current)) {
-    const parent = path.dirname(current)
-    if (parent === current) fail('MISSING_PATH', `${label} has no existing parent`, { path: resolved })
-    missing.push(path.basename(current))
-    current = parent
+  while (true) {
+    try {
+      return path.join(await realpath(current), ...missing.reverse())
+    } catch (error) {
+      if (error.code !== 'ENOENT') throw error
+      const parent = path.dirname(current)
+      if (parent === current) fail('MISSING_PATH', `${label} has no existing parent`, { path: resolved })
+      missing.push(path.basename(current))
+      current = parent
+    }
   }
-  return path.join(await realpath(current), ...missing.reverse())
 }
 
 export async function canonicalOutputPath(value, label) {
@@ -83,6 +83,10 @@ export function assertSeparatedRoots(sourceRoot, productionRoot) {
   if (sourceRoot === productionRoot || isWithin(sourceRoot, productionRoot) || isWithin(productionRoot, sourceRoot)) {
     fail('OVERLAPPING_ROOTS', 'Source and production roots must be disjoint')
   }
+}
+
+export async function exists(target) {
+  try { await access(target); return true } catch (error) { if (error.code === 'ENOENT') return false; throw error }
 }
 
 export async function hashFile(target) {

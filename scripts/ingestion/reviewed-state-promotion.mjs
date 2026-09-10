@@ -1,4 +1,5 @@
 import { spawn } from 'node:child_process'
+import { realpath } from 'node:fs/promises'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 import {
@@ -65,7 +66,7 @@ function runVerifier(args, cwd) {
 }
 
 async function assertCliProductionRoot(productionRoot, cwd) {
-  const expected = await canonicalExistingPath(path.resolve(cwd, 'data', 'ingestion'), 'Repository production root')
+  const expected = await realpath(path.resolve(cwd, 'data', 'ingestion'))
   let actual
   try {
     actual = await canonicalExistingPath(productionRoot, 'CLI production root')

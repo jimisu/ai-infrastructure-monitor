@@ -316,6 +316,21 @@ test('CLI has no implicit command or production path', async () => {
   await assert.rejects(runReviewedStatePromotionCli(['prepare'], '/workspace/project'), (error) => error.code === 'PROMOTION_USAGE_ERROR')
 })
 
+test('CLI rejects a production root that is not the repository data/ingestion path', async () => {
+  const sandbox = await mkdtemp(path.join(os.tmpdir(), 'promotion-cli-'))
+  await mkdir(path.join(sandbox, 'data', 'ingestion'), { recursive: true })
+  await assert.rejects(
+    runReviewedStatePromotionCli(['prepare', '--production-root', path.join(sandbox, 'missing')], sandbox),
+    (error) => error.code === 'CLI_PRODUCTION_ROOT_MISMATCH',
+  )
+  const otherRoot = path.join(sandbox, 'other')
+  await mkdir(otherRoot)
+  await assert.rejects(
+    runReviewedStatePromotionCli(['prepare', '--production-root', otherRoot], sandbox),
+    (error) => error.code === 'CLI_PRODUCTION_ROOT_MISMATCH',
+  )
+})
+
 test('staging uses the same production contract as post-apply verification', () => {
   assert.deepEqual(productionContractArgs('/tmp/staging-root'), ['--canonical-root', '/tmp/staging-root/observations'])
 })
